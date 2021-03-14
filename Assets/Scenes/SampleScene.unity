@@ -384,6 +384,9 @@ MonoBehaviour:
   - block_prefab: {fileID: 4642739875115892624, guid: 1bdc14dc13c20ef48b5b4118a6a16804,
       type: 3}
     creation_probability: 1
+  hexagon_blocks_layer_mask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!4 &1422771484
 Transform:
   m_ObjectHideFlags: 0

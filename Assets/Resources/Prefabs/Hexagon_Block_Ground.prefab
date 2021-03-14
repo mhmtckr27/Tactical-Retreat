@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -1118213921638439300}
   - component: {fileID: 461435686940288451}
   - component: {fileID: 4916538276958049168}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hexagon_Block_Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}

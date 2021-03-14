@@ -39,6 +39,11 @@ public class UnitBase : MonoBehaviour
 		is_in_move_mode = !is_in_move_mode;
 		if (is_in_move_mode)
 		{
+			current_block.ToggleOutlineVisibility(true);
+			if (remaining_moves_this_turn == 0)
+			{
+				return;
+			}
 			foreach(HexagonBlockBase neighbour in current_block.neighbours)
 			{
 				if (can_move_to_blocks[(int)neighbour.block_type])
@@ -46,14 +51,43 @@ public class UnitBase : MonoBehaviour
 					neighbour.ToggleOutlineVisibility(true);
 				}
 			}
-			current_block.ToggleOutlineVisibility(true);
+			for(int i = 0; i  < remaining_moves_this_turn; i++)
+			{
+				for(int j = 0; j < current_block.neighbours.Count; j++)
+				{
+					if (!can_move_to_blocks[(int)current_block.neighbours[j].block_type])
+					{
+						continue;
+					}
+					foreach (HexagonBlockBase neighbour_2 in current_block.neighbours[j].neighbours)
+					{
+						if (can_move_to_blocks[(int)neighbour_2.block_type])
+						{
+							neighbour_2.ToggleOutlineVisibility(true);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
+			current_block.ToggleOutlineVisibility(false);
 			foreach (HexagonBlockBase neighbour in current_block.neighbours)
 			{
 				neighbour.ToggleOutlineVisibility(false);
-				current_block.ToggleOutlineVisibility(false);
+				for (int i = 0; i < remaining_moves_this_turn; i++)
+				{
+					for (int j = 0; j < current_block.neighbours.Count; j++)
+					{
+						foreach (HexagonBlockBase neighbour_2 in current_block.neighbours[j].neighbours)
+						{
+							if (can_move_to_blocks[(int)neighbour_2.block_type])
+							{
+								neighbour_2.ToggleOutlineVisibility(false);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

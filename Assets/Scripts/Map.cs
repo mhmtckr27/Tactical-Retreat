@@ -10,6 +10,7 @@ public class Map : MonoBehaviour
 	[SerializeField] private int map_width;
 	[SerializeField] private GameObject peasant;
 	[SerializeField] private BlockPrefabsWithCreationProbability[] blocks;
+	[SerializeField] private LayerMask hexagon_blocks_layer_mask;
 	
 	[System.Serializable]
 	public struct BlockPrefabsWithCreationProbability
@@ -42,10 +43,19 @@ public class Map : MonoBehaviour
 
 		GenerateMap();
 		DilateMap();
-		PopulateNeighbourLists();
-		Instantiate(peasant, map[0].transform.position, Quaternion.identity);
+		//bu fonksiyonu(PopulateNeighbourLists) direkt cagirinca bazi neighbourlar missing oluyor(Dilate fonksiyonunda olusturulan blocklar), sebebini cozemedigim icin boyle bir workaround yaptim simdilik.
+		Invoke("PopulateNeighbourLists", .2f);
+		Instantiate(peasant, map[41].transform.position, Quaternion.identity);
 	}
-
+	private void Start()
+	{
+	}
+	private void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.Space))
+		{
+		}
+	}
 	private void GenerateMap()
 	{
 		map = new List<GameObject>();
@@ -137,9 +147,11 @@ public class Map : MonoBehaviour
 				}
 				else
 				{
-					GameObject temp_block = map[i];
-					map[i] = Instantiate(GetRandomBlockExceptWater(), map[i].transform.position, Quaternion.identity, transform);
-					Destroy(temp_block);
+					Vector3 pos = map[i].transform.position;
+					Destroy(map[i]);
+					map.RemoveAt(i);
+					map.Insert(i, Instantiate(GetRandomBlockExceptWater(), pos, Quaternion.identity, transform));
+					Debug.Log(i);
 				}
 			}
 		}
@@ -167,9 +179,11 @@ public class Map : MonoBehaviour
 				}
 				else
 				{
-					GameObject temp_block = map[i];
-					map[i] = Instantiate(blocks[1].block_prefab, map[i].transform.position, Quaternion.identity, transform);
-					Destroy(temp_block);
+					Vector3 pos = map[i].transform.position;
+					Destroy(map[i]);
+					map.RemoveAt(i);
+					map.Insert(i, Instantiate(blocks[1].block_prefab, map[i].transform.position, Quaternion.identity, transform));
+					Debug.Log(i);
 				}
 			}
 		}
@@ -205,36 +219,35 @@ public class Map : MonoBehaviour
 		List<HexagonBlockBase> neighbours = new List<HexagonBlockBase>();
 		RaycastHit hit;
 		//up neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height, .9f, 0), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(block_height, 1.9f, 0), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
 		//down neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height, 0.9f, 0), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(-block_height, 1.9f, 0), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
 		//upper forward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 0.9f, block_offset_z), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 1.9f, block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
 		//upper backward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 0.9f, -block_offset_z), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 1.9f, -block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
 		//lower forward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 0.9f, block_offset_z), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 1.9f, block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
 		//lower backward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 0.9f, -block_offset_z), Vector3.down, out hit, 2))
+		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 1.9f, -block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
 		{
 			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
 		}
-
 		return neighbours;
 	}
 
@@ -243,13 +256,6 @@ public class Map : MonoBehaviour
 		foreach(GameObject block in map)
 		{
 			block.GetComponent<HexagonBlockBase>().neighbours = GetNeighbours(block);
-		}
-	}
-	private void Start()
-	{
-		foreach(HexagonBlockBase block in map[0].GetComponent<HexagonBlockBase>().neighbours)
-		{
-			Debug.Log(block.block_type);
 		}
 	}
 }

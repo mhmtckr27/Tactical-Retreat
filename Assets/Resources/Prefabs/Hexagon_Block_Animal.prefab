@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2161300454206613303}
   - component: {fileID: -8158751018821290116}
   - component: {fileID: 7996481127593873582}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hexagon_Block_Animal
   m_TagString: Untagged
   m_Icon: {fileID: 0}

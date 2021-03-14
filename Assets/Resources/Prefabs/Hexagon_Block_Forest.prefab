@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 6444309811665241426}
   - component: {fileID: 7112035847107682168}
   - component: {fileID: 4133053198827595325}
-  m_Layer: 0
-  m_Name: forest_block
+  m_Layer: 6
+  m_Name: Hexagon_Block_Forest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -28,8 +28,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4642739875115892624}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0, y: 0, z: 0.000000014901161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6718734494956325262}
@@ -143,7 +143,7 @@ GameObject:
   - component: {fileID: 6718734494956325262}
   - component: {fileID: 7170886946754132405}
   - component: {fileID: 2488218682174799032}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: trees
   m_TagString: Untagged
   m_Icon: {fileID: 0}
