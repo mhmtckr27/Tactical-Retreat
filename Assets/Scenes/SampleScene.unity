@@ -372,14 +372,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaa3703ad2466f4bb3397a4bdbd4cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map_width: 10
-  hexagon_block_prefabs:
-  - {fileID: 8380528616431484524, guid: aa4e224165b0b134ea3ec8f2427cfee8, type: 3}
-  - {fileID: 7044269632002203872, guid: 8ebef43061a52e140871355fba5d1166, type: 3}
-  hexagon_block_edge_length: 1
+  map_width: 20
+  blocks:
+  - block_prefab: {fileID: 1874112266457985150, guid: 3eaa7bf3c4a0e0046b66d0f986693964,
+      type: 3}
+    creation_probability: 0.35
+  - block_prefab: {fileID: 7044269632002203872, guid: 8ebef43061a52e140871355fba5d1166,
+      type: 3}
+    creation_probability: 0.65
+  - block_prefab: {fileID: 9156348582069236596, guid: 883a39a385de42c4b90e27346631ff19,
+      type: 3}
+    creation_probability: 1
   water_layer:
     serializedVersion: 2
     m_Bits: 16
+  ground_layer:
+    serializedVersion: 2
+    m_Bits: 39
 --- !u!4 &1422771484
 Transform:
   m_ObjectHideFlags: 0

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1874112266457985150
+--- !u!1 &3706264007200234434
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,47 +8,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1245807705182857924}
-  - component: {fileID: 2802967489016849761}
-  - component: {fileID: 72852942285279659}
-  - component: {fileID: 8530331734233949131}
-  - component: {fileID: 6152695792668583012}
+  - component: {fileID: 4045529711970615672}
+  - component: {fileID: 1120059591057673949}
+  - component: {fileID: 2913748739360553495}
+  - component: {fileID: -7392484502580823798}
+  - component: {fileID: -3179073815134761298}
   m_Layer: 0
-  m_Name: Hexagon_Block
+  m_Name: altigen_blok_orman
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1245807705182857924
+--- !u!4 &4045529711970615672
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874112266457985150}
-  m_LocalRotation: {x: -6.123234e-17, y: 1, z: 6.123234e-17, w: -3.7493994e-33}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_GameObject: {fileID: 3706264007200234434}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2802967489016849761
+--- !u!33 &1120059591057673949
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874112266457985150}
-  m_Mesh: {fileID: 2977981768884665668, guid: b8d81575dca5ce848a6d241d4a130c30, type: 3}
---- !u!23 &72852942285279659
+  m_GameObject: {fileID: 3706264007200234434}
+  m_Mesh: {fileID: 2977981768884665668, guid: d4171d04e9f7bc240aecbfec7f521f57, type: 3}
+--- !u!23 &2913748739360553495
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874112266457985150}
+  m_GameObject: {fileID: 3706264007200234434}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -61,8 +61,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: b8d81575dca5ce848a6d241d4a130c30, type: 3}
-  - {fileID: -9117483709511198939, guid: b8d81575dca5ce848a6d241d4a130c30, type: 3}
+  - {fileID: -876546973899608171, guid: d4171d04e9f7bc240aecbfec7f521f57, type: 3}
+  - {fileID: -9117483709511198939, guid: d4171d04e9f7bc240aecbfec7f521f57, type: 3}
+  - {fileID: 74289166351299164, guid: d4171d04e9f7bc240aecbfec7f521f57, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,27 +85,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8530331734233949131
+--- !u!64 &-7392484502580823798
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874112266457985150}
+  m_GameObject: {fileID: 3706264007200234434}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 2977981768884665668, guid: b8d81575dca5ce848a6d241d4a130c30, type: 3}
---- !u!114 &6152695792668583012
+  m_Mesh: {fileID: 2977981768884665668, guid: 4e703b74f0b0b30419b6cf1a0080d79d, type: 3}
+--- !u!114 &-3179073815134761298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1874112266457985150}
+  m_GameObject: {fileID: 3706264007200234434}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: adf62f98a8b2cad4da94eccb63f4a5c8, type: 3}

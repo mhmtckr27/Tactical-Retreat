@@ -184,6 +184,7 @@ public class RandomMapGenerator : MonoBehaviour
 		{
 			temp_block = GetRandomBlock();
 		} while (temp_block.GetComponent<HexagonBlockBase>().block_type == BlockType.Water);
+		Debug.Log(temp_block.GetComponent<HexagonBlockBase>().block_type);
 		return temp_block;
 	}
 }
