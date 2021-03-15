@@ -113,7 +113,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   block_type: 0
-  neighbours: []
+  coordinates: 000000000000000000000000
+  neighbour_keys: []
+  neighbour_n: 
+  neighbour_ne: 
+  neighbour_se: 
+  neighbour_s: 
+  neighbour_sw: 
+  neighbour_nw: 
 --- !u!114 &4133053198827595325
 MonoBehaviour:
   m_ObjectHideFlags: 0

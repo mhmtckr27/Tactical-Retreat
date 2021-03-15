@@ -292,13 +292,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.25039488, y: 0.6979931, z: -0.2885612, w: 0.6056737}
-  m_LocalPosition: {x: -2.686, y: 6.434, z: 0.455}
+  m_LocalRotation: {x: 0.37638643, y: 0.6183178, z: -0.43375692, w: 0.53653646}
+  m_LocalPosition: {x: -4.967, y: 12.798, z: 0.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 44.922, y: 98.101, z: 0}
+  m_LocalEulerAnglesHint: {x: 70.1, y: 98.101, z: 0}
 --- !u!1 &1268335877
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaa3703ad2466f4bb3397a4bdbd4cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map_width: 2
+  map_width: 20
   peasant: {fileID: 4916091697271400686, guid: 339e374e2506bb24ead44b045d668a19, type: 3}
   blocks:
   - block_prefab: {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a,
@@ -380,13 +380,18 @@ MonoBehaviour:
     creation_probability: 0.7
   - block_prefab: {fileID: 5810350800546516640, guid: 85fc9e19538e73142b0bea32c1bc201e,
       type: 3}
-    creation_probability: 1
+    creation_probability: 0.7
   - block_prefab: {fileID: 4642739875115892624, guid: 1bdc14dc13c20ef48b5b4118a6a16804,
       type: 3}
     creation_probability: 1
-  hexagon_blocks_layer_mask:
-    serializedVersion: 2
-    m_Bits: 64
+  neighbour_offset_n: 0000000001000000ffffffff
+  neighbour_offset_ne: 0100000000000000ffffffff
+  neighbour_offset_se: 01000000ffffffff00000000
+  neighbour_offset_s: 00000000ffffffff01000000
+  neighbour_offset_sw: ffffffff0000000001000000
+  neighbour_offset_nw: ffffffff0100000000000000
+  current_state: 1
+  unit_to_move: {fileID: 0}
 --- !u!4 &1422771484
 Transform:
   m_ObjectHideFlags: 0
