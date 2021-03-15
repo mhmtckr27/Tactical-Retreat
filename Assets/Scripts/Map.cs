@@ -10,8 +10,14 @@ public class Map : MonoBehaviour
 	[SerializeField] private int map_width;
 	[SerializeField] private GameObject peasant;
 	[SerializeField] private BlockPrefabsWithCreationProbability[] blocks;
-	[SerializeField] private LayerMask hexagon_blocks_layer_mask;
-	
+
+	public int[] neighbour_offset_n = { 0, 1, -1 };
+	public int[] neighbour_offset_ne = { 1, 0, -1 };
+	public int[] neighbour_offset_se = { 1, -1, 0 };
+	public int[] neighbour_offset_s = { 0, -1, 1 };
+	public int[] neighbour_offset_sw = { -1, 0, 1 };
+	public int[] neighbour_offset_nw = { -1, 1, 0 };
+
 	[System.Serializable]
 	public struct BlockPrefabsWithCreationProbability
 	{
@@ -19,7 +25,7 @@ public class Map : MonoBehaviour
 		public float creation_probability;
 	}
 
-	private List<GameObject> map;
+	private Dictionary<string, HexagonBlockBase> map_dictionary = new Dictionary<string, HexagonBlockBase>();
 
 	private static Map instance;
 	public static Map Instance
@@ -40,152 +46,182 @@ public class Map : MonoBehaviour
 		{
 			Destroy(instance);
 		}
-
 		GenerateMap();
 		DilateMap();
-		//bu fonksiyonu(PopulateNeighbourLists) direkt cagirinca bazi neighbourlar missing oluyor(Dilate fonksiyonunda olusturulan blocklar), sebebini cozemedigim icin boyle bir workaround yaptim simdilik.
-		Invoke("PopulateNeighbourLists", .2f);
-		Instantiate(peasant, map[41].transform.position, Quaternion.identity);
+
+		//Instantiate(peasant, map[41].transform.position, Quaternion.identity);
 	}
-	private void Start()
-	{
-	}
-	private void Update()
-	{
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-		}
-	}
+
+
 	private void GenerateMap()
 	{
-		map = new List<GameObject>();
-		map.Add(Instantiate(GetRandomBlockExceptWater(), Vector3.zero, Quaternion.identity, transform));
-		//First creations
-		for (int i = 1; i < map_width; i++)
-		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), new Vector3(i * block_height / 2, 0, i * block_offset_z), Quaternion.identity, transform));
-		}
-		Vector3 lower_left_vertex_position = map[map.Count - 1].transform.position;
+		string coordinate_key = 0 + "_" + 0 + "_" + 0;
+		map_dictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+		map_dictionary["0_0_0"].SetCoordinates(0, 0, 0);
+		HexagonBlockBase initial_hex = map_dictionary["0_0_0"];
+		HexagonBlockBase current_hex = initial_hex;
 
-		for (int i = 1; i < map_width; i++)
+		int i = 0;
+		int k = 0;
+		while (k < map_width - 1)
 		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), new Vector3(i * block_height / 2, 0, i * -block_offset_z), Quaternion.identity, transform));
-		}
-		Vector3 lower_right_vertex_position = map[map.Count - 1].transform.position;
-
-		for (int i = 1; i < map_width * 2 - 2; i++)
-		{
-			map.Add(Instantiate(GetRandomBlock(), new Vector3(i * block_height, 0, 0), Quaternion.identity, transform));
-		}
-
-		//Second creations
-		for (int i = 1; i < map_width; i++)
-		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), lower_left_vertex_position + new Vector3(i * block_height, 0, 0), Quaternion.identity, transform));
-		}
-		Vector3 upper_left_vertex_position = map[map.Count - 1].transform.position;
-
-		for (int i = 1; i < map_width; i++)
-		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), lower_right_vertex_position + new Vector3(i * block_height, 0, 0), Quaternion.identity, transform));
-		}
-		Vector3 upper_right_vertex_position = map[map.Count - 1].transform.position;
-
-		//Third creations
-		for (int i = 1; i < map_width - 1; i++)
-		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), upper_left_vertex_position + new Vector3(i * block_height / 2, 0, i * -block_offset_z), Quaternion.identity, transform));
-		}
-
-		for (int i = 1; i < map_width; i++)
-		{
-			map.Add(Instantiate(GetRandomBlockExceptWater(), upper_right_vertex_position + new Vector3(i * block_height / 2, 0, i * block_offset_z), Quaternion.identity, transform));
-		}
-
-		//fill left part
-		for (int j = 0; j < map_width - 2; j++)
-		{
-			for (int i = 1; i < map_width + j; i++)
+			//north neighbour
+			if (!map_dictionary.ContainsKey(current_hex.neighbour_n))
 			{
-				map.Add(Instantiate(GetRandomBlock(), lower_left_vertex_position + (j + 1) * new Vector3(-block_height / 2, 0, -block_offset_z) + new Vector3(i * block_height, 0, 0), Quaternion.identity, transform));
+				map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+				map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
+				current_hex = map_dictionary[current_hex.neighbour_n];
+				i++;
 			}
-		}
-
-		//fill right part
-		for (int j = 0; j < map_width - 2; j++)
-		{
-			for (int i = 1; i < map_width + j; i++)
+			for (int j = 0; j < k + 1; j++)
 			{
-				map.Add(Instantiate(GetRandomBlock(), lower_right_vertex_position + (j + 1) * new Vector3(-block_height / 2, 0, block_offset_z) + new Vector3(i * block_height, 0, 0), Quaternion.identity, transform));
+				//south-east neighbour		
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_se))
+				{
+					map_dictionary.Add(current_hex.neighbour_se, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_se].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_se[0], current_hex.coordinates[1] + neighbour_offset_se[1], current_hex.coordinates[2] + neighbour_offset_se[2]);
+					current_hex = map_dictionary[current_hex.neighbour_se];
+					i++;
+				}
 			}
+			for (int j = 0; j < k + 1; j++)
+			{
+				//south neighbour
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_s))
+				{
+					map_dictionary.Add(current_hex.neighbour_s, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_s].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_s[0], current_hex.coordinates[1] + neighbour_offset_s[1], current_hex.coordinates[2] + neighbour_offset_s[2]);
+					current_hex = map_dictionary[current_hex.neighbour_s];
+					i++;
+				}
+
+			}
+			for (int j = 0; j < k + 1; j++)
+			{
+				//south-west neighbour
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_sw))
+				{
+					map_dictionary.Add(current_hex.neighbour_sw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_sw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_sw[0], current_hex.coordinates[1] + neighbour_offset_sw[1], current_hex.coordinates[2] + neighbour_offset_sw[2]);
+					current_hex = map_dictionary[current_hex.neighbour_sw];
+					i++;
+				}
+			}
+			for (int j = 0; j < k + 1; j++)
+			{
+				//north-west neighbour
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_nw))
+				{
+					map_dictionary.Add(current_hex.neighbour_nw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_nw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_nw[0], current_hex.coordinates[1] + neighbour_offset_nw[1], current_hex.coordinates[2] + neighbour_offset_nw[2]);
+					current_hex = map_dictionary[current_hex.neighbour_nw];
+					i++;
+				}
+			}
+			for (int j = 0; j < k + 1; j++)
+			{
+				//north neighbour
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_n))
+				{
+					map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
+					current_hex = map_dictionary[current_hex.neighbour_n];
+					i++;
+				}
+			}
+			for (int j = 0; j < k + 1; j++)
+			{
+				//north-east neighbour
+				if (!map_dictionary.ContainsKey(current_hex.neighbour_ne))
+				{
+					map_dictionary.Add(current_hex.neighbour_ne, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary[current_hex.neighbour_ne].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_ne[0], current_hex.coordinates[1] + neighbour_offset_ne[1], current_hex.coordinates[2] + neighbour_offset_ne[2]);
+					current_hex = map_dictionary[current_hex.neighbour_ne];
+					i++;
+				}
+				else
+				{
+					current_hex = map_dictionary[current_hex.neighbour_ne];
+				}
+			}
+			k++;
 		}
 	}
 
 	//replace water blocks that are single (don't have any water neighbour) with random ground block.
 	private void DilateMap()
 	{
-		for(int i = 0; i < map.Count; i++)
+		List<string> dilate_water_blocks = new List<string>();
+		List<string> dilate_ground_blocks = new List<string>();
+		foreach (KeyValuePair<string, HexagonBlockBase> keyValuePair in map_dictionary)
 		{
-			if(map[i].GetComponent<HexagonBlockBase>().block_type == BlockType.Water)
+			bool must_dilate = true;
+			if (keyValuePair.Value.block_type == BlockType.Water)
 			{
-				bool must_replace = true;
-				List<HexagonBlockBase> neighbours = GetNeighbours(map[i]);
-				for(int j = 0; j < neighbours.Count; j++)
+				for(int j = 0; j < 6; j++)
 				{
-					if(neighbours[j].block_type == BlockType.Water)
+					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
 					{
-						must_replace = false;
+						if(map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type == BlockType.Water)
+						{
+							must_dilate = false;
+						}
 					}
-					if (!must_replace)
+					if (!must_dilate)
 					{
-						continue;
+						break;
 					}
 				}
-				if (!must_replace)
+				if (!must_dilate)
 				{
 					continue;
 				}
 				else
 				{
-					Vector3 pos = map[i].transform.position;
-					Destroy(map[i]);
-					map.RemoveAt(i);
-					map.Insert(i, Instantiate(GetRandomBlockExceptWater(), pos, Quaternion.identity, transform));
-					Debug.Log(i);
+					dilate_water_blocks.Add(keyValuePair.Key);
+				}
+			}
+			else
+			{
+				for (int j = 0; j < 6; j++)
+				{
+					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
+					{
+						if (map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type != BlockType.Water)
+						{
+							must_dilate = false;
+						}
+					}
+					if (!must_dilate)
+					{
+						break;
+					}
+				}
+				if (!must_dilate)
+				{
+					continue;
+				}
+				else
+				{
+					dilate_ground_blocks.Add(keyValuePair.Key);
 				}
 			}
 		}
 
-		for (int i = 0; i < map.Count; i++)
+		for (int i = 0; i < dilate_water_blocks.Count; i++)
 		{
-			if (map[i].GetComponent<HexagonBlockBase>().block_type != BlockType.Water)
-			{
-				bool must_replace = true;
-				List<HexagonBlockBase> neighbours = GetNeighbours(map[i]);
-				for(int j = 0; j < neighbours.Count; j++)
-				{
-					if(neighbours[j].block_type != BlockType.Water)
-					{
-						must_replace = false;
-					}
-					if (!must_replace)
-					{
-						continue;
-					}
-				}
-				if (!must_replace)
-				{
-					continue;
-				}
-				else
-				{
-					Vector3 pos = map[i].transform.position;
-					Destroy(map[i]);
-					map.RemoveAt(i);
-					map.Insert(i, Instantiate(blocks[1].block_prefab, map[i].transform.position, Quaternion.identity, transform));
-					Debug.Log(i);
-				}
-			}
+			GameObject temp = map_dictionary[dilate_water_blocks[i]].gameObject;
+			map_dictionary.Remove(dilate_water_blocks[i]);
+			map_dictionary.Add(dilate_water_blocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+			Destroy(temp);
+		}
+
+		for (int i = 0; i < dilate_ground_blocks.Count; i++)
+		{
+			GameObject temp = map_dictionary[dilate_ground_blocks[i]].gameObject;
+			map_dictionary.Remove(dilate_ground_blocks[i]);
+			map_dictionary.Add(dilate_ground_blocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+			Destroy(temp);
 		}
 	}
 
@@ -214,48 +250,8 @@ public class Map : MonoBehaviour
 		return temp_block;
 	}
 
-	public List<HexagonBlockBase> GetNeighbours(GameObject block)
+	private GameObject GetWaterBlock()
 	{
-		List<HexagonBlockBase> neighbours = new List<HexagonBlockBase>();
-		RaycastHit hit;
-		//up neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height, 1.9f, 0), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		//down neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height, 1.9f, 0), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		//upper forward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 1.9f, block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		//upper backward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(block_height / 2, 1.9f, -block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		//lower forward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 1.9f, block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		//lower backward neighbour
-		if (Physics.Raycast(block.transform.position + new Vector3(-block_height / 2, 1.9f, -block_offset_z), Vector3.down, out hit, 2, hexagon_blocks_layer_mask))
-		{
-			neighbours.Add(hit.collider.GetComponent<HexagonBlockBase>());
-		}
-		return neighbours;
-	}
-
-	private void PopulateNeighbourLists()
-	{
-		foreach(GameObject block in map)
-		{
-			block.GetComponent<HexagonBlockBase>().neighbours = GetNeighbours(block);
-		}
+		return blocks[1].block_prefab;
 	}
 }

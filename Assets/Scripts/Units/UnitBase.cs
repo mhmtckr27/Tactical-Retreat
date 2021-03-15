@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class UnitBase : MonoBehaviour
 	private bool is_in_move_mode = false;
 	private int remaining_moves_this_turn;
 	[SerializeField] private bool[] can_move_to_blocks;
-
+	public int movesleft;
 	private void Awake()
 	{
 		//sonradan degistir daha efektif bi yol bul.
@@ -33,62 +34,34 @@ public class UnitBase : MonoBehaviour
 			current_block = hit.collider.GetComponent<HexagonBlockBase>();
 		}
 	}
-
+	
 	private void OnMouseUpAsButton()
 	{
 		is_in_move_mode = !is_in_move_mode;
 		if (is_in_move_mode)
 		{
-			current_block.ToggleOutlineVisibility(true);
+			//current_block.ToggleOutlineVisibility(true);
 			if (remaining_moves_this_turn == 0)
 			{
 				return;
 			}
-			foreach(HexagonBlockBase neighbour in current_block.neighbours)
+
+
+			/*foreach(HexagonBlockBase neighbour in current_block.neighbours)
 			{
 				if (can_move_to_blocks[(int)neighbour.block_type])
 				{
 					neighbour.ToggleOutlineVisibility(true);
 				}
-			}
-			for(int i = 0; i  < remaining_moves_this_turn; i++)
-			{
-				for(int j = 0; j < current_block.neighbours.Count; j++)
-				{
-					if (!can_move_to_blocks[(int)current_block.neighbours[j].block_type])
-					{
-						continue;
-					}
-					foreach (HexagonBlockBase neighbour_2 in current_block.neighbours[j].neighbours)
-					{
-						if (can_move_to_blocks[(int)neighbour_2.block_type])
-						{
-							neighbour_2.ToggleOutlineVisibility(true);
-						}
-					}
-				}
-			}
+			}*/
 		}
 		else
 		{
-			current_block.ToggleOutlineVisibility(false);
+			/*current_block.ToggleOutlineVisibility(false);
 			foreach (HexagonBlockBase neighbour in current_block.neighbours)
 			{
 				neighbour.ToggleOutlineVisibility(false);
-				for (int i = 0; i < remaining_moves_this_turn; i++)
-				{
-					for (int j = 0; j < current_block.neighbours.Count; j++)
-					{
-						foreach (HexagonBlockBase neighbour_2 in current_block.neighbours[j].neighbours)
-						{
-							if (can_move_to_blocks[(int)neighbour_2.block_type])
-							{
-								neighbour_2.ToggleOutlineVisibility(false);
-							}
-						}
-					}
-				}
-			}
+			}*/
 		}
 	}
 

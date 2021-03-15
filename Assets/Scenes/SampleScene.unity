@@ -372,15 +372,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeaa3703ad2466f4bb3397a4bdbd4cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  map_width: 20
+  map_width: 2
   peasant: {fileID: 4916091697271400686, guid: 339e374e2506bb24ead44b045d668a19, type: 3}
   blocks:
   - block_prefab: {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a,
       type: 3}
-    creation_probability: 0.5
+    creation_probability: 0.7
   - block_prefab: {fileID: 5810350800546516640, guid: 85fc9e19538e73142b0bea32c1bc201e,
       type: 3}
-    creation_probability: 0.8
+    creation_probability: 1
   - block_prefab: {fileID: 4642739875115892624, guid: 1bdc14dc13c20ef48b5b4118a6a16804,
       type: 3}
     creation_probability: 1
