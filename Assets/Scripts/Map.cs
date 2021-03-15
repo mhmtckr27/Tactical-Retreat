@@ -36,6 +36,9 @@ public class Map : MonoBehaviour
 		}
 	}
 
+	public State current_state = State.None;
+	public UnitBase unit_to_move;
+
 	private void Awake()
 	{
 		if (instance == null)
@@ -273,4 +276,15 @@ public class Map : MonoBehaviour
 		} 
 		return neighbours; 
 	}
+
+	public int GetDistanceBetweenTwoBlocks(HexagonBlockBase hex1, HexagonBlockBase hex2)
+	{
+		return Mathf.Max(Mathf.Abs(hex1.coordinates[0] - hex2.coordinates[0]), Mathf.Abs(hex1.coordinates[1] - hex2.coordinates[1]), Mathf.Abs(hex1.coordinates[2] - hex2.coordinates[2]));
+	}
+}
+
+public enum State
+{
+	MoveUnitMode,
+	None
 }

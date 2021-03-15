@@ -53,6 +53,14 @@ public class HexagonBlockBase : MonoBehaviour
 		neighbour_keys.Add(neighbour_sw);
 		neighbour_keys.Add(neighbour_nw);
 	}
+
+	private void OnMouseUpAsButton()
+	{
+		if(Map.Instance.current_state == State.MoveUnitMode)
+		{
+			Map.Instance.unit_to_move.TryMoveTo(this);
+		}
+	}
 }
 
 public enum BlockType
