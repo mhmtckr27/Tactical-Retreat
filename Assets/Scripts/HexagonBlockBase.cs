@@ -6,7 +6,6 @@ using UnityEngine;
 public class HexagonBlockBase : MonoBehaviour
 {
 	[SerializeField] public BlockType block_type;
-	public List<HexagonBlockBase> neighbours;
 	public int[] coordinates = new int[3];
 
 	public List<string> neighbour_keys;

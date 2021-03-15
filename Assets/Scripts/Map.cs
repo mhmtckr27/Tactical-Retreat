@@ -49,7 +49,7 @@ public class Map : MonoBehaviour
 		GenerateMap();
 		DilateMap();
 
-		//Instantiate(peasant, map[41].transform.position, Quaternion.identity);
+		Instantiate(peasant, map_dictionary["0_0_0"].transform.position, Quaternion.identity).GetComponent<UnitBase>().block_under = map_dictionary["0_0_0"];
 	}
 
 
@@ -61,7 +61,6 @@ public class Map : MonoBehaviour
 		HexagonBlockBase initial_hex = map_dictionary["0_0_0"];
 		HexagonBlockBase current_hex = initial_hex;
 
-		int i = 0;
 		int k = 0;
 		while (k < map_width - 1)
 		{
@@ -71,7 +70,6 @@ public class Map : MonoBehaviour
 				map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 				map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
 				current_hex = map_dictionary[current_hex.neighbour_n];
-				i++;
 			}
 			for (int j = 0; j < k + 1; j++)
 			{
@@ -81,7 +79,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_se, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_se].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_se[0], current_hex.coordinates[1] + neighbour_offset_se[1], current_hex.coordinates[2] + neighbour_offset_se[2]);
 					current_hex = map_dictionary[current_hex.neighbour_se];
-					i++;
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -92,7 +89,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_s, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_s].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_s[0], current_hex.coordinates[1] + neighbour_offset_s[1], current_hex.coordinates[2] + neighbour_offset_s[2]);
 					current_hex = map_dictionary[current_hex.neighbour_s];
-					i++;
 				}
 
 			}
@@ -104,7 +100,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_sw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_sw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_sw[0], current_hex.coordinates[1] + neighbour_offset_sw[1], current_hex.coordinates[2] + neighbour_offset_sw[2]);
 					current_hex = map_dictionary[current_hex.neighbour_sw];
-					i++;
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -115,7 +110,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_nw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_nw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_nw[0], current_hex.coordinates[1] + neighbour_offset_nw[1], current_hex.coordinates[2] + neighbour_offset_nw[2]);
 					current_hex = map_dictionary[current_hex.neighbour_nw];
-					i++;
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -126,7 +120,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
 					current_hex = map_dictionary[current_hex.neighbour_n];
-					i++;
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -137,7 +130,6 @@ public class Map : MonoBehaviour
 					map_dictionary.Add(current_hex.neighbour_ne, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
 					map_dictionary[current_hex.neighbour_ne].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_ne[0], current_hex.coordinates[1] + neighbour_offset_ne[1], current_hex.coordinates[2] + neighbour_offset_ne[2]);
 					current_hex = map_dictionary[current_hex.neighbour_ne];
-					i++;
 				}
 				else
 				{
@@ -253,5 +245,32 @@ public class Map : MonoBehaviour
 	private GameObject GetWaterBlock()
 	{
 		return blocks[1].block_prefab;
+	}
+
+	public List<HexagonBlockBase> GetNeighboursWithinDistance(HexagonBlockBase block, int distance) 
+	{ 
+		List<HexagonBlockBase> neighbours = new List<HexagonBlockBase>(); 
+		for (int offset_x = -distance; offset_x <= distance; offset_x++) 
+		{ 
+			int coordinate_x = block.coordinates[0] + offset_x; 
+			for (int offset_y = -distance; offset_y <= distance; offset_y++) 
+			{ 
+				int coordinate_y = block.coordinates[1] + offset_y; 
+				for (int offset_z = -distance; offset_z <= distance; offset_z++) 
+				{ 
+					int coordinate_z = block.coordinates[2] + offset_z; 
+					string key = coordinate_x + "_" + coordinate_y + "_" + coordinate_z; 
+					if (map_dictionary.ContainsKey(key)) 
+					{
+						HexagonBlockBase hex = map_dictionary[key];
+						//if (hex.block_type != BlockType.Water)
+						{
+							neighbours.Add(hex); 
+						}
+					} 
+				} 
+			}
+		} 
+		return neighbours; 
 	}
 }
