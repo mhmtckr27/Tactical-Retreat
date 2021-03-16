@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -205,18 +205,20 @@ public class Map : MonoBehaviour
 
 		for (int i = 0; i < dilate_water_blocks.Count; i++)
 		{
-			GameObject temp = map_dictionary[dilate_water_blocks[i]].gameObject;
+			HexagonBlockBase temp = map_dictionary[dilate_water_blocks[i]];
 			map_dictionary.Remove(dilate_water_blocks[i]);
 			map_dictionary.Add(dilate_water_blocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
-			Destroy(temp);
+			map_dictionary[dilate_water_blocks[i]].SetCoordinates(temp.coordinates[0], temp.coordinates[1], temp.coordinates[2]);
+			Destroy(temp.gameObject);
 		}
 
 		for (int i = 0; i < dilate_ground_blocks.Count; i++)
 		{
-			GameObject temp = map_dictionary[dilate_ground_blocks[i]].gameObject;
+			HexagonBlockBase temp = map_dictionary[dilate_ground_blocks[i]];
 			map_dictionary.Remove(dilate_ground_blocks[i]);
 			map_dictionary.Add(dilate_ground_blocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
-			Destroy(temp);
+			map_dictionary[dilate_ground_blocks[i]].SetCoordinates(temp.coordinates[0], temp.coordinates[1], temp.coordinates[2]);
+			Destroy(temp.gameObject);
 		}
 	}
 
@@ -250,36 +252,61 @@ public class Map : MonoBehaviour
 		return blocks[1].block_prefab;
 	}
 
-	public List<HexagonBlockBase> GetNeighboursWithinDistance(HexagonBlockBase block, int distance) 
+	//this function gets all neighbours within certain distance, no matter if blocked or water block etc.
+	public List<HexagonBlockBase> GetDistantHexagons(HexagonBlockBase block, int distance) 
 	{ 
 		List<HexagonBlockBase> neighbours = new List<HexagonBlockBase>(); 
-		for (int offset_x = -distance; offset_x <= distance; offset_x++) 
-		{ 
-			int coordinate_x = block.coordinates[0] + offset_x; 
-			for (int offset_y = -distance; offset_y <= distance; offset_y++) 
-			{ 
-				int coordinate_y = block.coordinates[1] + offset_y; 
-				for (int offset_z = -distance; offset_z <= distance; offset_z++) 
-				{ 
-					int coordinate_z = block.coordinates[2] + offset_z; 
-					string key = coordinate_x + "_" + coordinate_y + "_" + coordinate_z; 
-					if (map_dictionary.ContainsKey(key)) 
-					{
-						HexagonBlockBase hex = map_dictionary[key];
-						//if (hex.block_type != BlockType.Water)
-						{
-							neighbours.Add(hex); 
-						}
-					} 
-				} 
+		for(int x = -distance; x < distance + 1; x++)
+		{
+			int val = Mathf.Max(-distance, -x - distance);
+			int val2 = Mathf.Min(distance, -x + distance);
+			for(int y = val; y < val2 + 1; y++)
+			{
+				int z = -x - y;
+				string key = (x + block.coordinates[0]) + "_" + (y + block.coordinates[1]) + "_" + (z + block.coordinates[2]);
+				neighbours.Add(map_dictionary[key]);
 			}
-		} 
+		}
 		return neighbours; 
+	}
+
+	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
+	public List<HexagonBlockBase> GetReachableHexagons(HexagonBlockBase start_hexagon, int distance)
+	{
+		List<HexagonBlockBase> reachable_hexagons = new List<HexagonBlockBase>();
+		reachable_hexagons.Add(start_hexagon);
+		List<List<HexagonBlockBase>> visited_hexagons = new List<List<HexagonBlockBase>>();
+		visited_hexagons.Add(new List<HexagonBlockBase>());
+		visited_hexagons[0].Add(start_hexagon);
+		
+		for(int i = 1; i < distance + 1; i++)
+		{
+			visited_hexagons.Add(new List<HexagonBlockBase>());
+			foreach(HexagonBlockBase hex in visited_hexagons[i-1])
+			{
+				for(int direction = 0; direction < 6; direction++)
+				{
+					HexagonBlockBase neighbour = GetNeighbourInDirection(hex, direction);
+					//gonna replace second condition in future with a parameter to make it generic.
+					if (!reachable_hexagons.Contains(neighbour) && neighbour.block_type != BlockType.Water)
+					{
+						reachable_hexagons.Add(neighbour);
+						visited_hexagons[i].Add(neighbour);
+					}
+				}
+			}
+		}
+		return reachable_hexagons;
 	}
 
 	public int GetDistanceBetweenTwoBlocks(HexagonBlockBase hex1, HexagonBlockBase hex2)
 	{
 		return Mathf.Max(Mathf.Abs(hex1.coordinates[0] - hex2.coordinates[0]), Mathf.Abs(hex1.coordinates[1] - hex2.coordinates[1]), Mathf.Abs(hex1.coordinates[2] - hex2.coordinates[2]));
+	}
+
+	public HexagonBlockBase GetNeighbourInDirection(HexagonBlockBase hexagon, int direction)
+	{
+		return map_dictionary[hexagon.neighbour_keys[direction]];
 	}
 }
 

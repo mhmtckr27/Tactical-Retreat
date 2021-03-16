@@ -57,7 +57,8 @@ public class UnitBase : MonoBehaviour
 		{
 			neighbour.ToggleOutlineVisibility(false);
 		}
-		neighbours_within_range = Map.Instance.GetNeighboursWithinDistance(block_under, remaining_moves_this_turn);
+		neighbours_within_range = Map.Instance.GetReachableHexagons(block_under, remaining_moves_this_turn);
+		//neighbours_within_range = Map.Instance.GetNeighboursWithinDistance(block_under, remaining_moves_this_turn);
 		if (is_in_move_mode && (remaining_moves_this_turn > 0))
 		{
 			foreach (HexagonBlockBase neighbour in neighbours_within_range)
