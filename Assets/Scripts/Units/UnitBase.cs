@@ -7,11 +7,37 @@ public class UnitBase : MonoBehaviour
 {
 	[SerializeField] private UnitType unit_type;
 	[SerializeField] private int max_moves_each_turn;
-	public HexagonBlockBase block_under;
+	private HexagonBlockBase block_under;
 
 	private bool is_in_move_mode = false;
+	public bool Is_in_move_mode
+	{
+		get => is_in_move_mode;
+		set
+		{
+			is_in_move_mode = value;
+			UpdateOutlines();
+		}
+	}
+
 	private int remaining_moves_this_turn;
 	List<HexagonBlockBase> neighbours_within_range = new List<HexagonBlockBase>();
+
+	public HexagonBlockBase Block_under 
+	{ 
+		get => block_under; 
+		set 
+		{
+			if(block_under != null)
+			{
+				block_under.occupier_unit = null;
+			}
+			block_under = value;
+			block_under.occupier_unit = this;
+		} 
+	}
+
+
 	private void Awake()
 	{
 		remaining_moves_this_turn = max_moves_each_turn;
@@ -19,16 +45,14 @@ public class UnitBase : MonoBehaviour
 	
 	private void OnMouseUpAsButton()
 	{
-		is_in_move_mode = !is_in_move_mode;
-		if (is_in_move_mode)
+		Is_in_move_mode = !Is_in_move_mode;
+		if (Is_in_move_mode)
 		{
-			Map.Instance.current_state = State.MoveUnitMode;
-			Map.Instance.unit_to_move = this;
+			EnterMoveMode();
 		}
 		else
 		{
-			Map.Instance.current_state = State.None;
-			Map.Instance.unit_to_move = null;
+			ExitMoveMode();
 		}
 		UpdateOutlines();
 	}
@@ -42,10 +66,9 @@ public class UnitBase : MonoBehaviour
 		else
 		{
 			transform.position = hex.transform.position;
-			remaining_moves_this_turn -= Map.Instance.GetDistanceBetweenTwoBlocks(hex, block_under);
+			remaining_moves_this_turn -= Map.Instance.GetDistanceBetweenTwoBlocks(hex, Block_under);
 			Debug.Log(remaining_moves_this_turn);
-			block_under = hex;
-			
+			Block_under = hex;
 			UpdateOutlines();
 			return true;
 		}
@@ -53,19 +76,43 @@ public class UnitBase : MonoBehaviour
 
 	private void UpdateOutlines()
 	{
-		foreach (HexagonBlockBase neighbour in neighbours_within_range)
+		DisableOutlines();
+		if (Is_in_move_mode)
 		{
-			neighbour.ToggleOutlineVisibility(false);
+			neighbours_within_range = Map.Instance.GetReachableHexagons(Block_under, remaining_moves_this_turn);
+			EnableOutlines();
 		}
-		neighbours_within_range = Map.Instance.GetReachableHexagons(block_under, remaining_moves_this_turn);
-		//neighbours_within_range = Map.Instance.GetNeighboursWithinDistance(block_under, remaining_moves_this_turn);
-		if (is_in_move_mode && (remaining_moves_this_turn > 0))
+	}
+
+	public void EnableOutlines()
+	{
+		if (Is_in_move_mode && (remaining_moves_this_turn > 0))
 		{
 			foreach (HexagonBlockBase neighbour in neighbours_within_range)
 			{
 				neighbour.ToggleOutlineVisibility(true);
 			}
 		}
+	}
+
+	public void DisableOutlines()
+	{
+		foreach (HexagonBlockBase neighbour in neighbours_within_range)
+		{
+			neighbour.ToggleOutlineVisibility(false);
+		}
+	}
+
+	public void EnterMoveMode()
+	{
+		Map.Instance.current_state = State.MoveUnitMode;
+		Map.Instance.Unit_to_move = this;
+	}
+
+	public void ExitMoveMode()
+	{
+		Map.Instance.current_state = State.None;
+		Map.Instance.Unit_to_move = null;
 	}
 }
 

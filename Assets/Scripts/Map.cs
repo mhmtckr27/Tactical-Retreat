@@ -36,8 +36,21 @@ public class Map : MonoBehaviour
 		}
 	}
 
+	public UnitBase Unit_to_move
+	{
+		get => unit_to_move;
+		set
+		{
+			if (unit_to_move)
+			{
+				unit_to_move.Is_in_move_mode = false;
+			}
+			unit_to_move = value;
+		}
+	}
+
 	public State current_state = State.None;
-	public UnitBase unit_to_move;
+	private UnitBase unit_to_move;
 
 	private void Awake()
 	{
@@ -52,7 +65,9 @@ public class Map : MonoBehaviour
 		GenerateMap();
 		DilateMap();
 
-		Instantiate(peasant, map_dictionary["0_0_0"].transform.position, Quaternion.identity).GetComponent<UnitBase>().block_under = map_dictionary["0_0_0"];
+		Instantiate(peasant, map_dictionary["0_0_0"].transform.position, Quaternion.identity).GetComponent<UnitBase>().Block_under = map_dictionary["0_0_0"];
+		Instantiate(peasant, map_dictionary["1_0_-1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().Block_under = map_dictionary["1_0_-1"];
+		Instantiate(peasant, map_dictionary["-1_0_1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().Block_under = map_dictionary["-1_0_1"];
 	}
 
 
@@ -288,7 +303,7 @@ public class Map : MonoBehaviour
 				{
 					HexagonBlockBase neighbour = GetNeighbourInDirection(hex, direction);
 					//gonna replace second condition in future with a parameter to make it generic.
-					if (!reachable_hexagons.Contains(neighbour) && neighbour.block_type != BlockType.Water)
+					if (!reachable_hexagons.Contains(neighbour) && !neighbour.occupier_unit && neighbour.block_type != BlockType.Water)
 					{
 						reachable_hexagons.Add(neighbour);
 						visited_hexagons[i].Add(neighbour);

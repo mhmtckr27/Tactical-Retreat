@@ -18,6 +18,8 @@ public class HexagonBlockBase : MonoBehaviour
 
 	private Outline outline;
 
+	public UnitBase occupier_unit;
+
 	private void Awake()
 	{
 		outline = GetComponent<Outline>();
@@ -58,7 +60,7 @@ public class HexagonBlockBase : MonoBehaviour
 	{
 		if(Map.Instance.current_state == State.MoveUnitMode)
 		{
-			Map.Instance.unit_to_move.TryMoveTo(this);
+			Map.Instance.Unit_to_move.TryMoveTo(this);
 		}
 	}
 }

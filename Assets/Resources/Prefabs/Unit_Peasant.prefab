@@ -116,4 +116,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unit_type: 0
-  max_moves_each_turn: 3
+  max_moves_each_turn: 4
