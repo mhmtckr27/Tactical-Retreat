@@ -117,3 +117,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unit_type: 0
   max_moves_each_turn: 4
+  blocked_hexagon_types: 01000000

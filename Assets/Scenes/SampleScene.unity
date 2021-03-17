@@ -377,7 +377,7 @@ MonoBehaviour:
   blocks:
   - block_prefab: {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a,
       type: 3}
-    creation_probability: 0.7
+    creation_probability: 0.5
   - block_prefab: {fileID: 5810350800546516640, guid: 85fc9e19538e73142b0bea32c1bc201e,
       type: 3}
     creation_probability: 0.7
@@ -391,7 +391,6 @@ MonoBehaviour:
   neighbour_offset_sw: ffffffff0000000001000000
   neighbour_offset_nw: ffffffff0100000000000000
   current_state: 1
-  unit_to_move: {fileID: 0}
 --- !u!4 &1422771484
 Transform:
   m_ObjectHideFlags: 0
