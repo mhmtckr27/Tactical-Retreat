@@ -25,7 +25,7 @@ public class Map : MonoBehaviour
 		public float creation_probability;
 	}
 
-	private Dictionary<string, HexagonBlockBase> map_dictionary = new Dictionary<string, HexagonBlockBase>();
+	public Dictionary<string, HexagonBlockBase> map_dictionary = new Dictionary<string, HexagonBlockBase>();
 
 	private static Map instance;
 	public static Map Instance
@@ -69,7 +69,6 @@ public class Map : MonoBehaviour
 		Instantiate(peasant, map_dictionary["1_0_-1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().Block_under = map_dictionary["1_0_-1"];
 		Instantiate(peasant, map_dictionary["-1_0_1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().Block_under = map_dictionary["-1_0_1"];
 	}
-
 
 	private void GenerateMap()
 	{
@@ -322,6 +321,68 @@ public class Map : MonoBehaviour
 	public HexagonBlockBase GetNeighbourInDirection(HexagonBlockBase hexagon, int direction)
 	{
 		return map_dictionary[hexagon.neighbour_keys[direction]];
+	}
+
+	public List<HexagonBlockBase> GetImmediateNeighbours(HexagonBlockBase hexagon)
+	{
+		List<HexagonBlockBase> immediate_neighbours = new List<HexagonBlockBase>();
+		for(int i = 0; i < 6; i++)
+		{
+			if (map_dictionary.ContainsKey(hexagon.neighbour_keys[i]) && map_dictionary[hexagon.neighbour_keys[i]].block_type != BlockType.Water)
+			{
+				immediate_neighbours.Add(map_dictionary[hexagon.neighbour_keys[i]]);
+			}
+		}
+		return immediate_neighbours;
+	}
+
+	public List<HexagonBlockBase> AStar(HexagonBlockBase from_hexagon, HexagonBlockBase to_hexagon)
+	{
+		PriorityQueue<HexagonBlockBase> frontier = new PriorityQueue<HexagonBlockBase>(true);
+		frontier.Enqueue(0, from_hexagon);
+		Dictionary<HexagonBlockBase, HexagonBlockBase> came_from = new Dictionary<HexagonBlockBase, HexagonBlockBase>();
+		Dictionary<HexagonBlockBase, int> cost_so_far = new Dictionary<HexagonBlockBase, int>();
+		came_from[from_hexagon] = null;
+		cost_so_far[from_hexagon] = 0;
+		while(frontier.Count != 0)
+		{
+			HexagonBlockBase current_hexagon = frontier.Dequeue();
+			if(current_hexagon == to_hexagon)
+			{
+				break;
+			}
+			foreach(HexagonBlockBase next_hexagon in GetReachableHexagons(current_hexagon, 1))
+			{
+				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
+				int new_cost = cost_so_far[current_hexagon] + 1;
+				if(!cost_so_far.ContainsKey(next_hexagon) || (new_cost < cost_so_far[next_hexagon]))
+				{
+					cost_so_far[next_hexagon] = new_cost;
+					int priority = new_cost + GetDistanceBetweenTwoBlocks(to_hexagon, next_hexagon);
+					frontier.Enqueue(priority, next_hexagon);
+					came_from[next_hexagon] = current_hexagon;
+				}
+			}
+		}
+		List<HexagonBlockBase> path = new List<HexagonBlockBase>();
+		HexagonBlockBase current_hex = to_hexagon;
+
+		while(current_hex != from_hexagon)
+		{
+			path.Insert(0, current_hex);
+			if (!came_from.ContainsKey(current_hex))
+			{
+				//path does not exist
+				return null;
+			}
+			current_hex = came_from[current_hex];
+		}
+
+		/*foreach(HexagonBlockBase hex in path)
+		{
+			hex.GetComponent<Renderer>().materials[1].color = Color.green;
+		}*/
+		return path;
 	}
 }
 

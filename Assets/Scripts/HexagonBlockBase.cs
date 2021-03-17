@@ -62,6 +62,10 @@ public class HexagonBlockBase : MonoBehaviour
 		{
 			Map.Instance.Unit_to_move.TryMoveTo(this);
 		}
+		else
+		{
+			Map.Instance.AStar(Map.Instance.map_dictionary["0_0_0"], this);
+		}
 	}
 }
 

@@ -65,10 +65,15 @@ public class UnitBase : MonoBehaviour
 		}
 		else
 		{
+			List<HexagonBlockBase> path = Map.Instance.AStar(Block_under, hex);
 			transform.position = hex.transform.position;
-			remaining_moves_this_turn -= Map.Instance.GetDistanceBetweenTwoBlocks(hex, Block_under);
+			remaining_moves_this_turn -= path.Count;
 			Debug.Log(remaining_moves_this_turn);
 			Block_under = hex;
+			if(remaining_moves_this_turn == 0)
+			{
+				ExitMoveMode();
+			}
 			UpdateOutlines();
 			return true;
 		}
