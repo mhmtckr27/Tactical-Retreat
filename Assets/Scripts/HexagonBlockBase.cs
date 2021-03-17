@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class HexagonBlockBase : MonoBehaviour
 {
-	[SerializeField] public HexagonType block_type;
+	[SerializeField] public Terrain block_type;
 	public int[] coordinates = new int[3];
 
 	public List<string> neighbour_keys;
@@ -69,7 +69,7 @@ public class HexagonBlockBase : MonoBehaviour
 	}
 }
 
-public enum HexagonType
+public enum Terrain
 {
 	Ground,
 	Water

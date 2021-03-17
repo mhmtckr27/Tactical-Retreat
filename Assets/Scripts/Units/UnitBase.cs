@@ -8,7 +8,7 @@ public class UnitBase : MonoBehaviour
 	[SerializeField] private UnitType unit_type;
 	[SerializeField] private int max_moves_each_turn;
 	private HexagonBlockBase block_under;
-	public List<HexagonType> blocked_hexagon_types;
+	public List<Terrain> unreachable_terrains;
 
 	private bool is_in_move_mode = false;
 	public bool Is_in_move_mode
@@ -65,7 +65,7 @@ public class UnitBase : MonoBehaviour
 		}
 		else
 		{
-			List<HexagonBlockBase> path = Map.Instance.AStar(Block_under, hex, blocked_hexagon_types);
+			List<HexagonBlockBase> path = Map.Instance.AStar(Block_under, hex, unreachable_terrains);
 			remaining_moves_this_turn -= path.Count - 1;
 			transform.position = hex.transform.position;
 			Block_under = hex;
@@ -83,7 +83,7 @@ public class UnitBase : MonoBehaviour
 		DisableOutlines();
 		if (Is_in_move_mode)
 		{
-			neighbours_within_range = Map.Instance.GetReachableHexagons(Block_under, remaining_moves_this_turn, blocked_hexagon_types);
+			neighbours_within_range = Map.Instance.GetReachableHexagons(Block_under, remaining_moves_this_turn, unreachable_terrains);
 			EnableOutlines();
 		}
 	}

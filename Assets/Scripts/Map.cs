@@ -165,13 +165,13 @@ public class Map : MonoBehaviour
 		foreach (KeyValuePair<string, HexagonBlockBase> keyValuePair in map_dictionary)
 		{
 			bool must_dilate = true;
-			if (keyValuePair.Value.block_type == HexagonType.Water)
+			if (keyValuePair.Value.block_type == Terrain.Water)
 			{
 				for(int j = 0; j < 6; j++)
 				{
 					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
 					{
-						if(map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type == HexagonType.Water)
+						if(map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type == Terrain.Water)
 						{
 							must_dilate = false;
 						}
@@ -196,7 +196,7 @@ public class Map : MonoBehaviour
 				{
 					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
 					{
-						if (map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type != HexagonType.Water)
+						if (map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type != Terrain.Water)
 						{
 							must_dilate = false;
 						}
@@ -257,7 +257,7 @@ public class Map : MonoBehaviour
 		do
 		{
 			temp_block = GetRandomBlock();
-		} while (temp_block.GetComponent<HexagonBlockBase>().block_type == HexagonType.Water);
+		} while (temp_block.GetComponent<HexagonBlockBase>().block_type == Terrain.Water);
 		return temp_block;
 	}
 
@@ -285,7 +285,7 @@ public class Map : MonoBehaviour
 	}
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
-	public List<HexagonBlockBase> GetReachableHexagons(HexagonBlockBase start_hexagon, int distance, List<HexagonType> blocked_hexagon_types)
+	public List<HexagonBlockBase> GetReachableHexagons(HexagonBlockBase start_hexagon, int distance, List<Terrain> blocked_hexagon_types)
 	{
 		List<HexagonBlockBase> reachable_hexagons = new List<HexagonBlockBase>();
 		reachable_hexagons.Add(start_hexagon);
@@ -323,7 +323,7 @@ public class Map : MonoBehaviour
 		return map_dictionary[hexagon.neighbour_keys[direction]];
 	}
 
-	public List<HexagonBlockBase> AStar(HexagonBlockBase from_hexagon, HexagonBlockBase to_hexagon, List<HexagonType> blocked_hexagon_types)
+	public List<HexagonBlockBase> AStar(HexagonBlockBase from_hexagon, HexagonBlockBase to_hexagon, List<Terrain> unreachable_terrains)
 	{
 		PriorityQueue<HexagonBlockBase> frontier = new PriorityQueue<HexagonBlockBase>(true);
 		frontier.Enqueue(0, from_hexagon);
@@ -338,7 +338,7 @@ public class Map : MonoBehaviour
 			{
 				break;
 			}
-			foreach(HexagonBlockBase next_hexagon in GetReachableHexagons(current_hexagon, 1, blocked_hexagon_types))
+			foreach(HexagonBlockBase next_hexagon in GetReachableHexagons(current_hexagon, 1, unreachable_terrains))
 			{
 				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
 				int new_cost = cost_so_far[current_hexagon] + 1;
