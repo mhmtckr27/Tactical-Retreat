@@ -25,7 +25,7 @@ public class Map : MonoBehaviour
 		public float creation_probability;
 	}
 
-	public Dictionary<string, HexagonBlockBase> map_dictionary = new Dictionary<string, HexagonBlockBase>();
+	public Dictionary<string, TerrainHexagon> map_dictionary = new Dictionary<string, TerrainHexagon>();
 
 	private static Map instance;
 	public static Map Instance
@@ -73,10 +73,10 @@ public class Map : MonoBehaviour
 	private void GenerateMap()
 	{
 		string coordinate_key = 0 + "_" + 0 + "_" + 0;
-		map_dictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+		map_dictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 		map_dictionary["0_0_0"].SetCoordinates(0, 0, 0);
-		HexagonBlockBase initial_hex = map_dictionary["0_0_0"];
-		HexagonBlockBase current_hex = initial_hex;
+		TerrainHexagon initial_hex = map_dictionary["0_0_0"];
+		TerrainHexagon current_hex = initial_hex;
 
 		int k = 0;
 		while (k < map_width - 1)
@@ -84,7 +84,7 @@ public class Map : MonoBehaviour
 			//north neighbour
 			if (!map_dictionary.ContainsKey(current_hex.neighbour_n))
 			{
-				map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+				map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 				map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
 				current_hex = map_dictionary[current_hex.neighbour_n];
 			}
@@ -93,7 +93,7 @@ public class Map : MonoBehaviour
 				//south-east neighbour		
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_se))
 				{
-					map_dictionary.Add(current_hex.neighbour_se, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_se, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_se].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_se[0], current_hex.coordinates[1] + neighbour_offset_se[1], current_hex.coordinates[2] + neighbour_offset_se[2]);
 					current_hex = map_dictionary[current_hex.neighbour_se];
 				}
@@ -103,7 +103,7 @@ public class Map : MonoBehaviour
 				//south neighbour
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_s))
 				{
-					map_dictionary.Add(current_hex.neighbour_s, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_s, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_s].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_s[0], current_hex.coordinates[1] + neighbour_offset_s[1], current_hex.coordinates[2] + neighbour_offset_s[2]);
 					current_hex = map_dictionary[current_hex.neighbour_s];
 				}
@@ -114,7 +114,7 @@ public class Map : MonoBehaviour
 				//south-west neighbour
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_sw))
 				{
-					map_dictionary.Add(current_hex.neighbour_sw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_sw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(-block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_sw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_sw[0], current_hex.coordinates[1] + neighbour_offset_sw[1], current_hex.coordinates[2] + neighbour_offset_sw[2]);
 					current_hex = map_dictionary[current_hex.neighbour_sw];
 				}
@@ -124,7 +124,7 @@ public class Map : MonoBehaviour
 				//north-west neighbour
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_nw))
 				{
-					map_dictionary.Add(current_hex.neighbour_nw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_nw, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, block_offset_z), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_nw].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_nw[0], current_hex.coordinates[1] + neighbour_offset_nw[1], current_hex.coordinates[2] + neighbour_offset_nw[2]);
 					current_hex = map_dictionary[current_hex.neighbour_nw];
 				}
@@ -134,7 +134,7 @@ public class Map : MonoBehaviour
 				//north neighbour
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_n))
 				{
-					map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_n, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_n].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_n[0], current_hex.coordinates[1] + neighbour_offset_n[1], current_hex.coordinates[2] + neighbour_offset_n[2]);
 					current_hex = map_dictionary[current_hex.neighbour_n];
 				}
@@ -144,7 +144,7 @@ public class Map : MonoBehaviour
 				//north-east neighbour
 				if (!map_dictionary.ContainsKey(current_hex.neighbour_ne))
 				{
-					map_dictionary.Add(current_hex.neighbour_ne, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+					map_dictionary.Add(current_hex.neighbour_ne, Instantiate(GetRandomBlock(), current_hex.transform.position + new Vector3(block_height / 2, 0, -block_offset_z), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					map_dictionary[current_hex.neighbour_ne].SetCoordinates(current_hex.coordinates[0] + neighbour_offset_ne[0], current_hex.coordinates[1] + neighbour_offset_ne[1], current_hex.coordinates[2] + neighbour_offset_ne[2]);
 					current_hex = map_dictionary[current_hex.neighbour_ne];
 				}
@@ -162,16 +162,16 @@ public class Map : MonoBehaviour
 	{
 		List<string> dilate_water_blocks = new List<string>();
 		List<string> dilate_ground_blocks = new List<string>();
-		foreach (KeyValuePair<string, HexagonBlockBase> keyValuePair in map_dictionary)
+		foreach (KeyValuePair<string, TerrainHexagon> keyValuePair in map_dictionary)
 		{
 			bool must_dilate = true;
-			if (keyValuePair.Value.block_type == Terrain.Water)
+			if (keyValuePair.Value.terrain_type == TerrainType.Water)
 			{
 				for(int j = 0; j < 6; j++)
 				{
 					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
 					{
-						if(map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type == Terrain.Water)
+						if(map_dictionary[keyValuePair.Value.neighbour_keys[j]].terrain_type == TerrainType.Water)
 						{
 							must_dilate = false;
 						}
@@ -196,7 +196,7 @@ public class Map : MonoBehaviour
 				{
 					if (map_dictionary.ContainsKey(keyValuePair.Value.neighbour_keys[j]))
 					{
-						if (map_dictionary[keyValuePair.Value.neighbour_keys[j]].block_type != Terrain.Water)
+						if (map_dictionary[keyValuePair.Value.neighbour_keys[j]].terrain_type != TerrainType.Water)
 						{
 							must_dilate = false;
 						}
@@ -219,18 +219,18 @@ public class Map : MonoBehaviour
 
 		for (int i = 0; i < dilate_water_blocks.Count; i++)
 		{
-			HexagonBlockBase temp = map_dictionary[dilate_water_blocks[i]];
+			TerrainHexagon temp = map_dictionary[dilate_water_blocks[i]];
 			map_dictionary.Remove(dilate_water_blocks[i]);
-			map_dictionary.Add(dilate_water_blocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+			map_dictionary.Add(dilate_water_blocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 			map_dictionary[dilate_water_blocks[i]].SetCoordinates(temp.coordinates[0], temp.coordinates[1], temp.coordinates[2]);
 			Destroy(temp.gameObject);
 		}
 
 		for (int i = 0; i < dilate_ground_blocks.Count; i++)
 		{
-			HexagonBlockBase temp = map_dictionary[dilate_ground_blocks[i]];
+			TerrainHexagon temp = map_dictionary[dilate_ground_blocks[i]];
 			map_dictionary.Remove(dilate_ground_blocks[i]);
-			map_dictionary.Add(dilate_ground_blocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<HexagonBlockBase>());
+			map_dictionary.Add(dilate_ground_blocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 			map_dictionary[dilate_ground_blocks[i]].SetCoordinates(temp.coordinates[0], temp.coordinates[1], temp.coordinates[2]);
 			Destroy(temp.gameObject);
 		}
@@ -257,7 +257,7 @@ public class Map : MonoBehaviour
 		do
 		{
 			temp_block = GetRandomBlock();
-		} while (temp_block.GetComponent<HexagonBlockBase>().block_type == Terrain.Water);
+		} while (temp_block.GetComponent<TerrainHexagon>().terrain_type == TerrainType.Water);
 		return temp_block;
 	}
 
@@ -267,9 +267,9 @@ public class Map : MonoBehaviour
 	}
 
 	//this function gets all neighbours within certain distance, no matter if blocked or water block etc.
-	public List<HexagonBlockBase> GetDistantHexagons(HexagonBlockBase block, int distance) 
+	public List<TerrainHexagon> GetDistantHexagons(TerrainHexagon block, int distance) 
 	{ 
-		List<HexagonBlockBase> neighbours = new List<HexagonBlockBase>(); 
+		List<TerrainHexagon> neighbours = new List<TerrainHexagon>(); 
 		for(int x = -distance; x < distance + 1; x++)
 		{
 			int val = Mathf.Max(-distance, -x - distance);
@@ -285,27 +285,35 @@ public class Map : MonoBehaviour
 	}
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
-	public List<HexagonBlockBase> GetReachableHexagons(HexagonBlockBase start_hexagon, int distance, List<Terrain> blocked_hexagon_types)
+	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start_hexagon, int distance, List<TerrainType> blocked_hexagon_types, List<TerrainHexagon> occupied_hexagons)
 	{
-		List<HexagonBlockBase> reachable_hexagons = new List<HexagonBlockBase>();
+		occupied_hexagons.Clear();
+		List<TerrainHexagon> reachable_hexagons = new List<TerrainHexagon>();
 		reachable_hexagons.Add(start_hexagon);
-		List<List<HexagonBlockBase>> visited_hexagons = new List<List<HexagonBlockBase>>();
-		visited_hexagons.Add(new List<HexagonBlockBase>());
+		List<List<TerrainHexagon>> visited_hexagons = new List<List<TerrainHexagon>>();
+		visited_hexagons.Add(new List<TerrainHexagon>());
 		visited_hexagons[0].Add(start_hexagon);
 		
 		for(int i = 1; i < distance + 1; i++)
 		{
-			visited_hexagons.Add(new List<HexagonBlockBase>());
-			foreach(HexagonBlockBase hex in visited_hexagons[i-1])
+			visited_hexagons.Add(new List<TerrainHexagon>());
+			foreach(TerrainHexagon hex in visited_hexagons[i-1])
 			{
 				for(int direction = 0; direction < 6; direction++)
 				{
-					HexagonBlockBase neighbour = GetNeighbourInDirection(hex, direction);
+					TerrainHexagon neighbour = GetNeighbourInDirection(hex, direction);
 					//gonna replace second condition in future with a parameter to make it generic.
-					if (!reachable_hexagons.Contains(neighbour) && !neighbour.occupier_unit && !blocked_hexagon_types.Contains(neighbour.block_type))
+					if (!reachable_hexagons.Contains(neighbour) && !blocked_hexagon_types.Contains(neighbour.terrain_type))
 					{
-						reachable_hexagons.Add(neighbour);
-						visited_hexagons[i].Add(neighbour);
+						if (!neighbour.occupier_unit)
+						{
+							reachable_hexagons.Add(neighbour);
+							visited_hexagons[i].Add(neighbour);
+						}
+						else if((occupied_hexagons != null) && !occupied_hexagons.Contains(neighbour))
+						{
+							occupied_hexagons.Add(neighbour);
+						}
 					}
 				}
 			}
@@ -313,32 +321,32 @@ public class Map : MonoBehaviour
 		return reachable_hexagons;
 	}
 
-	public int GetDistanceBetweenTwoBlocks(HexagonBlockBase hex1, HexagonBlockBase hex2)
+	public int GetDistanceBetweenTwoBlocks(TerrainHexagon hex1, TerrainHexagon hex2)
 	{
 		return Mathf.Max(Mathf.Abs(hex1.coordinates[0] - hex2.coordinates[0]), Mathf.Abs(hex1.coordinates[1] - hex2.coordinates[1]), Mathf.Abs(hex1.coordinates[2] - hex2.coordinates[2]));
 	}
 
-	public HexagonBlockBase GetNeighbourInDirection(HexagonBlockBase hexagon, int direction)
+	public TerrainHexagon GetNeighbourInDirection(TerrainHexagon hexagon, int direction)
 	{
 		return map_dictionary[hexagon.neighbour_keys[direction]];
 	}
 
-	public List<HexagonBlockBase> AStar(HexagonBlockBase from_hexagon, HexagonBlockBase to_hexagon, List<Terrain> unreachable_terrains)
+	public List<TerrainHexagon> AStar(TerrainHexagon from_hexagon, TerrainHexagon to_hexagon, List<TerrainType> unreachable_terrains)
 	{
-		PriorityQueue<HexagonBlockBase> frontier = new PriorityQueue<HexagonBlockBase>(true);
+		PriorityQueue<TerrainHexagon> frontier = new PriorityQueue<TerrainHexagon>(true);
 		frontier.Enqueue(0, from_hexagon);
-		Dictionary<HexagonBlockBase, HexagonBlockBase> came_from = new Dictionary<HexagonBlockBase, HexagonBlockBase>();
-		Dictionary<HexagonBlockBase, int> cost_so_far = new Dictionary<HexagonBlockBase, int>();
+		Dictionary<TerrainHexagon, TerrainHexagon> came_from = new Dictionary<TerrainHexagon, TerrainHexagon>();
+		Dictionary<TerrainHexagon, int> cost_so_far = new Dictionary<TerrainHexagon, int>();
 		came_from[from_hexagon] = null;
 		cost_so_far[from_hexagon] = 0;
 		while(frontier.Count != 0)
 		{
-			HexagonBlockBase current_hexagon = frontier.Dequeue();
+			TerrainHexagon current_hexagon = frontier.Dequeue();
 			if(current_hexagon == to_hexagon)
 			{
 				break;
 			}
-			foreach(HexagonBlockBase next_hexagon in GetReachableHexagons(current_hexagon, 1, unreachable_terrains))
+			foreach(TerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, unreachable_terrains, null))
 			{
 				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
 				int new_cost = cost_so_far[current_hexagon] + 1;
@@ -351,8 +359,8 @@ public class Map : MonoBehaviour
 				}
 			}
 		}
-		List<HexagonBlockBase> path = new List<HexagonBlockBase>();
-		HexagonBlockBase current_hex = to_hexagon;
+		List<TerrainHexagon> path = new List<TerrainHexagon>();
+		TerrainHexagon current_hex = to_hexagon;
 
 		while(current_hex != from_hexagon)
 		{

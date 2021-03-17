@@ -7,8 +7,8 @@ public class UnitBase : MonoBehaviour
 {
 	[SerializeField] private UnitType unit_type;
 	[SerializeField] private int max_moves_each_turn;
-	private HexagonBlockBase block_under;
-	public List<Terrain> unreachable_terrains;
+	private TerrainHexagon block_under;
+	public List<TerrainType> unreachable_terrains;
 
 	private bool is_in_move_mode = false;
 	public bool Is_in_move_mode
@@ -22,9 +22,9 @@ public class UnitBase : MonoBehaviour
 	}
 
 	private int remaining_moves_this_turn;
-	List<HexagonBlockBase> neighbours_within_range = new List<HexagonBlockBase>();
-
-	public HexagonBlockBase Block_under 
+	List<TerrainHexagon> neighbours_within_range = new List<TerrainHexagon>();
+	List<TerrainHexagon> occupied_neighbours = new List<TerrainHexagon>();
+	public TerrainHexagon Block_under 
 	{ 
 		get => block_under; 
 		set 
@@ -42,6 +42,7 @@ public class UnitBase : MonoBehaviour
 	private void Awake()
 	{
 		remaining_moves_this_turn = max_moves_each_turn;
+		transform.eulerAngles = new Vector3(0, -90, 0);
 	}
 	
 	private void OnMouseUpAsButton()
@@ -57,7 +58,7 @@ public class UnitBase : MonoBehaviour
 		}
 		UpdateOutlines();
 	}
-	public bool TryMoveTo(HexagonBlockBase hex)
+	public bool TryMoveTo(TerrainHexagon hex)
 	{
 		if (!neighbours_within_range.Contains(hex))
 		{
@@ -65,7 +66,7 @@ public class UnitBase : MonoBehaviour
 		}
 		else
 		{
-			List<HexagonBlockBase> path = Map.Instance.AStar(Block_under, hex, unreachable_terrains);
+			List<TerrainHexagon> path = Map.Instance.AStar(Block_under, hex, unreachable_terrains);
 			remaining_moves_this_turn -= path.Count - 1;
 			transform.position = hex.transform.position;
 			Block_under = hex;
@@ -83,7 +84,8 @@ public class UnitBase : MonoBehaviour
 		DisableOutlines();
 		if (Is_in_move_mode)
 		{
-			neighbours_within_range = Map.Instance.GetReachableHexagons(Block_under, remaining_moves_this_turn, unreachable_terrains);
+			neighbours_within_range = Map.Instance.GetReachableHexagons(Block_under, remaining_moves_this_turn, unreachable_terrains, occupied_neighbours);
+			Debug.Log(occupied_neighbours.Count);
 			EnableOutlines();
 		}
 	}
@@ -92,18 +94,26 @@ public class UnitBase : MonoBehaviour
 	{
 		if (Is_in_move_mode && (remaining_moves_this_turn > 0))
 		{
-			foreach (HexagonBlockBase neighbour in neighbours_within_range)
+			foreach (TerrainHexagon neighbour in neighbours_within_range)
 			{
-				neighbour.ToggleOutlineVisibility(true);
+				neighbour.ToggleOutlineVisibility(0, true);
+			}
+			foreach(TerrainHexagon occupied_neighbour in occupied_neighbours)
+			{
+				occupied_neighbour.ToggleOutlineVisibility(1, true);
 			}
 		}
 	}
 
 	public void DisableOutlines()
 	{
-		foreach (HexagonBlockBase neighbour in neighbours_within_range)
+		foreach (TerrainHexagon neighbour in neighbours_within_range)
 		{
-			neighbour.ToggleOutlineVisibility(false);
+			neighbour.ToggleOutlineVisibility(0, false);
+		}
+		foreach(TerrainHexagon occupied_neighbour in neighbours_within_range)
+		{
+			occupied_neighbour.ToggleOutlineVisibility(1, false);
 		}
 	}
 

@@ -3,9 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HexagonBlockBase : MonoBehaviour
+public class TerrainHexagon : MonoBehaviour
 {
-	[SerializeField] public Terrain block_type;
+	[SerializeField] public TerrainType terrain_type;
+	private GameObject[] outlines = new GameObject[2];
 	public int[] coordinates = new int[3];
 
 	public List<string> neighbour_keys;
@@ -16,18 +17,18 @@ public class HexagonBlockBase : MonoBehaviour
 	public string neighbour_sw;
 	public string neighbour_nw;
 
-	private Outline outline;
-
 	public UnitBase occupier_unit;
 
 	private void Awake()
 	{
-		outline = GetComponent<Outline>();
+		outlines[0] = transform.GetChild(0).gameObject;
+		outlines[1] = transform.GetChild(1).gameObject;
 	}
 
-	public void ToggleOutlineVisibility(bool show_outline)
+	public void ToggleOutlineVisibility(int outline_index, bool show_outline)
 	{
-		outline.enabled = show_outline;
+		//outline.enabled = show_outline;
+		outlines[outline_index].SetActive(show_outline);
 	}
 
 	public void SetCoordinates(int x, int y, int z)
@@ -69,7 +70,7 @@ public class HexagonBlockBase : MonoBehaviour
 	}
 }
 
-public enum Terrain
+public enum TerrainType
 {
 	Ground,
 	Water
