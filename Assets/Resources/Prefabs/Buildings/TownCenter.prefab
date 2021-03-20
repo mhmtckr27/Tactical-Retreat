@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedHex: {fileID: 0}
-  teamID: 0
+  playerID: 0
 --- !u!1001 &96068310631885554
 PrefabInstance:
   m_ObjectHideFlags: 0

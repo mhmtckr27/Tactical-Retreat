@@ -13,10 +13,6 @@ public class UIController : MonoBehaviour
 		{
             return instance;
 		}
-		set
-		{
-            instance = value;
-		}
 	}
 
 	private void Awake()

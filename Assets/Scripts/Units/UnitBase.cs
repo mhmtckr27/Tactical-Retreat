@@ -6,9 +6,14 @@ using UnityEngine;
 public class UnitBase : MonoBehaviour
 {
 	[SerializeField] private UnitType unitType;
+	[SerializeField] private int health;
+	[SerializeField] private int armor;
+	[SerializeField] private int damage;
 	[SerializeField] private int maxMovesEachTurn;
+	[SerializeField] private int attackRange;
+	private bool hasAttacked = false;
 	private TerrainHexagon blockUnder;
-	public int teamID;
+	public int playerID;
 	public List<TerrainType> blockedTerrains;
 
 	private bool isInMoveMode = false;
@@ -18,6 +23,14 @@ public class UnitBase : MonoBehaviour
 		set
 		{
 			isInMoveMode = value;
+			if (isInMoveMode)
+			{
+				EnterActionMode();
+			}
+			else
+			{
+				ExitActionMode();
+			}
 			UpdateOutlines();
 		}
 	}
@@ -53,20 +66,20 @@ public class UnitBase : MonoBehaviour
 			BlockUnder = hit.collider.GetComponent<TerrainHexagon>();
 		}
 	}
-	
-	private void OnMouseUpAsButton()
+
+/*	private void OnMouseUpAsButton()
 	{
 		isInMoveMode = !isInMoveMode;
 		if (IsInMoveMode)
 		{
-			EnterMoveMode();
+			EnterActionMode();
 		}
 		else
 		{
-			ExitMoveMode();
+			ExitActionMode();
 		}
 		UpdateOutlines();
-	}
+	}*/
 	public bool TryMoveTo(TerrainHexagon hex)
 	{
 		if (!neighboursWithinRange.Contains(hex))
@@ -81,7 +94,7 @@ public class UnitBase : MonoBehaviour
 			BlockUnder = hex;
 			if(remainingMovesThisTurn == 0)
 			{
-				ExitMoveMode();
+				IsInMoveMode = false;
 			}
 			else
 			{
@@ -130,16 +143,36 @@ public class UnitBase : MonoBehaviour
 		}
 	}
 
-	public void EnterMoveMode()
+	public void EnterActionMode()
 	{
-		Map.Instance.currentState = State.UnitMovement;
+		Map.Instance.currentState = State.UnitAction;
 		Map.Instance.UnitToMove = this;
 	}
 
-	public void ExitMoveMode()
+	public void ExitActionMode()
 	{
 		Map.Instance.currentState = State.None;
 		Map.Instance.UnitToMove = null;
+	}
+
+	public void TakeDamage(int damage)
+	{
+		damage = (damage - armor) > 0 ? (damage - armor) : 0;
+		health -= damage;
+		if(health <= 0)
+		{
+			//GameController.Instance.teams[playerID].UnitDied(this);
+			Destroy(gameObject);
+		}
+	}
+
+	public void Attack(UnitBase unitToAttack)
+	{
+		if (!hasAttacked)
+		{
+			unitToAttack.TakeDamage(damage);
+			hasAttacked = true;
+		}
 	}
 }
 

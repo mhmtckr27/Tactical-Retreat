@@ -6,10 +6,11 @@ using UnityEngine;
 public class TownCenter : MonoBehaviour
 {
 	public TerrainHexagon occupiedHex;
-	public int teamID;
+	public int playerID;
 
 	private bool menu_visible = false;
 	private TownCenterUI townCenterUI;
+	private bool isConquered = false;
 
 	//if player loses all players AND loses town center, he/she will lose the game.
 	private List<UnitBase> units;
@@ -18,7 +19,11 @@ public class TownCenter : MonoBehaviour
 	private void Awake()
 	{
 		Units = new List<UnitBase>();
-		occupiedHex = transform.parent.GetComponent<TerrainHexagon>();
+		RaycastHit hit;
+		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
+		{
+			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
+		}
 		townCenterUI = UIController.Instance.townCenterBuildingMenu.GetComponent<TownCenterUI>();
 		townCenterUI.townCenter = this;
 	}
@@ -31,7 +36,18 @@ public class TownCenter : MonoBehaviour
 	{
 		if (!occupiedHex.OccupierUnit)
 		{
-			units.Add(Instantiate(unitToCreate, transform.position, Quaternion.identity).GetComponent<UnitBase>());
+			UnitBase temp = Instantiate(unitToCreate, transform.position, Quaternion.identity).GetComponent<UnitBase>();
+			temp.playerID = playerID;
+			units.Add(temp);
+		}
+	}
+
+	public void UnitDied(UnitBase unitBase)
+	{
+		Units.Remove(unitBase);
+		if(Units.Count == 0 && isConquered)
+		{
+			//Game over for this player.
 		}
 	}
 }

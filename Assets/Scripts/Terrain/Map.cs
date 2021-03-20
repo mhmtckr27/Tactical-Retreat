@@ -43,10 +43,10 @@ public class Map : MonoBehaviour
 		get => unitToMove;
 		set
 		{
-			if (unitToMove)
+			/*if (unitToMove)
 			{
 				unitToMove.IsInMoveMode = false;
-			}
+			}*/
 			unitToMove = value;
 		}
 	}
@@ -70,11 +70,12 @@ public class Map : MonoBehaviour
 		Instantiate(peasant, mapDictionary["1_0_-1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().BlockUnder = mapDictionary["1_0_-1"];
 		Instantiate(peasant, mapDictionary["-1_0_1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().BlockUnder = mapDictionary["-1_0_1"];
 
-		TerrainHexagon temp = mapDictionary["2_0_-2"];
+		/*TerrainHexagon temp = mapDictionary["2_0_-2"];
 		mapDictionary.Remove("2_0_-2");
 		mapDictionary.Add("2_0_-2", Instantiate(terrainPrefabs[3].blockPrefab, temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 		mapDictionary["2_0_-2"].SetCoordinates(2, 0, -2);
-		Destroy(temp.gameObject);
+		Destroy(temp.gameObject);*/
+		Instantiate(terrainPrefabs[3].blockPrefab, mapDictionary["2_0_-2"].transform.position, Quaternion.identity, transform);
 	}
 
 	private void GenerateMap()
@@ -389,7 +390,7 @@ public class Map : MonoBehaviour
 
 public enum State
 {
-	UnitMovement,
-	BuildingMenu,
+	UnitAction,
+	BuildingAction,
 	None
 }

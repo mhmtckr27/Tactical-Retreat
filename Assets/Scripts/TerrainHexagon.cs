@@ -71,14 +71,14 @@ public class TerrainHexagon : MonoBehaviour
 
 	private void OnMouseUpAsButton()
 	{
-		if(Map.Instance.currentState == State.UnitMovement)
+		if(Map.Instance.currentState == State.UnitAction)
 		{
 			Map.Instance.UnitToMove.TryMoveTo(this);
 		}
-		else if(occupierBuilding != null)
+		/*else if(occupierBuilding != null)
 		{
 			occupierBuilding.ToggleBuildingMenu();
-		}
+		}*/
 	}
 }
 
