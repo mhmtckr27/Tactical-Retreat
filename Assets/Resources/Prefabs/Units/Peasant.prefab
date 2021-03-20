@@ -115,6 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884ff15a121ec7549b9138a50e73e7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unit_type: 0
-  max_moves_each_turn: 4
-  unreachable_terrains: 01000000
+  unitType: 0
+  maxMovesEachTurn: 3
+  teamID: 0
+  blockedTerrains: 01000000

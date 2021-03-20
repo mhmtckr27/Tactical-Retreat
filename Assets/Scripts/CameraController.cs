@@ -4,17 +4,16 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    [SerializeField] [Range(2, 10)] private float min_camera_size;
-    [SerializeField] [Range(2, 10)] private float max_camera_size;
-    [SerializeField] [Range(0.05f, 1f)]private float zoom_modifier = 0.1f;
-    [SerializeField] [Range(10, 250)] private float should_zoom_threshold = 10;
+    [SerializeField] [Range(2, 10)] private float minCameraSize;
+    [SerializeField] [Range(2, 10)] private float maxCameraSize;
+    [SerializeField] [Range(0.05f, 1f)]private float zoomModifier = 0.1f;
+    [SerializeField] [Range(10, 250)] private float shouldZoomThreshold = 10;
 
-    private float distance_between_touches = float.MaxValue;
-    private float new_distance_between_touches;
-    private Vector2 delta_touch_position;
+    private float distanceBetweenTouches = float.MaxValue;
+    private float newDistanceBetweenTouches;
     private Camera cam;
-    bool should_zoom = false;
-    bool should_move = false;
+    bool shouldZoom = false;
+    //bool should_move = false;
 
 	private void Awake()
 	{
@@ -22,7 +21,7 @@ public class CameraController : MonoBehaviour
     }
 
 	void Update()
-    {
+    {/*
         if (Input.touchCount == 1)
         {
             if (Input.touches[0].phase == TouchPhase.Moved && Input.touches[0].deltaPosition.magnitude > 15)
@@ -34,48 +33,48 @@ public class CameraController : MonoBehaviour
                 should_move = false;
 			}
         }
-        else if (Input.touchCount == 2)
+  else*/if (Input.touchCount == 2)
 		{
-            new_distance_between_touches = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
-            if (Mathf.Abs(new_distance_between_touches - distance_between_touches) > should_zoom_threshold)
+            newDistanceBetweenTouches = Vector2.Distance(Input.touches[0].position, Input.touches[1].position);
+            if (Mathf.Abs(newDistanceBetweenTouches - distanceBetweenTouches) > shouldZoomThreshold)
 			{
-                should_zoom = true;
+                shouldZoom = true;
 			}
 			else
 			{
-                should_zoom = false;
+                shouldZoom = false;
 			}
         }
 		else
 		{
-            should_zoom = false;
+            shouldZoom = false;
         }
     }
 	private void LateUpdate()
 	{
-		if (should_move)
+		/*if (should_move)
 		{
             Map.Instance.transform.position = cam.ScreenToWorldPoint(new Vector3(Input.touches[0].deltaPosition.x, 0, Input.touches[0].deltaPosition.y) * Time.deltaTime);
-		}
-		if (should_zoom)
+		}*/
+		if (shouldZoom)
 		{
-            if (new_distance_between_touches < distance_between_touches)
+            if (newDistanceBetweenTouches < distanceBetweenTouches)
             {
-                cam.orthographicSize += zoom_modifier;
-                if (cam.orthographicSize > max_camera_size)
+                cam.orthographicSize += zoomModifier;
+                if (cam.orthographicSize > maxCameraSize)
                 {
-                    cam.orthographicSize = max_camera_size;
+                    cam.orthographicSize = maxCameraSize;
                 }
             }
             else
             {
-                cam.orthographicSize -= zoom_modifier;
-                if (cam.orthographicSize < min_camera_size)
+                cam.orthographicSize -= zoomModifier;
+                if (cam.orthographicSize < minCameraSize)
                 {
-                    cam.orthographicSize = min_camera_size;
+                    cam.orthographicSize = minCameraSize;
                 }
             }
-            distance_between_touches = new_distance_between_touches;
+            distanceBetweenTouches = newDistanceBetweenTouches;
 		}
     }
 }

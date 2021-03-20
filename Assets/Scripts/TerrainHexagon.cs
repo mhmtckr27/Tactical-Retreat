@@ -5,67 +5,79 @@ using UnityEngine;
 
 public class TerrainHexagon : MonoBehaviour
 {
-	[SerializeField] public TerrainType terrain_type;
+	[SerializeField] public TerrainType terrainType;
 	private GameObject[] outlines = new GameObject[2];
-	public int[] coordinates = new int[3];
+	private int[] coordinates = new int[3];
 
-	public List<string> neighbour_keys;
-	public string neighbour_n;
-	public string neighbour_ne;
-	public string neighbour_se;
-	public string neighbour_s;
-	public string neighbour_sw;
-	public string neighbour_nw;
+	private List<string> neighbourKeys;
+	private string neighbour_N;
+	private string neighbour_NE;
+	private string neighbour_SE;
+	private string neighbour_S;
+	private string neighbour_SW;
+	private string neighbour_NW;
 
-	public UnitBase occupier_unit;
+	public List<string> NeighbourKeys { get => neighbourKeys; set => neighbourKeys = value; }
+	public string Neighbour_N { get => neighbour_N; set => neighbour_N = value; }
+	public string Neighbour_NE { get => neighbour_NE; set => neighbour_NE = value; }
+	public string Neighbour_SE { get => neighbour_SE; set => neighbour_SE = value; }
+	public string Neighbour_S { get => neighbour_S; set => neighbour_S = value; }
+	public string Neighbour_SW { get => neighbour_SW; set => neighbour_SW = value; }
+	public string Neighbour_NW { get => neighbour_NW; set => neighbour_NW = value; }
+	public UnitBase OccupierUnit { get => occupierUnit; set => occupierUnit = value; }
+	public int[] Coordinates { get => coordinates; set => coordinates = value; }
+
+	private UnitBase occupierUnit;
+	[SerializeField] private TownCenter occupierBuilding;
+	public TownCenter OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
 
 	private void Awake()
 	{
 		outlines[0] = transform.GetChild(0).gameObject;
 		outlines[1] = transform.GetChild(1).gameObject;
+		NeighbourKeys = new List<string>();
 	}
 
 	public void ToggleOutlineVisibility(int outline_index, bool show_outline)
 	{
-		//outline.enabled = show_outline;
 		outlines[outline_index].SetActive(show_outline);
 	}
 
 	public void SetCoordinates(int x, int y, int z)
 	{
-		coordinates[0] = x;
-		coordinates[1] = y;
-		coordinates[2] = z;
+		Coordinates[0] = x;
+		Coordinates[1] = y;
+		Coordinates[2] = z;
 
 		SetNeighbourCoordinates();
 	}
 
 	private void SetNeighbourCoordinates()
 	{
-		neighbour_n = (coordinates[0]) + "_" + (coordinates[1] + 1) + "_" + (coordinates[2] - 1);
-		neighbour_ne = (coordinates[0] + 1) + "_" + (coordinates[1]) + "_" + (coordinates[2] - 1);
-		neighbour_se = (coordinates[0] + 1) + "_" + (coordinates[1] - 1) + "_" + (coordinates[2]);
-		neighbour_s = (coordinates[0]) + "_" + (coordinates[1] - 1) + "_" + (coordinates[2] + 1);
-		neighbour_sw = (coordinates[0] - 1) + "_" + (coordinates[1]) + "_" + (coordinates[2] + 1);
-		neighbour_nw = (coordinates[0] - 1) + "_" + (coordinates[1] + 1) + "_" + (coordinates[2]);
+		Neighbour_N = (Coordinates[0]) + "_" + (Coordinates[1] + 1) + "_" + (Coordinates[2] - 1);
+		Neighbour_NE = (Coordinates[0] + 1) + "_" + (Coordinates[1]) + "_" + (Coordinates[2] - 1);
+		Neighbour_SE = (Coordinates[0] + 1) + "_" + (Coordinates[1] - 1) + "_" + (Coordinates[2]);
+		Neighbour_S = (Coordinates[0]) + "_" + (Coordinates[1] - 1) + "_" + (Coordinates[2] + 1);
+		Neighbour_SW = (Coordinates[0] - 1) + "_" + (Coordinates[1]) + "_" + (Coordinates[2] + 1);
+		Neighbour_NW = (Coordinates[0] - 1) + "_" + (Coordinates[1] + 1) + "_" + (Coordinates[2]);
 
-		neighbour_keys.Add(neighbour_n);
-		neighbour_keys.Add(neighbour_ne);
-		neighbour_keys.Add(neighbour_se);
-		neighbour_keys.Add(neighbour_s);
-		neighbour_keys.Add(neighbour_sw);
-		neighbour_keys.Add(neighbour_nw);
+		NeighbourKeys.Add(Neighbour_N);
+		NeighbourKeys.Add(Neighbour_NE);
+		NeighbourKeys.Add(Neighbour_SE);
+		NeighbourKeys.Add(Neighbour_S);
+		NeighbourKeys.Add(Neighbour_SW);
+		NeighbourKeys.Add(Neighbour_NW);
 	}
 
 	private void OnMouseUpAsButton()
 	{
-		if(Map.Instance.current_state == State.MoveUnitMode)
+		if(Map.Instance.currentState == State.UnitMovement)
 		{
-			Map.Instance.Unit_to_move.TryMoveTo(this);
+			Map.Instance.UnitToMove.TryMoveTo(this);
 		}
-		else
+		else if(occupierBuilding != null)
 		{
-			//Map.Instance.AStar(Map.Instance.map_dictionary["0_0_0"], this);
+			occupierBuilding.ToggleBuildingMenu();
 		}
 	}
 }
@@ -73,5 +85,6 @@ public class TerrainHexagon : MonoBehaviour
 public enum TerrainType
 {
 	Ground,
-	Water
+	Water,
+	Forest
 }
