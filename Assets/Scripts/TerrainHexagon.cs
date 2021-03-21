@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class TerrainHexagon : MonoBehaviour
+public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
 	private GameObject[] outlines = new GameObject[2];
@@ -67,18 +68,6 @@ public class TerrainHexagon : MonoBehaviour
 		NeighbourKeys.Add(Neighbour_S);
 		NeighbourKeys.Add(Neighbour_SW);
 		NeighbourKeys.Add(Neighbour_NW);
-	}
-
-	private void OnMouseUpAsButton()
-	{
-		if(Map.Instance.currentState == State.UnitAction)
-		{
-			Map.Instance.UnitToMove.TryMoveTo(this);
-		}
-		/*else if(occupierBuilding != null)
-		{
-			occupierBuilding.ToggleBuildingMenu();
-		}*/
 	}
 }
 

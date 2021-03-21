@@ -2,8 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class UnitBase : MonoBehaviour
+public class UnitBase : NetworkBehaviour
 {
 	[SerializeField] private UnitType unitType;
 	[SerializeField] private int health;
@@ -13,10 +14,10 @@ public class UnitBase : MonoBehaviour
 	[SerializeField] private int attackRange;
 	private bool hasAttacked = false;
 	private TerrainHexagon blockUnder;
-	public int playerID;
+	public uint playerID;
 	public List<TerrainType> blockedTerrains;
 
-	private bool isInMoveMode = false;
+	public bool isInMoveMode = false;
 	public bool IsInMoveMode
 	{
 		get => isInMoveMode;
@@ -25,11 +26,11 @@ public class UnitBase : MonoBehaviour
 			isInMoveMode = value;
 			if (isInMoveMode)
 			{
-				EnterActionMode();
+				ToggleActionModeCmd(this);
 			}
 			else
 			{
-				ExitActionMode();
+				ToggleActionModeCmd(null);
 			}
 			UpdateOutlines();
 		}
@@ -66,57 +67,96 @@ public class UnitBase : MonoBehaviour
 			BlockUnder = hit.collider.GetComponent<TerrainHexagon>();
 		}
 	}
-
-/*	private void OnMouseUpAsButton()
+	private void Start()
 	{
-		isInMoveMode = !isInMoveMode;
-		if (IsInMoveMode)
+		Debug.LogError(playerID);
+		
+	}
+	/*	private void OnMouseUpAsButton()
 		{
-			EnterActionMode();
-		}
-		else
-		{
-			ExitActionMode();
-		}
-		UpdateOutlines();
-	}*/
+			isInMoveMode = !isInMoveMode;
+			if (IsInMoveMode)
+			{
+				EnterActionMode();
+			}
+			else
+			{
+				ExitActionMode();
+			}
+			UpdateOutlines();
+		}*/
 	public bool TryMoveTo(TerrainHexagon hex)
 	{
+		if(!hasAuthority) { return false; }
 		if (!neighboursWithinRange.Contains(hex))
 		{
 			return false;
 		}
 		else
 		{
-			List<TerrainHexagon> path = Map.Instance.AStar(BlockUnder, hex, blockedTerrains);
-			remainingMovesThisTurn -= path.Count - 1;
-			transform.position = hex.transform.position;
-			BlockUnder = hex;
-			if(remainingMovesThisTurn == 0)
-			{
-				IsInMoveMode = false;
-			}
-			else
-			{
-				UpdateOutlines();
-			}
+			Debug.LogWarning("varki");
+			GetPath(this, BlockUnder, hex);
 			return true;
 		}
 	}
 
+	[Command]
+	public void GetPath(UnitBase unit, TerrainHexagon from, TerrainHexagon to)
+	{
+		List<TerrainHexagon> tempPath = Map.Instance.AStar(from, to, blockedTerrains);
+		Debug.LogWarning(tempPath.Count);
+		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
+		RpcMove(target.connectionToClient, to, tempPath);
+	}
+
+	[TargetRpc]
+	public void RpcMove(NetworkConnection target, TerrainHexagon to, List<TerrainHexagon> path)
+	{
+		remainingMovesThisTurn -= path.Count - 1;
+		transform.position = to.transform.position;
+		BlockUnder = to;
+		if (remainingMovesThisTurn == 0)
+		{
+			IsInMoveMode = false;
+		}
+		else
+		{
+			UpdateOutlines();
+		}
+	}
+
+	[Client]
 	private void UpdateOutlines()
 	{
 		DisableOutlines();
 		if (IsInMoveMode)
 		{
 			occupiedNeighboursWithinRange.Clear();
-			neighboursWithinRange = Map.Instance.GetReachableHexagons(BlockUnder, remainingMovesThisTurn, blockedTerrains, occupiedNeighboursWithinRange);
-			EnableOutlines();
+			GetReachablesCmd(this, BlockUnder, remainingMovesThisTurn);
 		}
+	}
+
+	[Command]
+	public void GetReachablesCmd(UnitBase targetUnit, TerrainHexagon blockUnder, int remainingMoves)
+	{
+		List<TerrainHexagon> occupieds = new List<TerrainHexagon>();
+		List<TerrainHexagon> tempReachables = Map.Instance.GetReachableHexagons(blockUnder, remainingMoves, blockedTerrains, occupieds);
+		NetworkIdentity target = targetUnit.GetComponent<NetworkIdentity>();
+		RpcGetReachables(target.connectionToClient, tempReachables, occupieds);
+	}
+
+	[TargetRpc]
+	public void RpcGetReachables(NetworkConnection target, List<TerrainHexagon> reachables, List<TerrainHexagon> occupieds)
+	{
+		neighboursWithinRange = reachables;
+		occupiedNeighboursWithinRange = occupieds;
+		EnableOutlines();
 	}
 
 	public void EnableOutlines()
 	{
+		//Debug.LogWarning(neighboursWithinRange.Count);
+
 		if (IsInMoveMode && (remainingMovesThisTurn > 0))
 		{
 			foreach (TerrainHexagon neighbour in neighboursWithinRange)
@@ -142,18 +182,21 @@ public class UnitBase : MonoBehaviour
 			occupied.ToggleOutlineVisibility(1, false);
 		}
 	}
-
-	public void EnterActionMode()
+	
+	[Command]
+	public void ToggleActionModeCmd(UnitBase unit)
 	{
-		Map.Instance.currentState = State.UnitAction;
-		Map.Instance.UnitToMove = this;
+		if(unit == null)
+		{
+			Map.Instance.currentState = State.None;
+		}
+		else
+		{
+			Map.Instance.currentState = State.UnitAction;
+		}
+		Map.Instance.UnitToMove = unit;
 	}
 
-	public void ExitActionMode()
-	{
-		Map.Instance.currentState = State.None;
-		Map.Instance.UnitToMove = null;
-	}
 
 	public void TakeDamage(int damage)
 	{

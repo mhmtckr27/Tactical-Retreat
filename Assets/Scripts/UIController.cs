@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class UIController : MonoBehaviour
 {
-	[SerializeField] public GameObject townCenterBuildingMenu;
+	[SerializeField] private GameObject townCenterBuildingMenuPrefab;
+	public TownCenterUI abc;
 
     private static UIController instance;
     public static UIController Instance
@@ -17,13 +19,16 @@ public class UIController : MonoBehaviour
 
 	private void Awake()
 	{
-		if(instance == null)
+		/*if(instance == null)
 		{
 			instance = this;
 		}	
 		else if(instance != this)
 		{
 			Destroy(gameObject);
-		}
+		}*/
+		//abc = Instantiate(townCenterBuildingMenuPrefab, transform).GetComponent<TownCenterUI>();
 	}
+
+
 }

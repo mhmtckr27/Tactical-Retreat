@@ -112,17 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf62f98a8b2cad4da94eccb63f4a5c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  terrain_type: 0
-  outline: {fileID: 0}
-  coordinates: 000000000000000000000000
-  neighbour_keys: []
-  neighbour_n: 
-  neighbour_ne: 
-  neighbour_se: 
-  neighbour_s: 
-  neighbour_sw: 
-  neighbour_nw: 
-  occupier_unit: {fileID: 0}
+  syncMode: 0
+  syncInterval: 0.1
+  terrainType: 0
+  occupierBuilding: {fileID: 0}
 --- !u!1001 &371122808750307631
 PrefabInstance:
   m_ObjectHideFlags: 0

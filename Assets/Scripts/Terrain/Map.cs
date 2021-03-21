@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Map : MonoBehaviour
+public class Map : NetworkBehaviour
 {
 	private const float blockHeight = 1.73f;
 	private const float blockWidth = 2f;
@@ -37,23 +38,19 @@ public class Map : MonoBehaviour
 		}
 	}
 
-	private UnitBase unitToMove;
+	public UnitBase unitToMove;
 	public UnitBase UnitToMove
 	{
 		get => unitToMove;
 		set
 		{
-			/*if (unitToMove)
-			{
-				unitToMove.IsInMoveMode = false;
-			}*/
 			unitToMove = value;
 		}
 	}
 
 	public State currentState = State.None;
 
-	private void Awake()
+	public void Awake()
 	{
 		if (instance == null)
 		{
@@ -63,28 +60,21 @@ public class Map : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
-		GenerateMap();
-		DilateMap();
-
-		Instantiate(peasant, mapDictionary["0_0_0"].transform.position, Quaternion.identity).GetComponent<UnitBase>().BlockUnder = mapDictionary["0_0_0"];
-		Instantiate(peasant, mapDictionary["1_0_-1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().BlockUnder = mapDictionary["1_0_-1"];
-		Instantiate(peasant, mapDictionary["-1_0_1"].transform.position, Quaternion.identity).GetComponent<UnitBase>().BlockUnder = mapDictionary["-1_0_1"];
-
-		/*TerrainHexagon temp = mapDictionary["2_0_-2"];
-		mapDictionary.Remove("2_0_-2");
-		mapDictionary.Add("2_0_-2", Instantiate(terrainPrefabs[3].blockPrefab, temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
-		mapDictionary["2_0_-2"].SetCoordinates(2, 0, -2);
-		Destroy(temp.gameObject);*/
-		Instantiate(terrainPrefabs[3].blockPrefab, mapDictionary["2_0_-2"].transform.position, Quaternion.identity, transform);
 	}
 
-	private void GenerateMap()
+	public void RequestCreateUnit(GameObject unit)
+	{
+		NetworkServer.Spawn(unit);
+	}
+
+	public void GenerateMap()
 	{
 		string coordinate_key = 0 + "_" + 0 + "_" + 0;
 		mapDictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 		mapDictionary["0_0_0"].SetCoordinates(0, 0, 0);
 		TerrainHexagon initialHex = mapDictionary["0_0_0"];
 		TerrainHexagon currentHex = initialHex;
+		NetworkServer.Spawn(initialHex.gameObject);
 
 		int k = 0;
 		while (k < mapWidth - 1)
@@ -94,6 +84,7 @@ public class Map : MonoBehaviour
 			{
 				mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 				mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
+				NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 				currentHex = mapDictionary[currentHex.Neighbour_N];
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -103,6 +94,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_SE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_SE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SE[0], currentHex.Coordinates[1] + neighbourOffset_SE[1], currentHex.Coordinates[2] + neighbourOffset_SE[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SE];
 				}
 			}
@@ -113,6 +105,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_S, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_S].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_S[0], currentHex.Coordinates[1] + neighbourOffset_S[1], currentHex.Coordinates[2] + neighbourOffset_S[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_S].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_S];
 				}
 
@@ -124,6 +117,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_SW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_SW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SW[0], currentHex.Coordinates[1] + neighbourOffset_SW[1], currentHex.Coordinates[2] + neighbourOffset_SW[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SW];
 				}
 			}
@@ -134,6 +128,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_NW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_NW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NW[0], currentHex.Coordinates[1] + neighbourOffset_NW[1], currentHex.Coordinates[2] + neighbourOffset_NW[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NW];
 				}
 			}
@@ -144,6 +139,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_N];
 				}
 			}
@@ -154,6 +150,7 @@ public class Map : MonoBehaviour
 				{
 					mapDictionary.Add(currentHex.Neighbour_NE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_NE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NE[0], currentHex.Coordinates[1] + neighbourOffset_NE[1], currentHex.Coordinates[2] + neighbourOffset_NE[2]);
+					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NE];
 				}
 				else
@@ -166,7 +163,7 @@ public class Map : MonoBehaviour
 	}
 
 	//replace water blocks that are single (don't have any water neighbour) with random ground block.
-	private void DilateMap()
+	public void DilateMap()
 	{
 		List<string> dilateWaterBlocks = new List<string>();
 		List<string> dilateGroundBlocks = new List<string>();
@@ -230,8 +227,10 @@ public class Map : MonoBehaviour
 			TerrainHexagon temp = mapDictionary[dilateWaterBlocks[i]];
 			mapDictionary.Remove(dilateWaterBlocks[i]);
 			mapDictionary.Add(dilateWaterBlocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+			NetworkServer.Spawn(mapDictionary[dilateWaterBlocks[i]].gameObject);
 			mapDictionary[dilateWaterBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
-			Destroy(temp.gameObject);
+			//Destroy(temp.gameObject);
+			NetworkServer.Destroy(temp.gameObject);
 		}
 
 		for (int i = 0; i < dilateGroundBlocks.Count; i++)
@@ -239,8 +238,10 @@ public class Map : MonoBehaviour
 			TerrainHexagon temp = mapDictionary[dilateGroundBlocks[i]];
 			mapDictionary.Remove(dilateGroundBlocks[i]);
 			mapDictionary.Add(dilateGroundBlocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+			NetworkServer.Spawn(mapDictionary[dilateGroundBlocks[i]].gameObject);
 			mapDictionary[dilateGroundBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
-			Destroy(temp.gameObject);
+			//Destroy(temp.gameObject);
+			NetworkServer.Destroy(temp.gameObject);
 		}
 	}
 
@@ -308,7 +309,7 @@ public class Map : MonoBehaviour
 			{
 				for(int direction = 0; direction < 6; direction++)
 				{
-					TerrainHexagon neighbour = GetNeighbourInDirection(hex, direction);
+					TerrainHexagon neighbour =  GetNeighbourInDirection(hex, direction);
 					//gonna replace second condition in future with a parameter to make it generic.
 					if (neighbour != null && !reachableHexagons.Contains(neighbour) && !blockedHexagonTypes.Contains(neighbour.terrainType))
 					{
