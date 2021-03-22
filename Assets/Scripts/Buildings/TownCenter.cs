@@ -28,8 +28,8 @@ public class TownCenter : NetworkBehaviour
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{
 			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
+			occupiedHex.OccupierBuilding = this;
 		}
-		Debug.LogError(netId);
 		playerID = netId;
 	}
 
@@ -46,7 +46,7 @@ public class TownCenter : NetworkBehaviour
 			if (unit != null)
 			{
 				//Debug.LogWarning("unit");
-				ValidateUnitSelectionCmd(unit);
+				ValidateUnitSelectionCmd(unit, unit.hasAuthority);
 			}
 			else
 			{
@@ -113,7 +113,7 @@ public class TownCenter : NetworkBehaviour
 	}
 
 	[Command]
-	public void ValidateUnitSelectionCmd(UnitBase unit)
+	public void ValidateUnitSelectionCmd(UnitBase unit, bool hasAuthority)
 	{
 		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
 		NetworkIdentity target2 = null;
@@ -123,22 +123,41 @@ public class TownCenter : NetworkBehaviour
 		}
 		if (Map.Instance.UnitToMove == null)
 		{
-			RpcValidateUnitSelection(target.connectionToClient, unit, true);
-			//unit.IsInMoveMode = true;
+			if (hasAuthority)
+			{
+				RpcValidateUnitSelection(target.connectionToClient, unit, true);
+			}
 		}
 		else if (Map.Instance.UnitToMove != unit)
 		{
-			RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
-			RpcValidateUnitSelection(target.connectionToClient, unit, true);
-			//Map.Instance.UnitToMove.IsInMoveMode = false;
-			//unit.IsInMoveMode = true;
+			if (hasAuthority)
+			{
+				RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
+				RpcValidateUnitSelection(target.connectionToClient, unit, true);
+			}
+			else
+			{
+				NetworkIdentity targetIdentity = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
+				Map.Instance.UnitToMove.TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
+				//TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
+				//Map.Instance.UnitToMove.ValidateAttackCmd(Map.Instance.UnitToMove, unit);
+				Debug.LogWarning("saldirmak istiyor");
+			}
 		}
 		else
 		{
-			//Map.Instance.UnitToMove.IsInMoveMode = false;
-			RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
+			if (hasAuthority)
+			{
+				RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
+			}
 		}
 	}
+
+	/*[TargetRpc]
+	public void TryAttackRpc(NetworkConnection targetConn, UnitBase attacker, UnitBase target)
+	{
+		attacker.TryAttack(target);
+	}*/
 
 	[TargetRpc]
 	public void RpcValidateUnitSelection(NetworkConnection target, UnitBase unit, bool isInMoveMode)
@@ -165,19 +184,15 @@ public class TownCenter : NetworkBehaviour
 	[Command]
 	public void ValidateTerrainHexagonSelectionCmd(TownCenter townCenter, TerrainHexagon terrainHexagon)
 	{
-			//Debug.LogWarning("second+");
 		if (Map.Instance.currentState == State.UnitAction)
 		{
-			//Debug.LogWarning("third+");
 			NetworkIdentity target = townCenter.GetComponent<NetworkIdentity>();
-			RpcDeneme(target.connectionToClient, Map.Instance.UnitToMove, terrainHexagon);
-			//Map.Instance.UnitToMove.TryMoveTo(terrainHexagon);
-			//Map.Instance.UnitToMove.TryMoveTo(terrainHexagon);
+			RpcMove(target.connectionToClient, Map.Instance.UnitToMove, terrainHexagon);
 		}
 	}
 
 	[TargetRpc]
-	public void RpcDeneme(NetworkConnection target, UnitBase unit, TerrainHexagon to)
+	public void RpcMove(NetworkConnection target, UnitBase unit, TerrainHexagon to)
 	{
 		unit.TryMoveTo(to);
 	}
@@ -193,7 +208,7 @@ public class TownCenter : NetworkBehaviour
 
 	public void CreateUnit(GameObject unitToCreate)
 	{
-		if (!occupiedHex.OccupierUnit)
+		if (!occupiedHex.occupierUnit)
 		{
 			CreateUnitCmd(this);
 		}
@@ -202,13 +217,25 @@ public class TownCenter : NetworkBehaviour
 	[Command]
 	public void CreateUnitCmd(TownCenter owner)
 	{
-		/*UnitBase temp = Instantiate(unitToCreate, transform.position, Quaternion.identity).GetComponent<UnitBase>();
-		temp.playerID = playerID;
-		units.Add(temp);*/
-		GameObject temp = Instantiate(MyNetworkRoomManager.Instance.spawnPrefabs.Find(prefab => prefab.name == "Peasant"), transform.position, Quaternion.identity);
-		Debug.LogError("he " + owner.playerID);
+		NetworkIdentity target = owner.GetComponent<NetworkIdentity>();
+		GameObject temp = Instantiate(NetworkRoomManagerWoT.Instance.spawnPrefabs.Find(prefab => prefab.name == "Peasant"), transform.position, Quaternion.identity);
 		NetworkServer.Spawn(temp, owner.gameObject);
-		temp.GetComponent<UnitBase>().playerID = owner.playerID;
+		/////////////////
+		owner.occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
+		temp.GetComponent<UnitBase>().occupiedHexagon = owner.occupiedHex;
+		//////////////////
+		RpcUnitCreated(target.connectionToClient, temp.GetComponent<UnitBase>());
+	}
+
+	[TargetRpc]
+	public void RpcUnitCreated(NetworkConnection target, UnitBase createdUnit)
+	{
+		createdUnit.playerID = playerID;
+		//////////////////////////
+	//	createdUnit.occupiedHexagon = occupiedHex;
+	//	occupiedHex.OccupierUnit = createdUnit;
+		//////////////////////////
+		Units.Add(createdUnit);
 	}
 
 	public void UnitDied(UnitBase unitBase)

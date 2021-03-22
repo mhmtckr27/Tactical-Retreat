@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class MyNetworkRoomManager : NetworkRoomManager
+public class NetworkRoomManagerWoT : NetworkRoomManager
 {
-	private static MyNetworkRoomManager instance;
-	public static MyNetworkRoomManager Instance
+	private static NetworkRoomManagerWoT instance;
+	public static NetworkRoomManagerWoT Instance
 	{
 		get
 		{

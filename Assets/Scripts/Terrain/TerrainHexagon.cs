@@ -25,10 +25,14 @@ public class TerrainHexagon : NetworkBehaviour
 	public string Neighbour_S { get => neighbour_S; set => neighbour_S = value; }
 	public string Neighbour_SW { get => neighbour_SW; set => neighbour_SW = value; }
 	public string Neighbour_NW { get => neighbour_NW; set => neighbour_NW = value; }
-	public UnitBase OccupierUnit { get => occupierUnit; set => occupierUnit = value; }
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
 
-	private UnitBase occupierUnit;
+	[SerializeField] [SyncVar/*(hook = nameof(SetOccupierUnit))*/] public UnitBase occupierUnit;
+/*	public void SetOccupierUnit(UnitBase oldUnit, UnitBase newUnit)
+	{
+		occupierUnit = newUnit;
+	}*/
+
 	[SerializeField] private TownCenter occupierBuilding;
 	public TownCenter OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
 

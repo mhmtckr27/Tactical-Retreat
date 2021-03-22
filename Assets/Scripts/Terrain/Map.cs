@@ -310,10 +310,10 @@ public class Map : NetworkBehaviour
 				for(int direction = 0; direction < 6; direction++)
 				{
 					TerrainHexagon neighbour =  GetNeighbourInDirection(hex, direction);
-					//gonna replace second condition in future with a parameter to make it generic.
+
 					if (neighbour != null && !reachableHexagons.Contains(neighbour) && !blockedHexagonTypes.Contains(neighbour.terrainType))
 					{
-						if (!neighbour.OccupierUnit)
+						if ((neighbour.occupierUnit == null))
 						{
 							reachableHexagons.Add(neighbour);
 							visitedHexagons[i].Add(neighbour);

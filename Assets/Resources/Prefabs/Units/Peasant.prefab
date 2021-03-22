@@ -127,6 +127,7 @@ MonoBehaviour:
   attackRange: 1
   playerID: 0
   blockedTerrains: 01000000
+  isInMoveMode: 0
 --- !u!114 &238405972902103047
 MonoBehaviour:
   m_ObjectHideFlags: 0

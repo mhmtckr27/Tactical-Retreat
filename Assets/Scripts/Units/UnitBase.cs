@@ -7,13 +7,14 @@ using Mirror;
 public class UnitBase : NetworkBehaviour
 {
 	[SerializeField] private UnitType unitType;
-	[SerializeField] private int health;
+	[SerializeField][SyncVar] private int health;
 	[SerializeField] private int armor;
 	[SerializeField] private int damage;
 	[SerializeField] private int maxMovesEachTurn;
 	[SerializeField] private int attackRange;
-	private bool hasAttacked = false;
-	private TerrainHexagon blockUnder;
+	[SerializeField][SyncVar] private bool hasAttacked = false;
+	[SyncVar] public TerrainHexagon occupiedHexagon;
+
 	public uint playerID;
 	public List<TerrainType> blockedTerrains;
 
@@ -39,19 +40,6 @@ public class UnitBase : NetworkBehaviour
 	private int remainingMovesThisTurn;
 	List<TerrainHexagon> neighboursWithinRange;
 	List<TerrainHexagon> occupiedNeighboursWithinRange;
-	public TerrainHexagon BlockUnder 
-	{ 
-		get => blockUnder; 
-		set 
-		{
-			if(blockUnder != null)
-			{
-				blockUnder.OccupierUnit = null;
-			}
-			blockUnder = value;
-			blockUnder.OccupierUnit = this;
-		} 
-	}
 
 
 	private void Awake()
@@ -60,61 +48,50 @@ public class UnitBase : NetworkBehaviour
 		occupiedNeighboursWithinRange = new List<TerrainHexagon>();
 		remainingMovesThisTurn = maxMovesEachTurn;
 		transform.eulerAngles = new Vector3(0, -90, 0);
+	}
 
-		RaycastHit hit;
-		if(Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
-		{
-			BlockUnder = hit.collider.GetComponent<TerrainHexagon>();
-		}
-	}
-	private void Start()
-	{
-		Debug.LogError(playerID);
-		
-	}
-	/*	private void OnMouseUpAsButton()
-		{
-			isInMoveMode = !isInMoveMode;
-			if (IsInMoveMode)
-			{
-				EnterActionMode();
-			}
-			else
-			{
-				ExitActionMode();
-			}
-			UpdateOutlines();
-		}*/
 	public bool TryMoveTo(TerrainHexagon hex)
 	{
+		Debug.LogWarning("giris");
 		if(!hasAuthority) { return false; }
+		Debug.LogWarning("otoriter");
 		if (!neighboursWithinRange.Contains(hex))
 		{
+			Debug.LogWarning("yakinda yok");
 			return false;
 		}
 		else
 		{
-			Debug.LogWarning("varki");
-			GetPath(this, BlockUnder, hex);
+			GetPath(this, occupiedHexagon, hex);
 			return true;
 		}
 	}
-
+	
 	[Command]
 	public void GetPath(UnitBase unit, TerrainHexagon from, TerrainHexagon to)
 	{
 		List<TerrainHexagon> tempPath = Map.Instance.AStar(from, to, blockedTerrains);
-		Debug.LogWarning(tempPath.Count);
 		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
-		RpcMove(target.connectionToClient, to, tempPath);
+		////////////////////////////////////////
+		///
+		from.occupierUnit = null;
+		unit.occupiedHexagon = to;
+		to.occupierUnit = unit;
+		///
+		////////////////////////////////////////
+		RpcMove(target.connectionToClient, to, tempPath.Count);
 	}
 
 	[TargetRpc]
-	public void RpcMove(NetworkConnection target, TerrainHexagon to, List<TerrainHexagon> path)
+	public void RpcMove(NetworkConnection target, TerrainHexagon to, int pathLength)
 	{
-		remainingMovesThisTurn -= path.Count - 1;
+		remainingMovesThisTurn -= pathLength - 1;
 		transform.position = to.transform.position;
-		BlockUnder = to;
+		////////////////////////////////////////
+		occupiedHexagon.occupierUnit = null;
+		occupiedHexagon = to;
+		occupiedHexagon.occupierUnit = this;
+		////////////////////////////////////////
 		if (remainingMovesThisTurn == 0)
 		{
 			IsInMoveMode = false;
@@ -125,14 +102,13 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
-	[Client]
 	private void UpdateOutlines()
 	{
 		DisableOutlines();
 		if (IsInMoveMode)
 		{
 			occupiedNeighboursWithinRange.Clear();
-			GetReachablesCmd(this, BlockUnder, remainingMovesThisTurn);
+			GetReachablesCmd(this, occupiedHexagon, remainingMovesThisTurn);
 		}
 	}
 
@@ -155,18 +131,25 @@ public class UnitBase : NetworkBehaviour
 
 	public void EnableOutlines()
 	{
-		//Debug.LogWarning(neighboursWithinRange.Count);
-
 		if (IsInMoveMode && (remainingMovesThisTurn > 0))
 		{
 			foreach (TerrainHexagon neighbour in neighboursWithinRange)
 			{
-				neighbour.ToggleOutlineVisibility(0, true);
+				if((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
+				{
+					neighbour.ToggleOutlineVisibility(1, true);
+				}
+				else
+				{
+					neighbour.ToggleOutlineVisibility(0, true);
+				}
 			}
 			foreach(TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
 			{
-				Debug.Log(occupiedNeighboursWithinRange.IndexOf(occupied_neighbour));
-				occupied_neighbour.ToggleOutlineVisibility(1, true);
+				if(occupied_neighbour.occupierUnit.playerID != playerID)
+				{
+					occupied_neighbour.ToggleOutlineVisibility(1, true);
+				}
 			}
 		}
 	}
@@ -176,9 +159,11 @@ public class UnitBase : NetworkBehaviour
 		foreach (TerrainHexagon neighbour in neighboursWithinRange)
 		{
 			neighbour.ToggleOutlineVisibility(0, false);
+			neighbour.ToggleOutlineVisibility(1, false);
 		}
 		foreach(TerrainHexagon occupied in occupiedNeighboursWithinRange)
 		{
+			occupied.ToggleOutlineVisibility(0, false);
 			occupied.ToggleOutlineVisibility(1, false);
 		}
 	}
@@ -197,24 +182,62 @@ public class UnitBase : NetworkBehaviour
 		Map.Instance.UnitToMove = unit;
 	}
 
-
+	
 	public void TakeDamage(int damage)
 	{
 		damage = (damage - armor) > 0 ? (damage - armor) : 0;
 		health -= damage;
 		if(health <= 0)
 		{
-			//GameController.Instance.teams[playerID].UnitDied(this);
-			Destroy(gameObject);
+			Die();
 		}
 	}
 
-	public void Attack(UnitBase unitToAttack)
+	public void Die()
 	{
-		if (!hasAttacked)
+		//GameController.Instance.teams[playerID].UnitDied(this);
+		
+		Destroy(gameObject);
+	}
+
+	[TargetRpc]
+	public void TryAttackRpc(NetworkConnection target, UnitBase attacker, UnitBase defender)
+	{
+		ValidateAttackCmd(this, defender);
+	}
+
+	[Command]
+	public void ValidateAttackCmd(UnitBase attacker, UnitBase target)
+	{
+		if (/*!attacker.hasAttacked*/ true)
 		{
-			unitToAttack.TakeDamage(damage);
-			hasAttacked = true;
+			NetworkIdentity targetIdentity = attacker.GetComponent<NetworkIdentity>();
+			attacker.hasAttacked = true;
+			int damage = (attacker.damage - target.armor) > 0 ? (attacker.damage - target.armor) : 0;
+			target.health -= damage;
+			if(target.health < 0)
+			{
+				target.health = 0;
+			}
+			if(target.health == 0)
+			{
+				TerrainHexagon temp = target.occupiedHexagon;
+				///Handle Death
+				temp.occupierUnit = null;
+				NetworkServer.Destroy(target.gameObject);
+				EndAttackRpc(targetIdentity.connectionToClient, true, temp);
+				///
+			}
+		}
+	}
+
+	[TargetRpc]
+	public void EndAttackRpc(NetworkConnection targetConn, bool targetUnitIsDead, TerrainHexagon targetHexagon)
+	{
+		if (targetUnitIsDead)
+		{
+			//targetHexagon.occupierUnit = null;
+			UpdateOutlines();
 		}
 	}
 }
