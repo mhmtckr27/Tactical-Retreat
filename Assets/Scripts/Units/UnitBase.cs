@@ -15,37 +15,39 @@ public class UnitBase : NetworkBehaviour
 	[SerializeField][SyncVar] private bool hasAttacked = false;
 
 	[SyncVar] public TerrainHexagon occupiedHexagon;
-	/*[SyncVar(hook = nameof(dene))] public TerrainHexagon occupiedHexagon;
-	public void dene(TerrainHexagon old, TerrainHexagon yeni)
-	{
-		CmdTest(":reflected to client");
-	}*/
 
 	[SyncVar]public uint playerID;
 	public List<TerrainType> blockedTerrains;
 
-	public bool isInMoveMode = false;
-	public bool IsInMoveMode
+	
+	[SyncVar(hook = nameof(OnIsInMoveModeChange))] public bool isInMoveMode = false;
+	public void SetIsInMoveMode(bool newIsInMoveMode)
 	{
-		get => isInMoveMode;
-		set
+		CmdSetIsInMoveMode(newIsInMoveMode);
+	}
+	public void CmdSetIsInMoveMode(bool newIsInMoveMode)
+	{
+		isInMoveMode = newIsInMoveMode;
+	}	
+	
+	public void OnIsInMoveModeChange(bool oldValue, bool newValue)
+	{
+		if (!hasAuthority) { return; }
+
+		if (newValue)
 		{
-			isInMoveMode = value;
-			if (isInMoveMode)
-			{
-				ToggleActionModeCmd(this);
-			}
-			else
-			{
-				ToggleActionModeCmd(null);
-			}
-			UpdateOutlines();
+			CmdToggleActionMode(this);
 		}
+		else
+		{
+			CmdToggleActionMode(null);
+		}
+		UpdateOutlinesClient();
 	}
 
 	[SyncVar] private int remainingMovesThisTurn;
-	List<TerrainHexagon> neighboursWithinRange;
-	List<TerrainHexagon> occupiedNeighboursWithinRange;
+	[SyncVar] List<TerrainHexagon> neighboursWithinRange;
+	[SyncVar] List<TerrainHexagon> occupiedNeighboursWithinRange;
 
 	#region Client
 	private void Awake()
@@ -56,99 +58,122 @@ public class UnitBase : NetworkBehaviour
 		transform.eulerAngles = new Vector3(0, -90, 0);
 	}
 
-	public bool TryMoveTo(TerrainHexagon hex)
+	public bool TryMoveTo(TerrainHexagon to)
 	{
 		if(!hasAuthority) { return false; }
-		if (!neighboursWithinRange.Contains(hex))
+		CmdRequestToMove(to);
+		return true;
+	}
+
+	[Server]
+	public void CmdRequestToMove(TerrainHexagon to)
+	{
+		if(!hasAuthority) { return; }
+		ValidateRequestToMove(to);
+	}
+
+	[Server]
+	public void ValidateRequestToMove(TerrainHexagon to)
+	{
+		if (!neighboursWithinRange.Contains(to))
 		{
-			return false;
+			return;
 		}
 		else
 		{
-			CmdGetPath(this, occupiedHexagon, hex);
-			return true;
+			GetPath(to);
+		}
+	}
+
+	[Server]
+	public void GetPath(TerrainHexagon to)
+	{
+		List<TerrainHexagon> tempPath = Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
+
+		occupiedHexagon.occupierUnit = null;
+		occupiedHexagon = to;
+		occupiedHexagon.occupierUnit = this;
+		remainingMovesThisTurn -= tempPath.Count - 1;
+		RpcMove(to);
+		if(remainingMovesThisTurn == 0)
+		{
+			isInMoveMode = false;
+		}
+		else
+		{
+			UpdateOutlinesServer();
 		}
 	}
 
 	[TargetRpc]
-	public void RpcMove(NetworkConnection target, TerrainHexagon to, int pathLength)
+	public void RpcSetIsInMoveMode(bool newIsInMoveMode)
 	{
-		remainingMovesThisTurn -= pathLength - 1;
+		SetIsInMoveMode(newIsInMoveMode);
+	}
+
+	[TargetRpc]
+	public void RpcMove(TerrainHexagon to)
+	{
 		transform.position = to.transform.position;
-		if (remainingMovesThisTurn == 0)
-		{
-			IsInMoveMode = false;
-		}
-		else
-		{
+
+		/*{
 			Invoke("UpdateOutlines", Time.fixedDeltaTime);
 			//UpdateOutlines();
-		}
+		}*/
 	}
 
-
-	private void UpdateOutlines()
+	[Server]
+	private void UpdateOutlinesServer()
 	{
-		DisableOutlines();
-		if (IsInMoveMode)
+		DisableHexagonOutlines();
+		if (isInMoveMode)
 		{
-			occupiedNeighboursWithinRange.Clear();
-			GetReachablesCmd(this, occupiedHexagon, remainingMovesThisTurn);
+			GetReachables(this);
 		}
 	}
 
-	public void DisableOutlines()
+	
+	private void UpdateOutlinesClient()
+	{
+		CmdRequestDisableHexagonOutlines();
+		if (isInMoveMode)
+		{
+			CmdRequestReachableHexagons(this);
+		}
+	}
+
+	[Command]
+	public void CmdRequestDisableHexagonOutlines()
+	{
+		//oyuncunun hile yapmasini engellemek gelecekte buraya kosullar eklenebilir o yuzden Server tarafina istek atiyorum.
+		DisableHexagonOutlines();
+	}
+
+	[Server]
+	public void DisableHexagonOutlines()
 	{
 		foreach (TerrainHexagon neighbour in neighboursWithinRange)
 		{
-			neighbour.ToggleOutlineVisibility(0, false);
-			neighbour.ToggleOutlineVisibility(1, false);
+			RpcEnableHexagonOutline(neighbour, 0, false);
+			RpcEnableHexagonOutline(neighbour, 1, false);
 		}
 		foreach (TerrainHexagon occupied in occupiedNeighboursWithinRange)
 		{
-			occupied.ToggleOutlineVisibility(0, false);
-			occupied.ToggleOutlineVisibility(1, false);
-		}
-	}
-
-	public void EnableOutlines()
-	{
-		if (IsInMoveMode && (remainingMovesThisTurn > 0))
-		{
-			foreach (TerrainHexagon neighbour in neighboursWithinRange)
-			{
-				if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
-				{
-					neighbour.ToggleOutlineVisibility(1, true);
-				}
-				else
-				{
-					neighbour.ToggleOutlineVisibility(0, true);
-				}
-			}
-			foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
-			{
-				if (occupied_neighbour.occupierUnit.playerID != playerID)
-				{
-					occupied_neighbour.ToggleOutlineVisibility(1, true);
-				}
-			}
-
+			RpcEnableHexagonOutline(occupied, 0, false);
+			RpcEnableHexagonOutline(occupied, 1, false);
 		}
 	}
 
 	[TargetRpc]
-	public void RpcGetReachables(NetworkConnection target, List<TerrainHexagon> reachables, List<TerrainHexagon> occupieds)
+	public void RpcEnableHexagonOutline(TerrainHexagon hexagon, int outlineIndex, bool enable)
 	{
-		neighboursWithinRange = reachables;
-		occupiedNeighboursWithinRange = occupieds;
-		EnableOutlines();
+		hexagon.ToggleOutlineVisibility(outlineIndex, enable);
 	}
 
 	[TargetRpc]
 	public void TryAttackRpc(NetworkConnection target, UnitBase attacker, UnitBase defender)
 	{
-		ValidateAttackCmd(this, defender);
+		CmdValidateAttack(this, defender);
 	}
 
 	[TargetRpc]
@@ -157,44 +182,56 @@ public class UnitBase : NetworkBehaviour
 		if (targetUnitIsDead)
 		{
 			//targetHexagon.occupierUnit = null;
-			UpdateOutlines();
+			UpdateOutlinesClient();
 		}
 	}
 	#endregion
 
 	#region Server
-	[Command]
-	public void CmdGetPath(UnitBase unit, TerrainHexagon from, TerrainHexagon to)
-	{
-		List<TerrainHexagon> tempPath = Map.Instance.AStar(from, to, blockedTerrains);
-		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
-		////////////////////////////////////////
-		///
-		to.occupierUnit = unit;
-		from.occupierUnit = null;
-		occupiedHexagon = to;
-		//transform.position = to.transform.position;
 
-		//Debug.LogWarning(Time.timeSinceLevelLoad + ":setted in server");
-		RpcMove(target.connectionToClient, to, tempPath.Count);
-		//from.occupierUnit = null;
-		//to.occupierUnit = unit;
-		//remainingMovesThisTurn -= tempPath.Count - 1;
-		///
-		////////////////////////////////////////
+	[Command]
+	public void CmdRequestReachableHexagons(UnitBase targetUnit/*, TerrainHexagon blockUnder, int remainingMoves*/)
+	{
+		//in future, implement some logic that will prevent user from cheating. e.g. if it is not this player's turn, ignore this request.
+		if ((targetUnit != null) && (isInMoveMode) && (Map.Instance.UnitToMove == targetUnit) && (remainingMovesThisTurn > 0))
+		{
+			GetReachables(targetUnit);
+		}
+	}
+
+	[Server]
+	public void GetReachables(UnitBase targetUnit)
+	{
+		occupiedNeighboursWithinRange.Clear();
+		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHexagon, remainingMovesThisTurn, blockedTerrains, occupiedNeighboursWithinRange);
+		EnableOutlines();
+	}
+
+	[Server]
+	public void EnableOutlines()
+	{
+		foreach (TerrainHexagon neighbour in neighboursWithinRange)
+		{
+			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
+			{
+				RpcEnableHexagonOutline(neighbour, 1, true);
+			}
+			else
+			{
+				RpcEnableHexagonOutline(neighbour, 0, true);
+			}
+		}
+		foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
+		{
+			if (occupied_neighbour.occupierUnit.playerID != playerID)
+			{
+				RpcEnableHexagonOutline(occupied_neighbour, 1, true);
+			}
+		}
 	}
 
 	[Command]
-	public void GetReachablesCmd(UnitBase targetUnit, TerrainHexagon blockUnder, int remainingMoves)
-	{
-		List<TerrainHexagon> occupieds = new List<TerrainHexagon>();
-		List<TerrainHexagon> tempReachables = Map.Instance.GetReachableHexagons(blockUnder, remainingMoves, blockedTerrains, occupieds);
-		NetworkIdentity target = targetUnit.GetComponent<NetworkIdentity>();
-		RpcGetReachables(target.connectionToClient, tempReachables, occupieds);
-	}
-
-	[Command]
-	public void ToggleActionModeCmd(UnitBase unit)
+	public void CmdToggleActionMode(UnitBase unit)
 	{
 		if (unit == null)
 		{
@@ -208,7 +245,7 @@ public class UnitBase : NetworkBehaviour
 	}
 
 	[Command]
-	public void ValidateAttackCmd(UnitBase attacker, UnitBase target)
+	public void CmdValidateAttack(UnitBase attacker, UnitBase target)
 	{
 		if (/*!attacker.hasAttacked*/ true)
 		{

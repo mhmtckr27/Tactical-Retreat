@@ -84,37 +84,40 @@ public class TownCenter : NetworkBehaviour
 		{
 			if (hasAuthority)
 			{
-				RpcValidateUnitSelection(target.connectionToClient, unit, true);
+				//RpcValidateUnitSelection(/*target.connectionToClient,*/ unit, true);
+				unit.SetIsInMoveMode(true);
 			}
 		}
 		else if (Map.Instance.UnitToMove != unit)
 		{
 			if (hasAuthority)
 			{
-				RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
-				RpcValidateUnitSelection(target.connectionToClient, unit, true);
+				//RpcValidateUnitSelection(/*target2.connectionToClient, */Map.Instance.UnitToMove, false);
+				//RpcValidateUnitSelection(/*target.connectionToClient,*/ unit, true);
+				Map.Instance.UnitToMove.SetIsInMoveMode(false);
+				unit.SetIsInMoveMode(true);
 			}
 			else
 			{
 				NetworkIdentity targetIdentity = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
 				Map.Instance.UnitToMove.TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
-				Debug.LogWarning("saldirmak istiyor");
 			}
 		}
 		else
 		{
 			if (hasAuthority)
 			{
-				RpcValidateUnitSelection(target2.connectionToClient, Map.Instance.UnitToMove, false);
+				//RpcValidateUnitSelection(/*target2.connectionToClient,*/ Map.Instance.UnitToMove, false);
+				Map.Instance.UnitToMove.SetIsInMoveMode(false);
 			}
 		}
 	}
 
-	[TargetRpc]
-	public void RpcValidateUnitSelection(NetworkConnection target, UnitBase unit, bool isInMoveMode)
-	{
+	//[Server]
+	//public void RpcValidateUnitSelection(/*NetworkConnection target, */UnitBase unit, bool isInMoveMode)
+	/*{
 		unit.IsInMoveMode = isInMoveMode;
-	}
+	}*/
 
 	[Command]
 	public void ValidateTownCenterSelectionCmd(TownCenter townCenter)
@@ -137,8 +140,9 @@ public class TownCenter : NetworkBehaviour
 	{
 		if (Map.Instance.currentState == State.UnitAction)
 		{
-			NetworkIdentity target = townCenter.GetComponent<NetworkIdentity>();
-			RpcMove(target.connectionToClient, Map.Instance.UnitToMove, terrainHexagon);
+			//NetworkIdentity target = townCenter.GetComponent<NetworkIdentity>();
+			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
+			//RpcMove(target.connectionToClient, Map.Instance.UnitToMove, terrainHexagon);
 		}
 	}
 
