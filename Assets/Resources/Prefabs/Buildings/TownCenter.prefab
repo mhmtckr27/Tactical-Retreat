@@ -105,11 +105,11 @@ MonoBehaviour:
   unitMask:
     serializedVersion: 2
     m_Bits: 64
-  tcUI: {fileID: 1471058195259015170, guid: 6ec3a96ea1e2b2540a353e2639d69fb2, type: 3}
+  townCenterUIPrefab: {fileID: 1471058195259015170, guid: 6ec3a96ea1e2b2540a353e2639d69fb2,
+    type: 3}
   occupiedHex: {fileID: 0}
   playerID: 0
-  townCenterUI: {fileID: 1471058195259015182, guid: 6ec3a96ea1e2b2540a353e2639d69fb2,
-    type: 3}
+  townCenterUI: {fileID: 0}
 --- !u!65 &1489597791624781477
 BoxCollider:
   m_ObjectHideFlags: 0

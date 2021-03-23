@@ -67,6 +67,7 @@ public class Map : NetworkBehaviour
 		NetworkServer.Spawn(unit);
 	}
 
+	[Server]
 	public void GenerateMap()
 	{
 		string coordinate_key = 0 + "_" + 0 + "_" + 0;
@@ -163,6 +164,7 @@ public class Map : NetworkBehaviour
 	}
 
 	//replace water blocks that are single (don't have any water neighbour) with random ground block.
+	[Server]
 	public void DilateMap()
 	{
 		List<string> dilateWaterBlocks = new List<string>();
@@ -245,6 +247,7 @@ public class Map : NetworkBehaviour
 		}
 	}
 
+	[Server]
 	private GameObject GetRandomBlock()
 	{
 		float result = Random.Range((float)0, 1);
@@ -260,6 +263,7 @@ public class Map : NetworkBehaviour
 		return terrainPrefabs[index].blockPrefab;
 	}
 
+	[Server]
 	private GameObject GetRandomBlockExceptWater()
 	{
 		GameObject temp;
@@ -270,12 +274,14 @@ public class Map : NetworkBehaviour
 		return temp;
 	}
 
+	[Server]
 	private GameObject GetWaterBlock()
 	{
 		return terrainPrefabs[1].blockPrefab;
 	}
 
 	//this function gets all neighbours within certain distance, no matter if blocked or water block etc.
+	[Server]
 	public List<TerrainHexagon> GetDistantHexagons(TerrainHexagon block, int distance) 
 	{ 
 		List<TerrainHexagon> neighbours = new List<TerrainHexagon>(); 
@@ -294,6 +300,7 @@ public class Map : NetworkBehaviour
 	}
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
+	[Server]
 	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start, int distance, List<TerrainType> blockedHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
 	{
 		List<TerrainHexagon> reachableHexagons = new List<TerrainHexagon>();
@@ -329,11 +336,13 @@ public class Map : NetworkBehaviour
 		return reachableHexagons;
 	}
 
+	[Server]
 	public int GetDistanceBetweenTwoBlocks(TerrainHexagon hex1, TerrainHexagon hex2)
 	{
 		return Mathf.Max(Mathf.Abs(hex1.Coordinates[0] - hex2.Coordinates[0]), Mathf.Abs(hex1.Coordinates[1] - hex2.Coordinates[1]), Mathf.Abs(hex1.Coordinates[2] - hex2.Coordinates[2]));
 	}
 
+	[Server]
 	public TerrainHexagon GetNeighbourInDirection(TerrainHexagon hexagon, int direction)
 	{
 		if (mapDictionary.ContainsKey(hexagon.NeighbourKeys[direction]))
@@ -343,6 +352,7 @@ public class Map : NetworkBehaviour
 		return null;
 	}
 
+	[Server]
 	public List<TerrainHexagon> AStar(TerrainHexagon from, TerrainHexagon to, List<TerrainType> blockedTerrains)
 	{
 		PriorityQueue<TerrainHexagon> frontier = new PriorityQueue<TerrainHexagon>(true);

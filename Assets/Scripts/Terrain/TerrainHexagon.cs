@@ -27,13 +27,9 @@ public class TerrainHexagon : NetworkBehaviour
 	public string Neighbour_NW { get => neighbour_NW; set => neighbour_NW = value; }
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
 
-	[SerializeField] [SyncVar/*(hook = nameof(SetOccupierUnit))*/] public UnitBase occupierUnit;
-/*	public void SetOccupierUnit(UnitBase oldUnit, UnitBase newUnit)
-	{
-		occupierUnit = newUnit;
-	}*/
+	[SyncVar] public UnitBase occupierUnit;
 
-	[SerializeField] private TownCenter occupierBuilding;
+	[SerializeField][SyncVar] private TownCenter occupierBuilding;
 	public TownCenter OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
 
 	private void Awake()

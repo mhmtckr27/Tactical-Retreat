@@ -226,6 +226,8 @@ MonoBehaviour:
   clientIndex: 0
   MapPrefab: {fileID: 8817684899006194439, guid: 8a2f449168da25c4ab93ead9c0278732,
     type: 3}
+  onlineGameManagerPrefab: {fileID: 4514765268696048673, guid: 53b2249cae60edc4f8b6f59eaebfc629,
+    type: 3}
 --- !u!4 &526372897
 Transform:
   m_ObjectHideFlags: 0

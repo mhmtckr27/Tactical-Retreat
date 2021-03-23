@@ -115,6 +115,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   terrainType: 0
+  occupierUnit: {fileID: 0}
   occupierBuilding: {fileID: 0}
 --- !u!1001 &371122808750307631
 PrefabInstance:

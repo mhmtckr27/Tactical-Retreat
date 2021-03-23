@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  mapWidth: 4
+  mapWidth: 10
   peasant: {fileID: 4916091697271400686, guid: 339e374e2506bb24ead44b045d668a19, type: 3}
   terrainPrefabs:
   - blockPrefab: {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a,

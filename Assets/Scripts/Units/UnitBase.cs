@@ -37,7 +37,7 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
-	private int remainingMovesThisTurn;
+	[SyncVar] private int remainingMovesThisTurn;
 	List<TerrainHexagon> neighboursWithinRange;
 	List<TerrainHexagon> occupiedNeighboursWithinRange;
 
@@ -59,28 +59,24 @@ public class UnitBase : NetworkBehaviour
 		}
 		else
 		{
-			GetPath(this, occupiedHexagon, hex);
+			CmdGetPath(this, occupiedHexagon, hex);
 			return true;
 		}
 	}
 
 	[TargetRpc]
-	public void RpcMove(NetworkConnection target, TerrainHexagon to, int pathLength)
+	public void RpcMove(TerrainHexagon to, int pathLength)
 	{
 		remainingMovesThisTurn -= pathLength - 1;
 		transform.position = to.transform.position;
-		////////////////////////////////////////
-		occupiedHexagon.occupierUnit = null;
-		occupiedHexagon = to;
-		occupiedHexagon.occupierUnit = this;
-		////////////////////////////////////////
 		if (remainingMovesThisTurn == 0)
 		{
 			IsInMoveMode = false;
 		}
 		else
 		{
-			UpdateOutlines();
+			Invoke("UpdateOutlines", Time.fixedDeltaTime);
+			//UpdateOutlines();
 		}
 	}
 
@@ -161,18 +157,21 @@ public class UnitBase : NetworkBehaviour
 
 	#region Server
 	[Command]
-	public void GetPath(UnitBase unit, TerrainHexagon from, TerrainHexagon to)
+	public void CmdGetPath(UnitBase unit, TerrainHexagon from, TerrainHexagon to)
 	{
 		List<TerrainHexagon> tempPath = Map.Instance.AStar(from, to, blockedTerrains);
 		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
 		////////////////////////////////////////
 		///
-		from.occupierUnit = null;
-		unit.occupiedHexagon = to;
 		to.occupierUnit = unit;
+		from.occupierUnit = null;
+		occupiedHexagon = to;
+		RpcMove(to, tempPath.Count);
+		//from.occupierUnit = null;
+		//to.occupierUnit = unit;
+		//remainingMovesThisTurn -= tempPath.Count - 1;
 		///
 		////////////////////////////////////////
-		RpcMove(target.connectionToClient, to, tempPath.Count);
 	}
 
 	[Command]
@@ -215,7 +214,7 @@ public class UnitBase : NetworkBehaviour
 			{
 				TerrainHexagon tempHexagon = target.occupiedHexagon;
 				///Handle Death
-				NetworkRoomManagerWoT.Instance.UnregisterUnit(target.playerID, target);
+				OnlineGameManager.Instance.UnregisterUnit(target.playerID, target);
 				tempHexagon.occupierUnit = null;
 				NetworkServer.Destroy(target.gameObject);
 				EndAttackRpc(attackerIdentity.connectionToClient, true, tempHexagon);

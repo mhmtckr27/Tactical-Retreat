@@ -7,25 +7,18 @@ using Mirror;
 public class TownCenter : NetworkBehaviour
 {
 	public LayerMask unitMask;
-	public GameObject tcUI;
-	public TerrainHexagon occupiedHex;
-	[SyncVar]public uint playerID;
+	public GameObject townCenterUIPrefab;
+	[SyncVar] public TerrainHexagon occupiedHex;
+	[SyncVar] public uint playerID;
 
 	private bool menu_visible = false;
 	public TownCenterUI townCenterUI;
-	private bool isConquered = false;
-
-	//if player loses all players AND loses town center, he/she will lose the game.
-	/*private List<UnitBase> units;
-	public List<UnitBase> Units { get => units; set => units = value; }*/
+	[SyncVar] private bool isConquered = false;
 
 	private void Start()
 	{
-		//if(!hasAuthority) { return; }
-
-		townCenterUI = Instantiate(tcUI, GameObject.Find("Canvas").transform).GetComponent<TownCenterUI>();
+		townCenterUI = Instantiate(townCenterUIPrefab, GameObject.Find("Canvas").transform).GetComponent<TownCenterUI>();
 		townCenterUI.townCenter = this;
-		//Units = new List<UnitBase>();
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{
@@ -33,8 +26,20 @@ public class TownCenter : NetworkBehaviour
 			occupiedHex.OccupierBuilding = this;
 		}
 		playerID = netId;
-		NetworkRoomManagerWoT.Instance.RegisterPlayer(this);
 	}
+	public override void OnStartClient()
+	{
+		if(!hasAuthority) { return; }
+
+		base.OnStartClient();
+		CmdRegisterPlayer();
+	}
+	[Command]
+	public void CmdRegisterPlayer()
+	{
+		OnlineGameManager.Instance.RegisterPlayer(this);
+	}
+
 	private void Update()
 	{
 		if (!hasAuthority) { return; }
@@ -165,14 +170,14 @@ public class TownCenter : NetworkBehaviour
 	{
 		NetworkIdentity target = owner.GetComponent<NetworkIdentity>();
 		GameObject temp = Instantiate(NetworkRoomManagerWoT.Instance.spawnPrefabs.Find(prefab => prefab.name == "Peasant"), transform.position, Quaternion.identity);
-		NetworkServer.Spawn(temp, owner.gameObject);
+		NetworkServer.Spawn(temp, target.connectionToClient);
 		/////////////////
-		owner.occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
-		temp.GetComponent<UnitBase>().occupiedHexagon = owner.occupiedHex;
-		NetworkRoomManagerWoT.Instance.RegisterUnit(owner.netId, temp.GetComponent<UnitBase>());
-		temp.GetComponent<UnitBase>().playerID = owner.netId;
+		occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
+		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
+		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
+		temp.GetComponent<UnitBase>().playerID = netId;
 		//////////////////
-		RpcUnitCreated(target.connectionToClient, temp.GetComponent<UnitBase>());
+		//RpcUnitCreated(target.connectionToClient, temp.GetComponent<UnitBase>());
 	}
 
 	[TargetRpc]
