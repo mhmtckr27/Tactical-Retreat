@@ -9,6 +9,7 @@ public class TerrainHexagon : NetworkBehaviour
 	[SerializeField] public TerrainType terrainType;
 	private GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
+	private string key;
 
 	private List<string> neighbourKeys;
 	private string neighbour_N;
@@ -26,6 +27,7 @@ public class TerrainHexagon : NetworkBehaviour
 	public string Neighbour_SW { get => neighbour_SW; set => neighbour_SW = value; }
 	public string Neighbour_NW { get => neighbour_NW; set => neighbour_NW = value; }
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
+	public string Key { get => key; }
 
 	[SyncVar] public UnitBase occupierUnit;
 
@@ -49,6 +51,8 @@ public class TerrainHexagon : NetworkBehaviour
 		Coordinates[0] = x;
 		Coordinates[1] = y;
 		Coordinates[2] = z;
+
+		key = x + "_" + y + "_" + z;
 
 		SetNeighbourCoordinates();
 	}

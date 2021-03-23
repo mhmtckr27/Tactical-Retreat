@@ -13,7 +13,13 @@ public class UnitBase : NetworkBehaviour
 	[SerializeField] private int maxMovesEachTurn;
 	[SerializeField] private int attackRange;
 	[SerializeField][SyncVar] private bool hasAttacked = false;
+
 	[SyncVar] public TerrainHexagon occupiedHexagon;
+	/*[SyncVar(hook = nameof(dene))] public TerrainHexagon occupiedHexagon;
+	public void dene(TerrainHexagon old, TerrainHexagon yeni)
+	{
+		CmdTest(":reflected to client");
+	}*/
 
 	[SyncVar]public uint playerID;
 	public List<TerrainType> blockedTerrains;
@@ -65,7 +71,7 @@ public class UnitBase : NetworkBehaviour
 	}
 
 	[TargetRpc]
-	public void RpcMove(TerrainHexagon to, int pathLength)
+	public void RpcMove(NetworkConnection target, TerrainHexagon to, int pathLength)
 	{
 		remainingMovesThisTurn -= pathLength - 1;
 		transform.position = to.transform.position;
@@ -79,6 +85,7 @@ public class UnitBase : NetworkBehaviour
 			//UpdateOutlines();
 		}
 	}
+
 
 	private void UpdateOutlines()
 	{
@@ -166,7 +173,10 @@ public class UnitBase : NetworkBehaviour
 		to.occupierUnit = unit;
 		from.occupierUnit = null;
 		occupiedHexagon = to;
-		RpcMove(to, tempPath.Count);
+		//transform.position = to.transform.position;
+
+		//Debug.LogWarning(Time.timeSinceLevelLoad + ":setted in server");
+		RpcMove(target.connectionToClient, to, tempPath.Count);
 		//from.occupierUnit = null;
 		//to.occupierUnit = unit;
 		//remainingMovesThisTurn -= tempPath.Count - 1;

@@ -397,6 +397,19 @@ public class Map : NetworkBehaviour
 		path.Insert(0, from);
 		return path;
 	}
+
+	/*[Server]
+	public void SetTerrainHexagonOccupier(TerrainHexagon hexagon, UnitBase occupierUnit)
+	{
+		if (mapDictionary.ContainsValue(hexagon))
+		{
+			mapDictionary[hexagon.Key].occupierUnit = occupierUnit;
+		}
+		if(occupierUnit != null)
+		{
+			occupierUnit.occupiedHexagon = hexagon;
+		}
+	}*/
 }
 
 public enum State
