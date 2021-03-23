@@ -9,21 +9,23 @@ public class TownCenter : NetworkBehaviour
 	public LayerMask unitMask;
 	public GameObject tcUI;
 	public TerrainHexagon occupiedHex;
-	public uint playerID;
+	[SyncVar]public uint playerID;
 
 	private bool menu_visible = false;
 	public TownCenterUI townCenterUI;
 	private bool isConquered = false;
 
 	//if player loses all players AND loses town center, he/she will lose the game.
-	private List<UnitBase> units;
-	public List<UnitBase> Units { get => units; set => units = value; }
+	/*private List<UnitBase> units;
+	public List<UnitBase> Units { get => units; set => units = value; }*/
 
 	private void Start()
 	{
+		//if(!hasAuthority) { return; }
+
 		townCenterUI = Instantiate(tcUI, GameObject.Find("Canvas").transform).GetComponent<TownCenterUI>();
 		townCenterUI.townCenter = this;
-		Units = new List<UnitBase>();
+		//Units = new List<UnitBase>();
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{
@@ -31,21 +33,18 @@ public class TownCenter : NetworkBehaviour
 			occupiedHex.OccupierBuilding = this;
 		}
 		playerID = netId;
+		NetworkRoomManagerWoT.Instance.RegisterPlayer(this);
 	}
-
-	[Client]
 	private void Update()
 	{
 		if (!hasAuthority) { return; }
 		if (!Input.GetMouseButtonDown(0)) { return; }
-
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
 		{
 			UnitBase unit = hit.collider.GetComponent<UnitBase>();
 			if (unit != null)
 			{
-				//Debug.LogWarning("unit");
 				ValidateUnitSelectionCmd(unit, unit.hasAuthority);
 			}
 			else
@@ -53,63 +52,18 @@ public class TownCenter : NetworkBehaviour
 				TownCenter townCenter = hit.collider.GetComponent<TownCenter>();
 				if (townCenter != null)
 				{
-					//Debug.LogWarning("tc");
 					ValidateTownCenterSelectionCmd(townCenter);
-					#region comment
-					/*else
-					{
-						if (Map.Instance.UnitToMove.playerID == temp2.playerID)
-						{
-							Map.Instance.UnitToMove.TryMoveTo(temp2.occupiedHex);
-						}
-						else
-						{
-							if (temp2.occupiedHex.OccupierUnit != null)
-							{
-								if (temp2.occupiedHex.OccupierUnit.playerID == Map.Instance.UnitToMove.playerID)
-								{
-									Map.Instance.UnitToMove.IsInMoveMode = false;
-									temp2.occupiedHex.OccupierUnit.IsInMoveMode = true;
-								}
-								else
-								{
-									Map.Instance.UnitToMove.Attack(temp2.occupiedHex.OccupierUnit);
-								}
-							}
-							else
-							{
-								//try to occupy the building.
-							}
-						}
-					}*/
-					#endregion
 				}
 				else
 				{
-					//Debug.LogWarning("hex");
 					TerrainHexagon terrainHexagon = hit.collider.GetComponent<TerrainHexagon>();
 					if(terrainHexagon != null)
 					{
-						//Debug.LogWarning("first+");
 						ValidateTerrainHexagonSelectionCmd(this, terrainHexagon);
 					}
 				}
 			}
 		}
-		#region comment
-		/*if (Map.Instance.UnitToMove != null && Input.GetMouseButtonDown(0))
-		{
-			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-			{
-				UnitBase temp = hit.collider.GetComponent<UnitBase>();
-				if (temp != null && Map.Instance.UnitToMove.playerID != temp.playerID)
-				{
-					Debug.Log("saldirildi");
-				}
-			}
-		}
-		*/
-		#endregion
 	}
 
 	[Command]
@@ -139,8 +93,6 @@ public class TownCenter : NetworkBehaviour
 			{
 				NetworkIdentity targetIdentity = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
 				Map.Instance.UnitToMove.TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
-				//TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
-				//Map.Instance.UnitToMove.ValidateAttackCmd(Map.Instance.UnitToMove, unit);
 				Debug.LogWarning("saldirmak istiyor");
 			}
 		}
@@ -152,12 +104,6 @@ public class TownCenter : NetworkBehaviour
 			}
 		}
 	}
-
-	/*[TargetRpc]
-	public void TryAttackRpc(NetworkConnection targetConn, UnitBase attacker, UnitBase target)
-	{
-		attacker.TryAttack(target);
-	}*/
 
 	[TargetRpc]
 	public void RpcValidateUnitSelection(NetworkConnection target, UnitBase unit, bool isInMoveMode)
@@ -223,6 +169,8 @@ public class TownCenter : NetworkBehaviour
 		/////////////////
 		owner.occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
 		temp.GetComponent<UnitBase>().occupiedHexagon = owner.occupiedHex;
+		NetworkRoomManagerWoT.Instance.RegisterUnit(owner.netId, temp.GetComponent<UnitBase>());
+		temp.GetComponent<UnitBase>().playerID = owner.netId;
 		//////////////////
 		RpcUnitCreated(target.connectionToClient, temp.GetComponent<UnitBase>());
 	}
@@ -230,20 +178,19 @@ public class TownCenter : NetworkBehaviour
 	[TargetRpc]
 	public void RpcUnitCreated(NetworkConnection target, UnitBase createdUnit)
 	{
-		createdUnit.playerID = playerID;
 		//////////////////////////
 	//	createdUnit.occupiedHexagon = occupiedHex;
 	//	occupiedHex.OccupierUnit = createdUnit;
 		//////////////////////////
-		Units.Add(createdUnit);
+		//Units.Add(createdUnit);
 	}
 
-	public void UnitDied(UnitBase unitBase)
+	/*public void UnitDied(UnitBase unitBase)
 	{
 		Units.Remove(unitBase);
 		if(Units.Count == 0 && isConquered)
 		{
 			//Game over for this player.
 		}
-	}
+	}*/
 }
