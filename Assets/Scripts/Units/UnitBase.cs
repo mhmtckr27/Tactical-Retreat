@@ -13,42 +13,30 @@ public class UnitBase : NetworkBehaviour
 	[SerializeField] private int maxMovesEachTurn;
 	[SerializeField] private int attackRange;
 	[SerializeField][SyncVar] private bool hasAttacked = false;
-
-	[SyncVar] public TerrainHexagon occupiedHexagon;
-
 	[SyncVar]public uint playerID;
-	public List<TerrainType> blockedTerrains;
 
-	
-	[SyncVar(hook = nameof(OnIsInMoveModeChange))] public bool isInMoveMode = false;
-	public void SetIsInMoveMode(bool newIsInMoveMode)
-	{
-		CmdSetIsInMoveMode(newIsInMoveMode);
-	}
-	public void CmdSetIsInMoveMode(bool newIsInMoveMode)
-	{
-		isInMoveMode = newIsInMoveMode;
-	}	
-	
+	[SyncVar] List<TerrainHexagon> neighboursWithinRange;
+	[SyncVar] List<TerrainHexagon> occupiedNeighboursWithinRange;
+	public List<TerrainType> blockedTerrains;
+	[SyncVar] public TerrainHexagon occupiedHexagon;
+	[SyncVar] private int remainingMovesThisTurn;
+
+	[SyncVar(hook = nameof(OnIsInMoveModeChange))] public bool isInMoveMode = false;	
 	public void OnIsInMoveModeChange(bool oldValue, bool newValue)
 	{
 		if (!hasAuthority) { return; }
 
 		if (newValue)
 		{
-			CmdToggleActionMode(this);
+			CmdRequestToggleActionMode(this);
 		}
 		else
 		{
-			CmdToggleActionMode(null);
+			CmdRequestToggleActionMode(null);
 		}
 		UpdateOutlinesClient();
 	}
-
-	[SyncVar] private int remainingMovesThisTurn;
-	[SyncVar] List<TerrainHexagon> neighboursWithinRange;
-	[SyncVar] List<TerrainHexagon> occupiedNeighboursWithinRange;
-
+	
 	#region Client
 	private void Awake()
 	{
@@ -60,15 +48,105 @@ public class UnitBase : NetworkBehaviour
 
 	public bool TryMoveTo(TerrainHexagon to)
 	{
-		if(!hasAuthority) { return false; }
+		if (!hasAuthority) { return false; }
 		CmdRequestToMove(to);
 		return true;
+	}
+	private void UpdateOutlinesClient()
+	{
+		CmdRequestDisableHexagonOutlines();
+		if (isInMoveMode)
+		{
+			CmdRequestReachableHexagons(this);
+		}
+	}
+
+	[TargetRpc]
+	public void RpcMove(TerrainHexagon to)
+	{
+		transform.position = to.transform.position;
+	}	
+	
+	[TargetRpc]
+	public void RpcEnableHexagonOutline(TerrainHexagon hexagon, int outlineIndex, bool enable)
+	{
+		hexagon.ToggleOutlineVisibility(outlineIndex, enable);
+	}
+
+	[TargetRpc]
+	public void TryAttackRpc(NetworkConnection target, UnitBase attacker, UnitBase defender)
+	{
+		CmdValidateAttack(this, defender);
+	}
+
+	[TargetRpc]
+	public void EndAttackRpc(NetworkConnection targetConn, bool targetUnitIsDead, TerrainHexagon targetHexagon)
+	{
+		if (targetUnitIsDead)
+		{
+			//targetHexagon.occupierUnit = null;
+			UpdateOutlinesClient();
+		}
+	}
+	#endregion
+
+	#region Server
+	[Server]
+	public void SetIsInMoveMode(bool newIsInMoveMode)
+	{
+		isInMoveMode = newIsInMoveMode;
+	}
+
+	[Server]
+	public void GetReachables(UnitBase targetUnit)
+	{
+		occupiedNeighboursWithinRange.Clear();
+		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHexagon, remainingMovesThisTurn, blockedTerrains, occupiedNeighboursWithinRange);
+		EnableOutlines();
+	}
+
+	[Server]
+	public void DisableHexagonOutlines()
+	{
+		foreach (TerrainHexagon neighbour in neighboursWithinRange)
+		{
+			RpcEnableHexagonOutline(neighbour, 0, false);
+			RpcEnableHexagonOutline(neighbour, 1, false);
+		}
+		foreach (TerrainHexagon occupied in occupiedNeighboursWithinRange)
+		{
+			RpcEnableHexagonOutline(occupied, 0, false);
+			RpcEnableHexagonOutline(occupied, 1, false);
+		}
+	}
+
+	[Server]
+	public void EnableOutlines()
+	{
+		foreach (TerrainHexagon neighbour in neighboursWithinRange)
+		{
+			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
+			{
+				RpcEnableHexagonOutline(neighbour, 1, true);
+			}
+			else
+			{
+				RpcEnableHexagonOutline(neighbour, 0, true);
+			}
+		}
+		foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
+		{
+			if (occupied_neighbour.occupierUnit.playerID != playerID)
+			{
+				RpcEnableHexagonOutline(occupied_neighbour, 1, true);
+			}
+		}
 	}
 
 	[Server]
 	public void CmdRequestToMove(TerrainHexagon to)
 	{
-		if(!hasAuthority) { return; }
+		if (!hasAuthority) { return; }
 		ValidateRequestToMove(to);
 	}
 
@@ -95,7 +173,7 @@ public class UnitBase : NetworkBehaviour
 		occupiedHexagon.occupierUnit = this;
 		remainingMovesThisTurn -= tempPath.Count - 1;
 		RpcMove(to);
-		if(remainingMovesThisTurn == 0)
+		if (remainingMovesThisTurn == 0)
 		{
 			isInMoveMode = false;
 		}
@@ -103,23 +181,6 @@ public class UnitBase : NetworkBehaviour
 		{
 			UpdateOutlinesServer();
 		}
-	}
-
-	[TargetRpc]
-	public void RpcSetIsInMoveMode(bool newIsInMoveMode)
-	{
-		SetIsInMoveMode(newIsInMoveMode);
-	}
-
-	[TargetRpc]
-	public void RpcMove(TerrainHexagon to)
-	{
-		transform.position = to.transform.position;
-
-		/*{
-			Invoke("UpdateOutlines", Time.fixedDeltaTime);
-			//UpdateOutlines();
-		}*/
 	}
 
 	[Server]
@@ -131,64 +192,9 @@ public class UnitBase : NetworkBehaviour
 			GetReachables(this);
 		}
 	}
-
-	
-	private void UpdateOutlinesClient()
-	{
-		CmdRequestDisableHexagonOutlines();
-		if (isInMoveMode)
-		{
-			CmdRequestReachableHexagons(this);
-		}
-	}
-
-	[Command]
-	public void CmdRequestDisableHexagonOutlines()
-	{
-		//oyuncunun hile yapmasini engellemek gelecekte buraya kosullar eklenebilir o yuzden Server tarafina istek atiyorum.
-		DisableHexagonOutlines();
-	}
-
-	[Server]
-	public void DisableHexagonOutlines()
-	{
-		foreach (TerrainHexagon neighbour in neighboursWithinRange)
-		{
-			RpcEnableHexagonOutline(neighbour, 0, false);
-			RpcEnableHexagonOutline(neighbour, 1, false);
-		}
-		foreach (TerrainHexagon occupied in occupiedNeighboursWithinRange)
-		{
-			RpcEnableHexagonOutline(occupied, 0, false);
-			RpcEnableHexagonOutline(occupied, 1, false);
-		}
-	}
-
-	[TargetRpc]
-	public void RpcEnableHexagonOutline(TerrainHexagon hexagon, int outlineIndex, bool enable)
-	{
-		hexagon.ToggleOutlineVisibility(outlineIndex, enable);
-	}
-
-	[TargetRpc]
-	public void TryAttackRpc(NetworkConnection target, UnitBase attacker, UnitBase defender)
-	{
-		CmdValidateAttack(this, defender);
-	}
-
-	[TargetRpc]
-	public void EndAttackRpc(NetworkConnection targetConn, bool targetUnitIsDead, TerrainHexagon targetHexagon)
-	{
-		if (targetUnitIsDead)
-		{
-			//targetHexagon.occupierUnit = null;
-			UpdateOutlinesClient();
-		}
-	}
 	#endregion
 
-	#region Server
-
+	#region Command (Sending requests to server from client)
 	[Command]
 	public void CmdRequestReachableHexagons(UnitBase targetUnit/*, TerrainHexagon blockUnder, int remainingMoves*/)
 	{
@@ -198,40 +204,15 @@ public class UnitBase : NetworkBehaviour
 			GetReachables(targetUnit);
 		}
 	}
-
-	[Server]
-	public void GetReachables(UnitBase targetUnit)
+	[Command]
+	public void CmdRequestDisableHexagonOutlines()
 	{
-		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHexagon, remainingMovesThisTurn, blockedTerrains, occupiedNeighboursWithinRange);
-		EnableOutlines();
-	}
-
-	[Server]
-	public void EnableOutlines()
-	{
-		foreach (TerrainHexagon neighbour in neighboursWithinRange)
-		{
-			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
-			{
-				RpcEnableHexagonOutline(neighbour, 1, true);
-			}
-			else
-			{
-				RpcEnableHexagonOutline(neighbour, 0, true);
-			}
-		}
-		foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
-		{
-			if (occupied_neighbour.occupierUnit.playerID != playerID)
-			{
-				RpcEnableHexagonOutline(occupied_neighbour, 1, true);
-			}
-		}
+		//oyuncunun hile yapmasini engellemek gelecekte buraya kosullar eklenebilir o yuzden Server tarafina istek atiyorum.
+		DisableHexagonOutlines();
 	}
 
 	[Command]
-	public void CmdToggleActionMode(UnitBase unit)
+	public void CmdRequestToggleActionMode(UnitBase unit)
 	{
 		if (unit == null)
 		{

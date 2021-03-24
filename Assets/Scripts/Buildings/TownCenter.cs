@@ -113,12 +113,6 @@ public class TownCenter : NetworkBehaviour
 		}
 	}
 
-	//[Server]
-	//public void RpcValidateUnitSelection(/*NetworkConnection target, */UnitBase unit, bool isInMoveMode)
-	/*{
-		unit.IsInMoveMode = isInMoveMode;
-	}*/
-
 	[Command]
 	public void ValidateTownCenterSelectionCmd(TownCenter townCenter)
 	{
