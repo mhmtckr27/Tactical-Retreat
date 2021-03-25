@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8709254023337000433}
   - component: {fileID: 6861668520144685371}
   - component: {fileID: -2089965694827543697}
-  - component: {fileID: 238405972902103047}
-  - component: {fileID: 4302677172907825873}
   - component: {fileID: 3219301529790643826}
+  - component: {fileID: 4302677172907825873}
+  - component: {fileID: 238405972902103047}
   m_Layer: 6
   m_Name: Peasant
   m_TagString: Untagged
@@ -105,41 +105,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.50244397, y: 1.4216712, z: 0.34190604}
   m_Center: {x: 0, y: 0.7108356, z: -0.048580438}
---- !u!114 &238405972902103047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4916091697271400686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  visible: 0
-  m_AssetId: 
-  hasSpawned: 0
---- !u!114 &4302677172907825873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4916091697271400686}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  clientAuthority: 1
-  localPositionSensitivity: 0.01
-  localRotationSensitivity: 0.01
-  localScaleSensitivity: 0.01
 --- !u!114 &3219301529790643826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,7 +126,42 @@ MonoBehaviour:
   maxMovesEachTurn: 3
   attackRange: 1
   hasAttacked: 0
-  occupiedHexagon: {fileID: 0}
   playerID: 0
   blockedTerrains: 01000000
+  occupiedHexagon: {fileID: 0}
   isInMoveMode: 0
+--- !u!114 &4302677172907825873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916091697271400686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+--- !u!114 &238405972902103047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916091697271400686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0

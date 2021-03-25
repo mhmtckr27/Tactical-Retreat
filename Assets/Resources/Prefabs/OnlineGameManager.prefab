@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4514765268696048676}
   - component: {fileID: 4514765268696048678}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: OnlineGameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -63,3 +63,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  totalPlayerCount: 2

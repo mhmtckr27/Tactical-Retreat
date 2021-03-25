@@ -123,7 +123,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1471058195259015182}
         m_TargetAssemblyTypeName: TownCenterUI, Assembly-CSharp
-        m_MethodName: CreateUnit
+        m_MethodName: CreateUnitRequest
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 987987425804507553, guid: e249a86e65599274c93db8113a4d56c3,
@@ -568,7 +568,7 @@ GameObject:
   - component: {fileID: 1471058195259015168}
   - component: {fileID: 1471058195259015182}
   m_Layer: 5
-  m_Name: TownCenterBottomBar
+  m_Name: TownCenterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -769,7 +769,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1471058195259015182}
         m_TargetAssemblyTypeName: TownCenterUI, Assembly-CSharp
-        m_MethodName: CreateUnit
+        m_MethodName: CreateUnitRequest
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 4916091697271400686, guid: 339e374e2506bb24ead44b045d668a19,
@@ -903,7 +903,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1471058195259015182}
         m_TargetAssemblyTypeName: TownCenterUI, Assembly-CSharp
-        m_MethodName: CreateUnit
+        m_MethodName: CreateUnitRequest
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 4428261609735189447, guid: 124c6745f81a29743b886c5cfda59ca3,

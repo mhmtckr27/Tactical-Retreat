@@ -20,6 +20,11 @@ public class UnitBase : NetworkBehaviour
 	public List<TerrainType> blockedTerrains;
 	[SyncVar] public TerrainHexagon occupiedHexagon;
 	[SyncVar] private int remainingMovesThisTurn;
+	[Server]
+	public bool CanMoveCmd() 
+	{
+		return remainingMovesThisTurn > 0;
+	}
 
 	[SyncVar(hook = nameof(OnIsInMoveModeChange))] public bool isInMoveMode = false;	
 	public void OnIsInMoveModeChange(bool oldValue, bool newValue)
@@ -73,10 +78,66 @@ public class UnitBase : NetworkBehaviour
 		hexagon.ToggleOutlineVisibility(outlineIndex, enable);
 	}
 
-	[TargetRpc]
-	public void TryAttackRpc(NetworkConnection target, UnitBase attacker, UnitBase defender)
+	[Server]
+	public void ValidateAttack(UnitBase target)
 	{
-		CmdValidateAttack(this, defender);
+		if (/*!hasAttacked*/true)
+		{
+			Attack(target);
+		}
+	}
+
+	[Server]
+	public void Attack(UnitBase target)
+	{
+		hasAttacked = true;
+		bool isTargetDead = target.TakeDamage(damage);
+		if(isTargetDead)
+		{
+			UpdateOutlinesServer();
+		}
+	}
+
+	[Server]
+	public bool TakeDamage(int damage)
+	{
+		int damageToApply = (damage - armor) > 0 ? (damage - armor) : 0;
+		health -= damageToApply;
+		if(health <= 0)
+		{
+			health = 0;
+			occupiedHexagon.occupierUnit = null;
+			OnlineGameManager.Instance.UnregisterUnit(playerID, this);
+			NetworkServer.Destroy(gameObject);
+			return true;
+		}
+		return false;
+	}
+
+	[Command]
+	public void CmdValidateAttack(UnitBase attacker, UnitBase target)
+	{
+		if (/*!attacker.hasAttacked*/ true)
+		{
+			NetworkIdentity attackerIdentity = attacker.GetComponent<NetworkIdentity>();
+			attacker.hasAttacked = true;
+			int damage = (attacker.damage - target.armor) > 0 ? (attacker.damage - target.armor) : 0;
+			target.health -= damage;
+			if (target.health < 0)
+			{
+				target.health = 0;
+			}
+			if (target.health == 0)
+			{
+				TerrainHexagon tempHexagon = target.occupiedHexagon;
+				///Handle Death
+				OnlineGameManager.Instance.UnregisterUnit(target.playerID, target);
+				tempHexagon.occupierUnit = null;
+				NetworkServer.Destroy(target.gameObject);
+				EndAttackRpc(attackerIdentity.connectionToClient, true, tempHexagon);
+				///
+			}
+		}
 	}
 
 	[TargetRpc]
@@ -217,39 +278,15 @@ public class UnitBase : NetworkBehaviour
 		if (unit == null)
 		{
 			Map.Instance.currentState = State.None;
+			Map.Instance.UnitToMove = unit;
 		}
-		else
+		else if(unit == this)
 		{
 			Map.Instance.currentState = State.UnitAction;
+			Map.Instance.UnitToMove = unit;
 		}
-		Map.Instance.UnitToMove = unit;
 	}
 
-	[Command]
-	public void CmdValidateAttack(UnitBase attacker, UnitBase target)
-	{
-		if (/*!attacker.hasAttacked*/ true)
-		{
-			NetworkIdentity attackerIdentity = attacker.GetComponent<NetworkIdentity>();
-			attacker.hasAttacked = true;
-			int damage = (attacker.damage - target.armor) > 0 ? (attacker.damage - target.armor) : 0;
-			target.health -= damage;
-			if (target.health < 0)
-			{
-				target.health = 0;
-			}
-			if (target.health == 0)
-			{
-				TerrainHexagon tempHexagon = target.occupiedHexagon;
-				///Handle Death
-				OnlineGameManager.Instance.UnregisterUnit(target.playerID, target);
-				tempHexagon.occupierUnit = null;
-				NetworkServer.Destroy(target.gameObject);
-				EndAttackRpc(attackerIdentity.connectionToClient, true, tempHexagon);
-				///
-			}
-		}
-	}
 	#endregion
 }
 

@@ -34,10 +34,10 @@ public class NetworkRoomManagerWoT : NetworkRoomManager
 	{
 		if (sceneName == GameplayScene)
 		{
-			Instantiate(onlineGameManagerPrefab);
 			Instantiate(MapPrefab);
 			Map.Instance.GenerateMap();
 			Map.Instance.DilateMap();
+			Instantiate(onlineGameManagerPrefab);
 		}
 	}
 }

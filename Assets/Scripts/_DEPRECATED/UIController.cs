@@ -2,33 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
-	[SerializeField] private GameObject townCenterBuildingMenuPrefab;
-	public TownCenterUI abc;
-
-    private static UIController instance;
-    public static UIController Instance
+	public Button nextTurnButton;
+	public TownCenterUI townCenterUI;
+	public void OnNextTurnButton()
 	{
-		get
-		{
-            return instance;
-		}
+		townCenterUI.townCenter.FinishTurnCmd();
 	}
 
-	private void Awake()
+	public void EnableNexTurnButton(bool enable)
 	{
-		/*if(instance == null)
-		{
-			instance = this;
-		}	
-		else if(instance != this)
-		{
-			Destroy(gameObject);
-		}*/
-		//abc = Instantiate(townCenterBuildingMenuPrefab, transform).GetComponent<TownCenterUI>();
+		nextTurnButton.interactable = enable;
 	}
-
-
 }

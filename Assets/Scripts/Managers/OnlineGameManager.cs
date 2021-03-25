@@ -5,6 +5,7 @@ using Mirror;
 
 public class OnlineGameManager : NetworkBehaviour
 {
+	[SerializeField] private int totalPlayerCount;
 	private static OnlineGameManager instance;
 	public static OnlineGameManager Instance { get => instance; }
 
@@ -21,8 +22,21 @@ public class OnlineGameManager : NetworkBehaviour
 		}
 	}
 
+	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
+
+	[Server]
+	private void Start()
+	{
+		Invoke(nameof(NextTurn), .25f);
+	}
+
+	[Server]
+	public override void OnStartServer()
+	{
+		base.OnStartServer();
+	}
 
 	[Server]
 	public void RegisterPlayer(TownCenter player)
@@ -32,6 +46,13 @@ public class OnlineGameManager : NetworkBehaviour
 			players.Add(player.netId, player);
 			units.Add(player.netId, new List<UnitBase>());
 			Debug.Log("Player-" + player.netId + " has joined the game");
+			if(totalPlayerCount == players.Count)
+			{
+				foreach(TownCenter tc in players.Values)
+				{
+					playerList.Add(tc);
+				}
+			}
 		}
 	}
 
@@ -42,6 +63,14 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			players.Remove(player.netId);
 			Debug.Log("Player-" + player.netId + " has left the game");
+			if (playerList.Contains(player))
+			{
+				if(hasTurnIndex == playerList.IndexOf(player))
+				{
+					hasTurnIndex++;
+				}
+				playerList.Remove(player);
+			}
 		}
 	}
 
@@ -79,5 +108,31 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			Debug.LogWarning("no player found: " + playerID);
 		}
+	}
+
+	private bool canGiveTurnToNextPlayer = true;
+	private int hasTurnIndex = 0;
+
+	[Server]
+	public void NextTurn()
+	{
+		if(!canGiveTurnToNextPlayer) { return; }
+		GiveTurnToPlayer(playerList[hasTurnIndex], true);
+	}
+
+	[Server]
+	public void GiveTurnToPlayer(TownCenter player, bool giveTurn)
+	{
+		canGiveTurnToNextPlayer = false;
+		player.SetHasTurn(true);
+	}
+
+	[Server]
+	public void PlayerFinishedTurn(TownCenter player)
+	{
+		hasTurnIndex = (hasTurnIndex == (playerList.Count - 1)) ? 0 : (hasTurnIndex + 1);
+		canGiveTurnToNextPlayer = true;
+		player.SetHasTurn(false);
+		NextTurn();
 	}
 }

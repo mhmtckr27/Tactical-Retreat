@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Mirror;
 
 public class TownCenterUI : MonoBehaviour
 {
 	public TownCenter townCenter;
 
-	public void CreateUnit(GameObject unitToCreate)
+	public void CreateUnitRequest(GameObject unitToCreate)
 	{
-		townCenter.CreateUnit(unitToCreate);
+		townCenter.CreateUnitCmd(unitToCreate.name);
 	}
 }

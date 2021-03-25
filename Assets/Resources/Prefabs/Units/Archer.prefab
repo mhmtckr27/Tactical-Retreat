@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 1636765051493742708}
   - component: {fileID: 360320334763640434}
   - component: {fileID: 8518869210168424741}
-  m_Layer: 0
+  - component: {fileID: -660256815993054260}
+  m_Layer: 6
   m_Name: Archer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,11 +117,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 884ff15a121ec7549b9138a50e73e7a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   unitType: 2
   health: 10
   armor: 1
   damage: 3
   maxMovesEachTurn: 3
   attackRange: 5
+  hasAttacked: 0
   playerID: 0
   blockedTerrains: 01000000
+  occupiedHexagon: {fileID: 0}
+  isInMoveMode: 0
+--- !u!114 &-660256815993054260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987987425804507553}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01

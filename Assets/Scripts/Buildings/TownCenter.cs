@@ -7,43 +7,86 @@ using Mirror;
 public class TownCenter : NetworkBehaviour
 {
 	public LayerMask unitMask;
-	public GameObject townCenterUIPrefab;
 	[SyncVar] public TerrainHexagon occupiedHex;
 	[SyncVar] public uint playerID;
-
+	[SyncVar] public bool hasTurn;
 	private bool menu_visible = false;
 	public TownCenterUI townCenterUI;
+	public UIController uiController;
 	[SyncVar] private bool isConquered = false;
+	[SerializeField] private GameObject canvasPrefab;
+
+	[Server]
+	public void SetHasTurn(bool newHasTurn)
+	{
+		hasTurn = newHasTurn;
+		EnableNextTurnButton(newHasTurn);
+	}
+
+	[TargetRpc]
+	public void EnableNextTurnButton(bool enable)
+	{
+		uiController.EnableNexTurnButton(enable);
+	}
 
 	private void Start()
 	{
-		townCenterUI = Instantiate(townCenterUIPrefab, GameObject.Find("Canvas").transform).GetComponent<TownCenterUI>();
+		GameObject tempCanvas = Instantiate(canvasPrefab);
+		uiController = tempCanvas.GetComponent<UIController>();
+		townCenterUI = uiController.townCenterUI;
 		townCenterUI.townCenter = this;
+
+		if (!hasAuthority)
+		{
+			tempCanvas.SetActive(false);
+			Destroy(tempCanvas);
+		}
+
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{
 			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
 			occupiedHex.OccupierBuilding = this;
 		}
-		playerID = netId;
 	}
 	public override void OnStartClient()
 	{
 		if(!hasAuthority) { return; }
 
 		base.OnStartClient();
-		CmdRegisterPlayer();
+		CmdRegisterPlayer(); 
 	}
+
+	[Command]
+	public void FinishTurnCmd()
+	{
+		OnlineGameManager.Instance.PlayerFinishedTurn(this);
+	}
+
 	[Command]
 	public void CmdRegisterPlayer()
 	{
 		OnlineGameManager.Instance.RegisterPlayer(this);
+		playerID = netId;
 	}
 
 	private void Update()
 	{
 		if (!hasAuthority) { return; }
 		if (!Input.GetMouseButtonDown(0)) { return; }
+		ValidatePlayRequestCmd();
+	}
+
+	[Command]
+	private void ValidatePlayRequestCmd()
+	{
+		if(!hasTurn) { return; }
+		Play();
+	}
+
+	[TargetRpc]
+	public void Play()
+	{
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
 		{
@@ -62,7 +105,7 @@ public class TownCenter : NetworkBehaviour
 				else
 				{
 					TerrainHexagon terrainHexagon = hit.collider.GetComponent<TerrainHexagon>();
-					if(terrainHexagon != null)
+					if (terrainHexagon != null)
 					{
 						ValidateTerrainHexagonSelectionCmd(this, terrainHexagon);
 					}
@@ -82,9 +125,8 @@ public class TownCenter : NetworkBehaviour
 		}
 		if (Map.Instance.UnitToMove == null)
 		{
-			if (hasAuthority)
+			if (hasAuthority && unit.CanMoveCmd())
 			{
-				//RpcValidateUnitSelection(/*target.connectionToClient,*/ unit, true);
 				unit.SetIsInMoveMode(true);
 			}
 		}
@@ -92,22 +134,22 @@ public class TownCenter : NetworkBehaviour
 		{
 			if (hasAuthority)
 			{
-				//RpcValidateUnitSelection(/*target2.connectionToClient, */Map.Instance.UnitToMove, false);
-				//RpcValidateUnitSelection(/*target.connectionToClient,*/ unit, true);
 				Map.Instance.UnitToMove.SetIsInMoveMode(false);
-				unit.SetIsInMoveMode(true);
+				if (unit.CanMoveCmd())
+				{
+					unit.SetIsInMoveMode(true);
+				}
 			}
 			else
 			{
 				NetworkIdentity targetIdentity = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
-				Map.Instance.UnitToMove.TryAttackRpc(targetIdentity.connectionToClient, Map.Instance.UnitToMove, unit);
+				Map.Instance.UnitToMove.ValidateAttack(unit);
 			}
 		}
 		else
 		{
 			if (hasAuthority)
 			{
-				//RpcValidateUnitSelection(/*target2.connectionToClient,*/ Map.Instance.UnitToMove, false);
 				Map.Instance.UnitToMove.SetIsInMoveMode(false);
 			}
 		}
@@ -118,15 +160,9 @@ public class TownCenter : NetworkBehaviour
 	{
 		if (Map.Instance.currentState != State.UnitAction)
 		{
-			NetworkIdentity target = townCenter.GetComponent<NetworkIdentity>();
-			RpcValidateTownCenterSelection(target.connectionToClient);
+			NetworkIdentity target = townCenter.netIdentity;
+			ToggleBuildingMenuRpc(target.connectionToClient);
 		}
-	}
-
-	[TargetRpc]
-	public void RpcValidateTownCenterSelection(NetworkConnection target)
-	{
-		ToggleBuildingMenu();
 	}
 
 	[Command]
@@ -134,19 +170,12 @@ public class TownCenter : NetworkBehaviour
 	{
 		if (Map.Instance.currentState == State.UnitAction)
 		{
-			//NetworkIdentity target = townCenter.GetComponent<NetworkIdentity>();
 			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
-			//RpcMove(target.connectionToClient, Map.Instance.UnitToMove, terrainHexagon);
 		}
 	}
-
+	
 	[TargetRpc]
-	public void RpcMove(NetworkConnection target, UnitBase unit, TerrainHexagon to)
-	{
-		unit.TryMoveTo(to);
-	}
-
-	public void ToggleBuildingMenu()
+	public void ToggleBuildingMenuRpc(NetworkConnection target)
 	{
 		if (isLocalPlayer)
 		{
@@ -155,45 +184,28 @@ public class TownCenter : NetworkBehaviour
 		}
 	}
 
-	public void CreateUnit(GameObject unitToCreate)
+	public void CreateUnitt(string unitName)
 	{
-		if (!occupiedHex.occupierUnit)
-		{
-			CreateUnitCmd(this);
-		}
+		CreateUnitCmd(unitName);
 	}
 
 	[Command]
-	public void CreateUnitCmd(TownCenter owner)
+	public void CreateUnitCmd(string unitName)
 	{
-		NetworkIdentity target = owner.GetComponent<NetworkIdentity>();
-		GameObject temp = Instantiate(NetworkRoomManagerWoT.Instance.spawnPrefabs.Find(prefab => prefab.name == "Peasant"), transform.position, Quaternion.identity);
-		NetworkServer.Spawn(temp, target.connectionToClient);
-		/////////////////
+		if (!occupiedHex.occupierUnit)
+		{
+			CreateUnit(this, unitName);
+		}
+	}
+
+	[Server]
+	public void CreateUnit(TownCenter owner, string unitName)
+	{
+		GameObject temp = Instantiate(NetworkRoomManagerWoT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position, Quaternion.identity);
+		NetworkServer.Spawn(temp, gameObject);
 		occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
 		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
 		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
 		temp.GetComponent<UnitBase>().playerID = netId;
-		//////////////////
-		//RpcUnitCreated(target.connectionToClient, temp.GetComponent<UnitBase>());
 	}
-
-	[TargetRpc]
-	public void RpcUnitCreated(NetworkConnection target, UnitBase createdUnit)
-	{
-		//////////////////////////
-	//	createdUnit.occupiedHexagon = occupiedHex;
-	//	occupiedHex.OccupierUnit = createdUnit;
-		//////////////////////////
-		//Units.Add(createdUnit);
-	}
-
-	/*public void UnitDied(UnitBase unitBase)
-	{
-		Units.Remove(unitBase);
-		if(Units.Count == 0 && isConquered)
-		{
-			//Game over for this player.
-		}
-	}*/
 }
