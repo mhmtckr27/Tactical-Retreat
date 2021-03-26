@@ -6,6 +6,7 @@ using Mirror;
 
 public class UnitBase : NetworkBehaviour
 {
+	public static Vector3 positionOffsetOnHexagons = Vector3.left * 0.5f;
 	[SerializeField] private UnitType unitType;
 	[SerializeField][SyncVar] private int health;
 	[SerializeField] private int armor;
@@ -69,7 +70,14 @@ public class UnitBase : NetworkBehaviour
 	[TargetRpc]
 	public void RpcMove(TerrainHexagon to)
 	{
-		transform.position = to.transform.position;
+		if(to.OccupierBuilding != null)
+		{
+			transform.position = to.transform.position + positionOffsetOnHexagons;
+		}
+		else
+		{
+			transform.position = to.transform.position;
+		}
 	}	
 	
 	[TargetRpc]
@@ -81,7 +89,9 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public void ValidateAttack(UnitBase target)
 	{
-		if (/*!hasAttacked*/true)
+		bool targetIsInRange = (GetPath(target.occupiedHexagon).Count - 1) <= attackRange;
+
+		if (/*!hasAttacked && targetIsInRange*/ true)
 		{
 			Attack(target);
 		}
@@ -220,19 +230,24 @@ public class UnitBase : NetworkBehaviour
 		}
 		else
 		{
-			GetPath(to);
+			List<TerrainHexagon> path = GetPath(to);
+			Move(to, path.Count - 1);
 		}
 	}
 
 	[Server]
-	public void GetPath(TerrainHexagon to)
+	public List<TerrainHexagon> GetPath(TerrainHexagon to)
 	{
-		List<TerrainHexagon> tempPath = Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
+		return Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
+	}
 
+	[Server]
+	public void Move(TerrainHexagon to, int cost)
+	{
 		occupiedHexagon.occupierUnit = null;
 		occupiedHexagon = to;
 		occupiedHexagon.occupierUnit = this;
-		remainingMovesThisTurn -= tempPath.Count - 1;
+		remainingMovesThisTurn -= cost;
 		RpcMove(to);
 		if (remainingMovesThisTurn == 0)
 		{

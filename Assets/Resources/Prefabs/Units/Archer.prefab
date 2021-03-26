@@ -122,7 +122,7 @@ MonoBehaviour:
   unitType: 2
   health: 10
   armor: 1
-  damage: 3
+  damage: 4
   maxMovesEachTurn: 3
   attackRange: 5
   hasAttacked: 0

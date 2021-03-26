@@ -46,11 +46,11 @@ public class OnlineGameManager : NetworkBehaviour
 			players.Add(player.netId, player);
 			units.Add(player.netId, new List<UnitBase>());
 			Debug.Log("Player-" + player.netId + " has joined the game");
+			playerList.Add(player);
 			if(totalPlayerCount == players.Count)
 			{
 				foreach(TownCenter tc in players.Values)
 				{
-					playerList.Add(tc);
 				}
 			}
 		}

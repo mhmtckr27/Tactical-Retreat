@@ -6,15 +6,17 @@ using Mirror;
 
 public class TownCenter : NetworkBehaviour
 {
-	public LayerMask unitMask;
+	[SerializeField] private GameObject canvasPrefab;
+	
 	[SyncVar] public TerrainHexagon occupiedHex;
 	[SyncVar] public uint playerID;
 	[SyncVar] public bool hasTurn;
-	private bool menu_visible = false;
-	public TownCenterUI townCenterUI;
-	public UIController uiController;
 	[SyncVar] private bool isConquered = false;
-	[SerializeField] private GameObject canvasPrefab;
+	
+	private TownCenterUI townCenterUI;
+	private UIManager uiController;
+	private bool menu_visible = false;
+	private InputManager inputManager;
 
 	[Server]
 	public void SetHasTurn(bool newHasTurn)
@@ -32,7 +34,7 @@ public class TownCenter : NetworkBehaviour
 	private void Start()
 	{
 		GameObject tempCanvas = Instantiate(canvasPrefab);
-		uiController = tempCanvas.GetComponent<UIController>();
+		uiController = tempCanvas.GetComponent<UIManager>();
 		townCenterUI = uiController.townCenterUI;
 		townCenterUI.townCenter = this;
 
@@ -48,6 +50,8 @@ public class TownCenter : NetworkBehaviour
 			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
 			occupiedHex.OccupierBuilding = this;
 		}
+		transform.eulerAngles = new Vector3(0, -60, 0);
+		inputManager = GetComponent<InputManager>();
 	}
 	public override void OnStartClient()
 	{
@@ -73,10 +77,13 @@ public class TownCenter : NetworkBehaviour
 	private void Update()
 	{
 		if (!hasAuthority) { return; }
-		if (!Input.GetMouseButtonDown(0)) { return; }
-		ValidatePlayRequestCmd();
-	}
 
+		if (inputManager.HasValidTap() || Input.GetMouseButtonDown(0))
+		{
+			ValidatePlayRequestCmd();
+		}
+	}
+	
 	[Command]
 	private void ValidatePlayRequestCmd()
 	{
@@ -184,11 +191,6 @@ public class TownCenter : NetworkBehaviour
 		}
 	}
 
-	public void CreateUnitt(string unitName)
-	{
-		CreateUnitCmd(unitName);
-	}
-
 	[Command]
 	public void CreateUnitCmd(string unitName)
 	{
@@ -201,11 +203,12 @@ public class TownCenter : NetworkBehaviour
 	[Server]
 	public void CreateUnit(TownCenter owner, string unitName)
 	{
-		GameObject temp = Instantiate(NetworkRoomManagerWoT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position, Quaternion.identity);
+		GameObject temp = Instantiate(NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position + UnitBase.positionOffsetOnHexagons, Quaternion.identity);
 		NetworkServer.Spawn(temp, gameObject);
 		occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
 		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
 		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
 		temp.GetComponent<UnitBase>().playerID = netId;
+		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient);
 	}
 }

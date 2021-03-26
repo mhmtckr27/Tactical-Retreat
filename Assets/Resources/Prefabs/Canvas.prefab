@@ -463,6 +463,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TownCenterUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1471058195312352375, guid: 6ec3a96ea1e2b2540a353e2639d69fb2,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 9021274502485158308}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ec3a96ea1e2b2540a353e2639d69fb2, type: 3}
 --- !u!224 &9021274502490289612 stripped
@@ -483,3 +488,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05cccb88a7394ab4caf7dffbb34af889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &9021274502485158308 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1471058195312352361, guid: 6ec3a96ea1e2b2540a353e2639d69fb2,
+    type: 3}
+  m_PrefabInstance: {fileID: 7590886434898163149}
+  m_PrefabAsset: {fileID: 0}
