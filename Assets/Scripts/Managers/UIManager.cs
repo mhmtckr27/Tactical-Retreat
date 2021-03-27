@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text meatCountText;
 	[SerializeField] private Text currentToMaxPopulationText;
 	public TownCenterUI townCenterUI;
+	public TerrainMenuUI terrainConstructionMenuUI;
 
 	private void Start()
 	{

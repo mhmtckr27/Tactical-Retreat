@@ -107,12 +107,45 @@ public class OnlineGameManager : NetworkBehaviour
 	}
 
 	[Server]
+	public void RegisterBuilding(uint playerID, BuildingBase building)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			if (!buildings[playerID].Contains(building))
+			{
+				buildings[playerID].Add(building);
+			}
+		}
+	}
+
+	[Server]
+	public void UnregisterBuilding(uint playerID, BuildingBase building)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			if (buildings[playerID].Contains(building))
+			{
+				buildings[playerID].Remove(building);
+			}
+			else
+			{
+				Debug.LogWarning("no building found");
+			}
+		}
+		else
+		{
+			Debug.LogWarning("no player found: " + playerID);
+		}
+	}
+
+	[Server]
 	public List<BuildingBase> GetBuildings(uint playerID)
 	{
 		if (buildings.ContainsKey(playerID))
 		{
 			return buildings[playerID];
 		}
+		return null;
 	}
 
 	private bool canGiveTurnToNextPlayer = true;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine.EventSystems;
 
 public class TownCenter : BuildingBase
 {
@@ -18,13 +19,15 @@ public class TownCenter : BuildingBase
 	public event Action<int> onWoodCountChange;
 	public event Action<int> onMeatCountChange;
 	public event Action<int, int> onCurrentToMaxPopulationChange;
-	
 
+	public TerrainMenuUI terrainConstructionMenuUI;
 	protected override void Start()
 	{
 		base.Start();
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
+		terrainConstructionMenuUI = uiManager.terrainConstructionMenuUI;
+		terrainConstructionMenuUI.townCenter = this;
 		transform.eulerAngles = new Vector3(0, -60, 0);
 		inputManager = GetComponent<InputManager>();
 	}
@@ -34,12 +37,12 @@ public class TownCenter : BuildingBase
 		if (!hasAuthority) { return; }
 
 #if UNITY_EDITOR
-		if (Input.GetMouseButtonUp(0))
+		if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
 		{
 			ValidatePlayRequestCmd();
 		}
 #elif UNITY_ANDROID
-		if (inputManager.HasValidTap())
+		if (inputManager.HasValidTap() && !EventSystem.current.IsPointerOverGameObject())
 		{
 			ValidatePlayRequestCmd();
 		}
@@ -202,9 +205,18 @@ public class TownCenter : BuildingBase
 		{
 			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
 		}
-		else if(Map.Instance.currentState == State.None)
+		else if((Map.Instance.currentState == State.None) && (terrainHexagon.OccupierBuilding == null) && (terrainHexagon.occupierUnit == null))
 		{
-
+			if ((!uiManager.terrainConstructionMenuUI.gameObject.activeInHierarchy) || (uiManager.terrainConstructionMenuUI.CurrentTerrain != terrainHexagon))
+			{
+				uiManager.terrainConstructionMenuUI.CurrentTerrain = terrainHexagon;
+				uiManager.terrainConstructionMenuUI.gameObject.SetActive(true);
+			}
+			else if (uiManager.terrainConstructionMenuUI.gameObject.activeInHierarchy && (uiManager.terrainConstructionMenuUI.CurrentTerrain == terrainHexagon))
+			{
+				uiManager.terrainConstructionMenuUI.CurrentTerrain = null;
+				uiManager.terrainConstructionMenuUI.gameObject.SetActive(false);
+			}
 		}
 	}
 
@@ -222,11 +234,16 @@ public class TownCenter : BuildingBase
 	[Server]
 	private void UpdateResources()
 	{
-		foreach (BuildingBase building in OnlineGameManager.Instance.GetBuildings(netId))
+		List<BuildingBase> buildings = OnlineGameManager.Instance.GetBuildings(netId);
+		if(buildings == null)
 		{
-			if(building.buildingType == BuildingType.WoodcutterCottage)
+			return;
+		}
+		foreach (BuildingBase building in buildings)
+		{
+			if(building.buildingType == BuildingType.Wood)
 			{
-				UpdateWoodCount((building as WoodcutterCottage).CollectResource());
+				UpdateWoodCount((building as LumberjacksHut).CollectResource());
 			}
 		}
 	}
@@ -242,7 +259,6 @@ public class TownCenter : BuildingBase
 	{
 		OnlineGameManager.Instance.PlayerFinishedTurn(this);
 	}
-
 
 	public override void OnStartClient()
 	{
@@ -264,12 +280,12 @@ public class TownCenter : BuildingBase
 	{
 		if (!occupiedHex.occupierUnit)
 		{
-			CreateUnit(this, unitName);
+			CreateUnit(unitName);
 		}
 	}
 
 	[Server]
-	public void CreateUnit(BuildingBase owner, string unitName)
+	public void CreateUnit(string unitName)
 	{
 		GameObject temp = Instantiate(NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position + UnitBase.positionOffsetOnHexagons, Quaternion.identity);
 		NetworkServer.Spawn(temp, gameObject);
@@ -277,25 +293,28 @@ public class TownCenter : BuildingBase
 		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
 		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
 		temp.GetComponent<UnitBase>().playerID = netId;
-		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient);
+		ToggleBuildingMenuRpc(netIdentity.connectionToClient);
 	}
-}/*
-namespace HayriCakir
-{
-	/*public struct Resources
+
+	[Command]
+	public void CreateBuildingCmd(string buildingName, TerrainHexagon terrain)
 	{
-		public int woodCount;
-		public int meatCount;
-		public int currentPopulation;
-		public int maxPopulation;
-		
-		public Resources(int woodCount, int meatCount, int currentPopulation, int maxPopulation)
+		Debug.LogWarning("burdayim");
+		if(woodCount >= NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == buildingName).GetComponent<BuildingBase>().buildCostWood)
 		{
-			this.woodCount = woodCount;
-			this.meatCount = meatCount;
-			this.currentPopulation = currentPopulation;
-			this.maxPopulation = maxPopulation;
+			Debug.LogWarning("hoop burdayim");
+			CreateBuilding(buildingName, terrain);
 		}
 	}
+
+	[Server]
+	public void CreateBuilding(string buildingName, TerrainHexagon terrain)
+	{
+		GameObject temp = Instantiate(NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == buildingName), terrain.transform.position, Quaternion.identity);
+		NetworkServer.Spawn(temp, gameObject);
+		terrain.OccupierBuilding = temp.GetComponent<BuildingBase>();
+		temp.GetComponent<BuildingBase>().occupiedHex = terrain;
+		OnlineGameManager.Instance.RegisterBuilding(netId, temp.GetComponent<BuildingBase>());
+		temp.GetComponent<BuildingBase>().playerID = netId;
+	}
 }
-	*/
