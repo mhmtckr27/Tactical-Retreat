@@ -7,6 +7,7 @@ using Mirror;
 public class BuildingBase : NetworkBehaviour
 {
 	[SerializeField] private GameObject canvasPrefab;
+	[SerializeField] public BuildingType buildingType;
 	
 	[SyncVar] public TerrainHexagon occupiedHex;
 	[SyncVar] public uint playerID;
@@ -53,4 +54,10 @@ public class BuildingBase : NetworkBehaviour
 			buildingMenuUI.gameObject.SetActive(menu_visible);
 		}
 	}
+}
+
+public enum BuildingType
+{
+	TownCenter,
+	WoodcutterCottage
 }

@@ -25,7 +25,8 @@ public class OnlineGameManager : NetworkBehaviour
 	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
-	private Dictionary<uint, HayriCakir.Resources> playerResources = new Dictionary<uint, HayriCakir.Resources>();
+	private Dictionary<uint, List<BuildingBase>> buildings = new Dictionary<uint, List<BuildingBase>>();
+
 	[Server]
 	private void Start()
 	{
@@ -45,14 +46,8 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			players.Add(player.netId, player);
 			units.Add(player.netId, new List<UnitBase>());
-			Debug.Log("Player-" + player.netId + " has joined the game");
 			playerList.Add(player);
-			if(totalPlayerCount == players.Count)
-			{
-				foreach(TownCenter tc in players.Values)
-				{
-				}
-			}
+			Debug.Log("Player-" + player.netId + " has joined the game");
 		}
 	}
 
@@ -62,7 +57,7 @@ public class OnlineGameManager : NetworkBehaviour
 		if (players.ContainsKey(player.netId))
 		{
 			players.Remove(player.netId);
-			Debug.Log("Player-" + player.netId + " has left the game");
+			units.Remove(player.netId);
 			if (playerList.Contains(player))
 			{
 				if(hasTurnIndex == playerList.IndexOf(player))
@@ -71,6 +66,7 @@ public class OnlineGameManager : NetworkBehaviour
 				}
 				playerList.Remove(player);
 			}
+			Debug.Log("Player-" + player.netId + " has left the game");
 		}
 	}
 
@@ -107,6 +103,15 @@ public class OnlineGameManager : NetworkBehaviour
 		else
 		{
 			Debug.LogWarning("no player found: " + playerID);
+		}
+	}
+
+	[Server]
+	public List<BuildingBase> GetBuildings(uint playerID)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			return buildings[playerID];
 		}
 	}
 

@@ -467,7 +467,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: -1
   far clip plane: 1000
   field of view: 60
   orthographic: 1
@@ -513,8 +513,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729d03bcb2d59d845bbce6bb7b9e3588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minCamSize: 2
+  maxCamSize: 10
+  dragSpeed: 50
+  zoomSpeed: 3
   clearFlags: 1
-  cameraDragSpeed: 0.25
 --- !u!1 &1506612116
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,8 +592,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729d03bcb2d59d845bbce6bb7b9e3588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minCamSize: 2
+  maxCamSize: 10
+  dragSpeed: 50
+  zoomSpeed: 3
   clearFlags: 3
-  cameraDragSpeed: 0.25
 --- !u!81 &1810916137
 AudioListener:
   m_ObjectHideFlags: 0
@@ -622,7 +628,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: -1
   far clip plane: 1000
   field of view: 60
   orthographic: 1

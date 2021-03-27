@@ -2,12 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class TownCenter : BuildingBase
 {
 	[SyncVar] public bool hasTurn;
 	//[SyncVar] private bool isConquered = false;
 	private InputManager inputManager;
+
+	[SerializeField] private int woodCount;
+	[SerializeField] private int meatCount;
+	private int currentPopulation;
+	private int maxPopulation;
+
+	public event Action<int> onWoodCountChange;
+	public event Action<int> onMeatCountChange;
+	public event Action<int, int> onCurrentToMaxPopulationChange;
+	
 
 	protected override void Start()
 	{
@@ -22,9 +33,87 @@ public class TownCenter : BuildingBase
 	{
 		if (!hasAuthority) { return; }
 
-		if (inputManager.HasValidTap() || Input.GetMouseButtonDown(0))
+#if UNITY_EDITOR
+		if (Input.GetMouseButtonUp(0))
 		{
 			ValidatePlayRequestCmd();
+		}
+#elif UNITY_ANDROID
+		if (inputManager.HasValidTap())
+		{
+			ValidatePlayRequestCmd();
+		}
+#endif
+		if (Input.GetKeyDown(KeyCode.Alpha1))
+		{
+			UpdateWoodCount(1);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		{
+			UpdateMeatCount(1);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			UpdateCurrentPopulation(1);
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha4))
+		{
+			UpdateMaxPopulation(1);
+		}
+	}
+
+	[Server]
+	public void UpdateWoodCount(int count)
+	{
+		woodCount += count;
+		UpdateWoodCountRpc(woodCount);
+	}
+
+	[TargetRpc]
+	public void UpdateWoodCountRpc(int count)
+	{
+		if (onWoodCountChange != null)
+		{
+			onWoodCountChange.Invoke(count);
+		}
+	}
+
+	[Server]
+	public void UpdateMeatCount(int count)
+	{
+		meatCount += count;
+		UpdateMeatCountRpc(meatCount);
+	}
+
+	[TargetRpc]
+	public void UpdateMeatCountRpc(int count)
+	{
+		if (onMeatCountChange != null)
+		{
+			onMeatCountChange.Invoke(count);
+		}
+	}
+
+	[Server]
+	public void UpdateCurrentPopulation(int count)
+	{
+		currentPopulation += count;
+		UpdateCurrentToMaxPopulationRpc(currentPopulation, maxPopulation);
+	}
+
+	[Server]
+	private void UpdateMaxPopulation(int count)
+	{
+		maxPopulation += count;
+		UpdateCurrentToMaxPopulationRpc(currentPopulation, maxPopulation);
+	}
+
+	[TargetRpc]
+	private void UpdateCurrentToMaxPopulationRpc(int current, int max)
+	{
+		if (onCurrentToMaxPopulationChange != null)
+		{
+			onCurrentToMaxPopulationChange.Invoke(current, max);
 		}
 	}
 
@@ -113,6 +202,10 @@ public class TownCenter : BuildingBase
 		{
 			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
 		}
+		else if(Map.Instance.currentState == State.None)
+		{
+
+		}
 	}
 
 	[Server]
@@ -120,6 +213,22 @@ public class TownCenter : BuildingBase
 	{
 		hasTurn = newHasTurn;
 		EnableNextTurnButton(newHasTurn);
+		if (hasTurn)
+		{
+			UpdateResources();
+		}
+	}
+
+	[Server]
+	private void UpdateResources()
+	{
+		foreach (BuildingBase building in OnlineGameManager.Instance.GetBuildings(netId))
+		{
+			if(building.buildingType == BuildingType.WoodcutterCottage)
+			{
+				UpdateWoodCount((building as WoodcutterCottage).CollectResource());
+			}
+		}
 	}
 
 	[TargetRpc]
@@ -170,12 +279,23 @@ public class TownCenter : BuildingBase
 		temp.GetComponent<UnitBase>().playerID = netId;
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient);
 	}
-}
+}/*
 namespace HayriCakir
 {
-	public struct Resources
+	/*public struct Resources
 	{
 		public int woodCount;
 		public int meatCount;
+		public int currentPopulation;
+		public int maxPopulation;
+		
+		public Resources(int woodCount, int meatCount, int currentPopulation, int maxPopulation)
+		{
+			this.woodCount = woodCount;
+			this.meatCount = meatCount;
+			this.currentPopulation = currentPopulation;
+			this.maxPopulation = maxPopulation;
+		}
 	}
 }
+	*/

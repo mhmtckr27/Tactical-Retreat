@@ -7,6 +7,7 @@ using Mirror;
 public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
+	[SerializeField] public List<BuildingType> buildablesOnThisTerrain;
 	private GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
 	private string key;
