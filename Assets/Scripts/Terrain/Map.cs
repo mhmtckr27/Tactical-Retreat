@@ -301,15 +301,16 @@ public class Map : NetworkBehaviour
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
 	[Server]
-	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start, int distance, List<TerrainType> blockedHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
+	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start, int moveRange, int attackRange, List<TerrainType> blockedHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
 	{
 		List<TerrainHexagon> reachableHexagons = new List<TerrainHexagon>();
-		reachableHexagons.Add(start);
 		List<List<TerrainHexagon>> visitedHexagons = new List<List<TerrainHexagon>>();
+		reachableHexagons.Add(start);
 		visitedHexagons.Add(new List<TerrainHexagon>());
 		visitedHexagons[0].Add(start);
-		
-		for(int i = 1; i < distance + 1; i++)
+
+		int lastIndex = moveRange > attackRange ? moveRange : attackRange;
+		for (int i = 1; i < lastIndex + 1; i++)
 		{
 			visitedHexagons.Add(new List<TerrainHexagon>());
 			foreach(TerrainHexagon hex in visitedHexagons[i-1])
@@ -318,14 +319,20 @@ public class Map : NetworkBehaviour
 				{
 					TerrainHexagon neighbour =  GetNeighbourInDirection(hex, direction);
 
-					if (neighbour != null && !reachableHexagons.Contains(neighbour) && !blockedHexagonTypes.Contains(neighbour.terrainType))
+					if (neighbour != null && !blockedHexagonTypes.Contains(neighbour.terrainType))
 					{
 						if ((neighbour.occupierUnit == null))
 						{
-							reachableHexagons.Add(neighbour);
-							visitedHexagons[i].Add(neighbour);
+							if (!reachableHexagons.Contains(neighbour))
+							{
+								if (i < (moveRange + 1))
+								{
+									reachableHexagons.Add(neighbour);
+								}
+								visitedHexagons[i].Add(neighbour);
+							}
 						}
-						else if((occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour))
+						else if ((neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)))
 						{
 							occupiedNeighbours.Add(neighbour);
 						}
@@ -368,7 +375,7 @@ public class Map : NetworkBehaviour
 			{
 				break;
 			}
-			foreach(TerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, blockedTerrains, null))
+			foreach(TerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, 1, blockedTerrains, null))
 			{
 				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
 				int new_cost = currentCost[current_hexagon] + 1;

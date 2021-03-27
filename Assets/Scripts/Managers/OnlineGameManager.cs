@@ -25,7 +25,7 @@ public class OnlineGameManager : NetworkBehaviour
 	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
-
+	private Dictionary<uint, HayriCakir.Resources> playerResources = new Dictionary<uint, HayriCakir.Resources>();
 	[Server]
 	private void Start()
 	{

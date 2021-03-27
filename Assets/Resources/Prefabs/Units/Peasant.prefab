@@ -120,11 +120,12 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   unitType: 0
+  initialRotation: {x: 0, y: -90, z: 0}
   health: 5
   armor: 0
   damage: 2
-  maxMovesEachTurn: 3
-  attackRange: 1
+  moveRange: 3
+  attackRange: 3
   hasAttacked: 0
   playerID: 0
   blockedTerrains: 01000000

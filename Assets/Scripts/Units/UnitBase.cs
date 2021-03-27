@@ -6,15 +6,16 @@ using Mirror;
 
 public class UnitBase : NetworkBehaviour
 {
-	public static Vector3 positionOffsetOnHexagons = Vector3.left * 0.5f;
+	public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
 	[SerializeField] private UnitType unitType;
-	[SerializeField][SyncVar] private int health;
+	[SerializeField] private Vector3 initialRotation;
+	[SerializeField] private int health;
 	[SerializeField] private int armor;
 	[SerializeField] private int damage;
-	[SerializeField] private int maxMovesEachTurn;
+	[SerializeField] private int moveRange;
 	[SerializeField] private int attackRange;
-	[SerializeField][SyncVar] private bool hasAttacked = false;
-	[SyncVar]public uint playerID;
+	[SerializeField] private bool hasAttacked = false;
+	[SyncVar][HideInInspector] public uint playerID;
 
 	[SyncVar] List<TerrainHexagon> neighboursWithinRange;
 	[SyncVar] List<TerrainHexagon> occupiedNeighboursWithinRange;
@@ -48,8 +49,8 @@ public class UnitBase : NetworkBehaviour
 	{
 		neighboursWithinRange = new List<TerrainHexagon>();
 		occupiedNeighboursWithinRange = new List<TerrainHexagon>();
-		remainingMovesThisTurn = maxMovesEachTurn;
-		transform.eulerAngles = new Vector3(0, -90, 0);
+		remainingMovesThisTurn = moveRange;
+		transform.eulerAngles = initialRotation;
 	}
 
 	public bool TryMoveTo(TerrainHexagon to)
@@ -70,14 +71,7 @@ public class UnitBase : NetworkBehaviour
 	[TargetRpc]
 	public void RpcMove(TerrainHexagon to)
 	{
-		if(to.OccupierBuilding != null)
-		{
-			transform.position = to.transform.position + positionOffsetOnHexagons;
-		}
-		else
-		{
-			transform.position = to.transform.position;
-		}
+		transform.position = to.transform.position + positionOffsetOnHexagons;
 	}	
 	
 	[TargetRpc]
@@ -89,8 +83,8 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public void ValidateAttack(UnitBase target)
 	{
-		bool targetIsInRange = (GetPath(target.occupiedHexagon).Count - 1) <= attackRange;
-
+		if(!occupiedNeighboursWithinRange.Contains(target.occupiedHexagon)) { return; }
+		
 		if (/*!hasAttacked && targetIsInRange*/ true)
 		{
 			Attack(target);
@@ -124,41 +118,6 @@ public class UnitBase : NetworkBehaviour
 		return false;
 	}
 
-	[Command]
-	public void CmdValidateAttack(UnitBase attacker, UnitBase target)
-	{
-		if (/*!attacker.hasAttacked*/ true)
-		{
-			NetworkIdentity attackerIdentity = attacker.GetComponent<NetworkIdentity>();
-			attacker.hasAttacked = true;
-			int damage = (attacker.damage - target.armor) > 0 ? (attacker.damage - target.armor) : 0;
-			target.health -= damage;
-			if (target.health < 0)
-			{
-				target.health = 0;
-			}
-			if (target.health == 0)
-			{
-				TerrainHexagon tempHexagon = target.occupiedHexagon;
-				///Handle Death
-				OnlineGameManager.Instance.UnregisterUnit(target.playerID, target);
-				tempHexagon.occupierUnit = null;
-				NetworkServer.Destroy(target.gameObject);
-				EndAttackRpc(attackerIdentity.connectionToClient, true, tempHexagon);
-				///
-			}
-		}
-	}
-
-	[TargetRpc]
-	public void EndAttackRpc(NetworkConnection targetConn, bool targetUnitIsDead, TerrainHexagon targetHexagon)
-	{
-		if (targetUnitIsDead)
-		{
-			//targetHexagon.occupierUnit = null;
-			UpdateOutlinesClient();
-		}
-	}
 	#endregion
 
 	#region Server
@@ -172,7 +131,7 @@ public class UnitBase : NetworkBehaviour
 	public void GetReachables(UnitBase targetUnit)
 	{
 		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHexagon, remainingMovesThisTurn, blockedTerrains, occupiedNeighboursWithinRange);
+		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHexagon, remainingMovesThisTurn, attackRange, blockedTerrains, occupiedNeighboursWithinRange);
 		EnableOutlines();
 	}
 
@@ -310,4 +269,10 @@ public enum UnitType
 	Peasant,
 	Warrior,
 	Archer
+}
+
+public enum UnitActionType
+{
+	Move,
+	Attack
 }

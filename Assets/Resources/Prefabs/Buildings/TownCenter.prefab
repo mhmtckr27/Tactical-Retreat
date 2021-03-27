@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 3655985412909679445}
   - component: {fileID: 1538080518186022815}
   - component: {fileID: 1489597791624781477}
-  - component: {fileID: 3501928480019001447}
   - component: {fileID: 2350699996802409476}
+  - component: {fileID: -1617547528944012348}
   - component: {fileID: 1666085537795614874}
   - component: {fileID: -4238491993575544579}
   m_Layer: 0
@@ -102,30 +102,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.68480766, y: 0.61592984, z: 0.97730756}
   m_Center: {x: 0.00071799743, y: 0.307791, z: 0.0000032186067}
---- !u!114 &3501928480019001447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1033752471153055306}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 655db61791554fc42a08151e493e2668, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  unitMask:
-    serializedVersion: 2
-    m_Bits: 64
-  occupiedHex: {fileID: 0}
-  playerID: 0
-  hasTurn: 0
-  townCenterUI: {fileID: 0}
-  uiController: {fileID: 0}
-  canvasPrefab: {fileID: 8663531919945395808, guid: 27c7a1b2770a75c4f886e825a70b990c,
-    type: 3}
 --- !u!114 &2350699996802409476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -138,6 +114,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff5f0c1c0c6605d4ab90fe01f0627671, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1617547528944012348
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1033752471153055306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa35486011e32984ea8b327954efad2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  canvasPrefab: {fileID: 8663531919945395808, guid: 27c7a1b2770a75c4f886e825a70b990c,
+    type: 3}
+  occupiedHex: {fileID: 0}
+  playerID: 0
+  hasTurn: 0
 --- !u!114 &1666085537795614874
 MonoBehaviour:
   m_ObjectHideFlags: 0

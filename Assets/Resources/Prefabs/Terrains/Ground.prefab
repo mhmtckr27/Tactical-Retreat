@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3684364287657026397}
   - component: {fileID: -1118213921638439300}
   - component: {fileID: 461435686940288451}
+  - component: {fileID: 6048626416529240429}
   m_Layer: 0
   m_Name: Ground
   m_TagString: Untagged
@@ -64,6 +65,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: fa692f7fcec1c9146aa56f6a938f2ca6, type: 2}
+  - {fileID: 2100000, guid: 8722568fd88611b4eb67cd2643f70768, type: 2}
   - {fileID: 2100000, guid: ddd66d10545dc4a45b7c1da9b6885a5f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -117,6 +119,23 @@ MonoBehaviour:
   terrainType: 0
   occupierUnit: {fileID: 0}
   occupierBuilding: {fileID: 0}
+--- !u!114 &6048626416529240429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2891735083327226504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1001 &371122808750307631
 PrefabInstance:
   m_ObjectHideFlags: 0

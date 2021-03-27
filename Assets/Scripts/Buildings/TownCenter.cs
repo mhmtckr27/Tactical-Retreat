@@ -1,77 +1,21 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class TownCenter : NetworkBehaviour
+public class TownCenter : BuildingBase
 {
-	[SerializeField] private GameObject canvasPrefab;
-	
-	[SyncVar] public TerrainHexagon occupiedHex;
-	[SyncVar] public uint playerID;
 	[SyncVar] public bool hasTurn;
-	[SyncVar] private bool isConquered = false;
-	
-	private TownCenterUI townCenterUI;
-	private UIManager uiController;
-	private bool menu_visible = false;
+	//[SyncVar] private bool isConquered = false;
 	private InputManager inputManager;
 
-	[Server]
-	public void SetHasTurn(bool newHasTurn)
+	protected override void Start()
 	{
-		hasTurn = newHasTurn;
-		EnableNextTurnButton(newHasTurn);
-	}
-
-	[TargetRpc]
-	public void EnableNextTurnButton(bool enable)
-	{
-		uiController.EnableNexTurnButton(enable);
-	}
-
-	private void Start()
-	{
-		GameObject tempCanvas = Instantiate(canvasPrefab);
-		uiController = tempCanvas.GetComponent<UIManager>();
-		townCenterUI = uiController.townCenterUI;
-		townCenterUI.townCenter = this;
-
-		if (!hasAuthority)
-		{
-			tempCanvas.SetActive(false);
-			Destroy(tempCanvas);
-		}
-
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
-		{
-			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
-			occupiedHex.OccupierBuilding = this;
-		}
+		base.Start();
+		buildingMenuUI = uiManager.townCenterUI;
+		buildingMenuUI.townCenter = this;
 		transform.eulerAngles = new Vector3(0, -60, 0);
 		inputManager = GetComponent<InputManager>();
-	}
-	public override void OnStartClient()
-	{
-		if(!hasAuthority) { return; }
-
-		base.OnStartClient();
-		CmdRegisterPlayer(); 
-	}
-
-	[Command]
-	public void FinishTurnCmd()
-	{
-		OnlineGameManager.Instance.PlayerFinishedTurn(this);
-	}
-
-	[Command]
-	public void CmdRegisterPlayer()
-	{
-		OnlineGameManager.Instance.RegisterPlayer(this);
-		playerID = netId;
 	}
 
 	private void Update()
@@ -83,16 +27,16 @@ public class TownCenter : NetworkBehaviour
 			ValidatePlayRequestCmd();
 		}
 	}
-	
+
 	[Command]
-	private void ValidatePlayRequestCmd()
+	protected void ValidatePlayRequestCmd()
 	{
-		if(!hasTurn) { return; }
+		if (!hasTurn) { return; }
 		Play();
 	}
 
 	[TargetRpc]
-	public void Play()
+	protected void Play()
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
@@ -104,10 +48,10 @@ public class TownCenter : NetworkBehaviour
 			}
 			else
 			{
-				TownCenter townCenter = hit.collider.GetComponent<TownCenter>();
-				if (townCenter != null)
+				BuildingBase building = hit.collider.GetComponent<BuildingBase>();
+				if (building != null)
 				{
-					ValidateTownCenterSelectionCmd(townCenter);
+					ValidateBuildingSelectionCmd(building);
 				}
 				else
 				{
@@ -163,32 +107,47 @@ public class TownCenter : NetworkBehaviour
 	}
 
 	[Command]
-	public void ValidateTownCenterSelectionCmd(TownCenter townCenter)
-	{
-		if (Map.Instance.currentState != State.UnitAction)
-		{
-			NetworkIdentity target = townCenter.netIdentity;
-			ToggleBuildingMenuRpc(target.connectionToClient);
-		}
-	}
-
-	[Command]
-	public void ValidateTerrainHexagonSelectionCmd(TownCenter townCenter, TerrainHexagon terrainHexagon)
+	public void ValidateTerrainHexagonSelectionCmd(BuildingBase townCenter, TerrainHexagon terrainHexagon)
 	{
 		if (Map.Instance.currentState == State.UnitAction)
 		{
 			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
 		}
 	}
-	
-	[TargetRpc]
-	public void ToggleBuildingMenuRpc(NetworkConnection target)
+
+	[Server]
+	public void SetHasTurn(bool newHasTurn)
 	{
-		if (isLocalPlayer)
-		{
-			menu_visible = !menu_visible; 
-			townCenterUI.gameObject.SetActive(menu_visible);
-		}
+		hasTurn = newHasTurn;
+		EnableNextTurnButton(newHasTurn);
+	}
+
+	[TargetRpc]
+	private void EnableNextTurnButton(bool enable)
+	{
+		uiManager.EnableNexTurnButton(enable);
+	}
+
+	[Command]
+	public void FinishTurnCmd()
+	{
+		OnlineGameManager.Instance.PlayerFinishedTurn(this);
+	}
+
+
+	public override void OnStartClient()
+	{
+		if (!hasAuthority) { return; }
+		base.OnStartClient();
+
+		CmdRegisterPlayer();
+	}
+
+	[Command]
+	public void CmdRegisterPlayer()
+	{
+		OnlineGameManager.Instance.RegisterPlayer(this);
+		playerID = netId;
 	}
 
 	[Command]
@@ -201,7 +160,7 @@ public class TownCenter : NetworkBehaviour
 	}
 
 	[Server]
-	public void CreateUnit(TownCenter owner, string unitName)
+	public void CreateUnit(BuildingBase owner, string unitName)
 	{
 		GameObject temp = Instantiate(NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position + UnitBase.positionOffsetOnHexagons, Quaternion.identity);
 		NetworkServer.Spawn(temp, gameObject);
@@ -210,5 +169,13 @@ public class TownCenter : NetworkBehaviour
 		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
 		temp.GetComponent<UnitBase>().playerID = netId;
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient);
+	}
+}
+namespace HayriCakir
+{
+	public struct Resources
+	{
+		public int woodCount;
+		public int meatCount;
 	}
 }

@@ -31,8 +31,8 @@ public class TerrainHexagon : NetworkBehaviour
 
 	[SyncVar] public UnitBase occupierUnit;
 
-	[SerializeField][SyncVar] private TownCenter occupierBuilding;
-	public TownCenter OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
+	[SerializeField][SyncVar] private BuildingBase occupierBuilding;
+	public BuildingBase OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
 
 	private void Awake()
 	{
