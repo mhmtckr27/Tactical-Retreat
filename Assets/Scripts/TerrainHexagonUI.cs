@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Mirror;
 
-public class TerrainHexagonUI : NetworkBehaviour
+public class TerrainHexagonUI : MonoBehaviour
 {
     public List<Resource> resources;
     private Resource currentResource;
@@ -24,17 +24,16 @@ public class TerrainHexagonUI : NetworkBehaviour
         terrainIcon.sprite = currentResource.obtainedFromTerrainIcon;
         terrainName.text = currentResource.obtainedFromTerrainType.ToString();
         description.text = currentResource.description;
-        resourceIcon.sprite = currentResource.resourceIcon;
-        resourceCount.text = currentResource.resourceCount.ToString();
-        costIcon.sprite = currentResource.costIcon;
-        costCount.text = currentResource.costToCollect.ToString();
-        collectButtonText.text = currentResource.collectText;
-        if(currentResource.collectText == "")
+
+		if (currentResource.canBeCollected)
 		{
-           /*collectButtonText.transform.parent.gameObject.SetActive(false);
-            costIcon.gameObject.SetActive(false);
-            resourceIcon.gameObject.SetActive(false);*/
+            resourceIcon.sprite = currentResource.resourceIcon;
+            resourceCount.text = currentResource.resourceCount.ToString();
+            costIcon.sprite = currentResource.costIcon;
+            costCount.text = currentResource.costToCollect.ToString();
+            collectButtonText.text = currentResource.collectText;
 		}
+        resourceIcon.transform.parent.gameObject.SetActive(currentResource.canBeCollected);
 	}
 
     public void OnCloseButton()
@@ -46,10 +45,6 @@ public class TerrainHexagonUI : NetworkBehaviour
     public void SetEnable(int terrainType, bool enable)
 	{
         SetCurrentResource(terrainType);
-        /*if(enable == false)
-		{
-            ClearSelectedHexagon();
-        }*/
         gameObject.SetActive(enable);
 	}
 
@@ -66,10 +61,4 @@ public class TerrainHexagonUI : NetworkBehaviour
         currentResource = null;
         return;
 	}
-
-    [Command]
-    public void ClearSelectedHexagon()
-    {
-        Map.Instance.selectedHexagon = null;
-    }
 }

@@ -12,6 +12,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: corners
+    second: {fileID: 2100000, guid: 8722568fd88611b4eb67cd2643f70768, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: grass
     second: {fileID: 2100000, guid: ddd66d10545dc4a45b7c1da9b6885a5f, type: 2}
   - first:

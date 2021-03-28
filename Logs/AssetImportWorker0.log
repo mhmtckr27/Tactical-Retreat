@@ -4051,3 +4051,946 @@ System memory in use after: 160.0 MB.
 Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 2700.
 Total: 5.224000 ms (FindLiveObjects: 0.539100 ms CreateObjectMapping: 0.233600 ms MarkObjects: 4.395700 ms  DeleteObjects: 0.052800 ms)
 
+========================================================================
+Received Import Request.
+  Time since last request: 563.741038 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '060c9a2277a2a284f96e1050b693f35b') in 0.047763 seconds
+  Import took 0.051111 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.760574 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '77fdc0f909a62852e7cfcf83ce28b9f1') in 0.007595 seconds
+  Import took 0.010489 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000237 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '01d2dd2ae5f51931cf930903566c1b31') in 0.005112 seconds
+  Import took 0.007518 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 14.625702 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f858ac19dcaf2a95d18b081eb80d2e04') in 0.008040 seconds
+  Import took 0.010880 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000224 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '0ceac4d0ec9cf991b620d237b06a8461') in 0.004248 seconds
+  Import took 0.006594 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.402192 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a039022ae905ff459c8659840f8f6556') in 0.007473 seconds
+  Import took 0.010262 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000240 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8eb0f29e8e6e467be9ffbe14481cfc55') in 0.004269 seconds
+  Import took 0.006663 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001592 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.39 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.714 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.41 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1907 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 159.8 MB.
+System memory in use after: 160.0 MB.
+
+Unloading 27 unused Assets to reduce memory usage. Loaded Objects now: 2703.
+Total: 1.719600 ms (FindLiveObjects: 0.182500 ms CreateObjectMapping: 0.065500 ms MarkObjects: 1.442700 ms  DeleteObjects: 0.028300 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 29.404066 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b8bb45c8d341abf920ca6caee73cbad5') in 0.048663 seconds
+  Import took 0.051907 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000226 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '92ec389a4037b3e871ffc7b1a515de34') in 0.004282 seconds
+  Import took 0.006958 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.011180 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd27daa138397a182d4adc5859d3f9c18') in 0.007754 seconds
+  Import took 0.010741 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000234 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7930c8cecd63e62920236e8a6398f6ac') in 0.004392 seconds
+  Import took 0.006848 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.661854 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e34a233b0144cda19ec62e3e457f781a') in 0.007845 seconds
+  Import took 0.010712 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000234 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '241dfc631dcdd6d54b978358660c43f4') in 0.005044 seconds
+  Import took 0.007480 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 12.961689 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '76fa5d8effd7845bc6f06b499028a33b') in 0.008089 seconds
+  Import took 0.010885 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000207 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8d3b41bb9306ad3461c80061347a4353') in 0.004666 seconds
+  Import took 0.007077 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.808105 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1b955dc74f734319c5a5b366b0a97eaa') in 0.008721 seconds
+  Import took 0.011498 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000236 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(80a961082ea587e46812e51bebb9ba43) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '253a2ec52f178e4bf169ff544af0892d') in 0.004611 seconds
+  Import took 0.006979 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.896577 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '938be947fa39a71e9a0ed49177f51f56') in 0.006947 seconds
+  Import took 0.009452 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.002022 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '938be947fa39a71e9a0ed49177f51f56') in 0.004171 seconds
+  Import took 0.006822 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 38.161708 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '475be847e5921a19a927da7ce3952159') in 0.004424 seconds
+  Import took 0.006931 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.382844 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9501ac74fc30c5bb48e7a672b897c7fd') in 0.004566 seconds
+  Import took 0.007397 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.887515 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4d77225378d0de9ec18abcac43e26282') in 0.004779 seconds
+  Import took 0.007347 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 17.277892 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '44046301c8c745ae6fc464a535faf6d4') in 0.004711 seconds
+  Import took 0.007561 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.243139 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'adac67730a03b8b16c19b1fb1642f4f8') in 0.004241 seconds
+  Import took 0.006883 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.471436 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '36b5b7dbcd4a01c186038c72fb41a0ac') in 0.004338 seconds
+  Import took 0.006882 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.570802 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c9a27c9146e620cb96b4f34cb628fbd8') in 0.004684 seconds
+  Import took 0.007304 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.116589 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '51376d11b5ce7c9ec55f0363e4df6615') in 0.004346 seconds
+  Import took 0.006864 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.605427 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ae3dbcf04cab482cb99567deef0d7742') in 0.004549 seconds
+  Import took 0.007326 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.050640 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '8dae282717f2a213a39f39f86a597ccd') in 0.004449 seconds
+  Import took 0.006997 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.847710 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'de201cb179e79201bf3edec60c1344cc') in 0.004333 seconds
+  Import took 0.006878 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.756189 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '755c7a5b78005511e5e748d734bda364') in 0.005149 seconds
+  Import took 0.007714 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.496551 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ef186026982c3b2bfa54ca2fe55c7a91') in 0.004896 seconds
+  Import took 0.007386 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 7.759996 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b79f18be9949c2cc95fdc7b59f761748') in 0.004535 seconds
+  Import took 0.007222 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.079431 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '52e7f69bf2147c868a2678088bb042ef') in 0.004623 seconds
+  Import took 0.007182 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.025056 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '33472cd653c6455e28340ca03f10bdea') in 0.004927 seconds
+  Import took 0.007701 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.601508 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5a030e890bc8ab578fd98a346634526c') in 0.004467 seconds
+  Import took 0.007012 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.956383 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '3cfe177be6b0aecbb55b4b76190f34ee') in 0.004319 seconds
+  Import took 0.006798 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.599633 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9caec556ad93d6f62792971f69afd114') in 0.004227 seconds
+  Import took 0.006926 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.229529 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '29ace53eef0a236d95b7d9be8b01e399') in 0.004951 seconds
+  Import took 0.007528 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.604018 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b7912a641d15fad1e87cca949bb53624') in 0.004432 seconds
+  Import took 0.006896 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.399052 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b94666ef90c4459989ba7e5c609a1891') in 0.004263 seconds
+  Import took 0.007175 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.396035 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b748a159288a7cd54d5f45a8f5c1de4f') in 0.004462 seconds
+  Import took 0.006966 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 17.595869 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '494085fc1ecdc5759bb2cbb9dd98e526') in 0.004382 seconds
+  Import took 0.006983 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.222115 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2d56044845f662defa92d4da88eaea85') in 0.004543 seconds
+  Import took 0.007050 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.496657 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1525bb31c2897c6773838f3c855c4414') in 0.004438 seconds
+  Import took 0.007283 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.653114 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '43b92229b443350d5032bb608947a3b2') in 0.004406 seconds
+  Import took 0.007009 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 17.632098 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '56a46c66f2a3c7bef003ee2332cf81c0') in 0.005116 seconds
+  Import took 0.007614 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.418669 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd59b6d37641d60a1abd01fc8dd8360fe') in 0.005066 seconds
+  Import took 0.007698 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 13.570606 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '9ba6b3fbc3b1b742eb349e0bd2864339') in 0.005073 seconds
+  Import took 0.007603 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.310399 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2f07f7755dc6ace9cab6ebcc26f6524b') in 0.004280 seconds
+  Import took 0.006996 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 12.172790 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd50fba9998a7d1527b42872c34a748b7') in 0.004382 seconds
+  Import took 0.006984 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.840273 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '7a2357ca5a66361d07172a626acbd838') in 0.004245 seconds
+  Import took 0.006833 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 15.786198 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '168cb8605f23dc3b8a14a83d02581584') in 0.004611 seconds
+  Import took 0.007212 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 132.714339 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '144a2f549c08d14e273c67fac804aea2') in 0.005846 seconds
+  Import took 0.008440 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.890696 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd86695a1dadd5a2ca5b3ebc1835402d0') in 0.004512 seconds
+  Import took 0.007121 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.281240 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'eb7d12c99ffa53a48b16be324bec884e') in 0.004410 seconds
+  Import took 0.006930 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.233580 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5255e01f500739720d92e8c0ff1c7969') in 0.004290 seconds
+  Import took 0.006824 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 25.788160 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '06dab3835f02d32a4385f1a768c53208') in 0.004513 seconds
+  Import took 0.007263 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.346303 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a4354bc8d856b1f6fa6e697070794d2e') in 0.004339 seconds
+  Import took 0.007078 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.488068 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ec7f249757b588bd194c49cbd11c5e96') in 0.004335 seconds
+  Import took 0.006897 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.731999 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2bae7993ab5e18172aa2f391097d8945') in 0.004446 seconds
+  Import took 0.007170 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 10.750963 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'd6acabfc080c4632383fcea7e560fbbd') in 0.004624 seconds
+  Import took 0.007134 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.340127 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'bde267b0558cade5aa660b21dafcc16c') in 0.004501 seconds
+  Import took 0.007084 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.236679 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f20eb6c66093d77c14d05392d8cd168a') in 0.005137 seconds
+  Import took 0.007695 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.283295 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ec7c4df8fa5c7507fb322ae368feb38b') in 0.004495 seconds
+  Import took 0.007076 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 83.579473 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b7a1afb96bd9a41577055bdf4cb6c981') in 0.004638 seconds
+  Import took 0.007651 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 6.244264 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ce626c1164b5fe6d416604af6f581a59') in 0.004514 seconds
+  Import took 0.007012 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 22.288777 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'e2962a8bf026e5b747173bc70e2e367a') in 0.004344 seconds
+  Import took 0.007060 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.227580 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'a33b6273ec73e41b511c5af558343af5') in 0.004395 seconds
+  Import took 0.007011 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 4.052057 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6f30d272eadc6f3f51a5ea8e3ec2b86b') in 0.004275 seconds
+  Import took 0.006821 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 47.307811 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '48f75b8f81f9df7cf8bcbb603cb89ce4') in 0.004698 seconds
+  Import took 0.007661 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.818524 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b759c5a1bba2102863368d345b65967f') in 0.004398 seconds
+  Import took 0.007071 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 5.638979 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b4fe6e70d12a90067a9ed0eea5b4d2ab') in 0.004348 seconds
+  Import took 0.007368 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 69.792564 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI 1.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '48f3fb30e8c6c3a844e1330d03f2cfa0') in 0.004305 seconds
+  Import took 0.006960 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 9.978111 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'ea70e141946b6aff58f5939b20d6a280') in 0.007085 seconds
+  Import took 0.009871 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.012706 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b28132db8af30488a7c64a04a202b4fc') in 0.004348 seconds
+  Import took 0.006890 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.003436 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'b28132db8af30488a7c64a04a202b4fc') in 0.004341 seconds
+  Import took 0.006858 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.001172 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6a29eb2bc5528131f5ddc124d9a76b6f') in 0.005980 seconds
+  Import took 0.008649 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.410787 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '97c7bdf1037c22022dbeec1f0f3ca1b4') in 0.008411 seconds
+  Import took 0.011343 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.403269 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'c248c6fdbaefed54852af6533b59bad8') in 0.007883 seconds
+  Import took 0.010782 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.637620 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '6b90d3b64039c6616fbc2743a859e487') in 0.007932 seconds
+  Import took 0.010816 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 13.577085 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '2183b1b64aaa4e50fd1f63f47aebe34c') in 0.007597 seconds
+  Import took 0.010510 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 8.177354 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f3e6ae2804af4790b015bf987ff14a62') in 0.007507 seconds
+  Import took 0.010301 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 2.064482 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5a0c580d94a5b3605c52d0f3a10a0e2e') in 0.007539 seconds
+  Import took 0.010413 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000232 seconds.
+  path: Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(31be91d6e3826444c983a5cb06f4faa8) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '16ae45e9b51ef88e500f90cca634ae44') in 0.005178 seconds
+  Import took 0.007603 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001598 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.38 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.695 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.38 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1907 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 160.0 MB.
+System memory in use after: 160.1 MB.
+
+Unloading 27 unused Assets to reduce memory usage. Loaded Objects now: 2706.
+Total: 1.723900 ms (FindLiveObjects: 0.181900 ms CreateObjectMapping: 0.064100 ms MarkObjects: 1.455600 ms  DeleteObjects: 0.021500 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 28.222119 seconds.
+  path: Assets/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '91b82f0e4957254aced787ed8f2464ac') in 0.047646 seconds
+  Import took 0.050504 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001572 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.40 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.703 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.48 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1907 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 160.0 MB.
+System memory in use after: 160.2 MB.
+
+Unloading 27 unused Assets to reduce memory usage. Loaded Objects now: 2709.
+Total: 5.027100 ms (FindLiveObjects: 0.494200 ms CreateObjectMapping: 0.209900 ms MarkObjects: 4.249100 ms  DeleteObjects: 0.070400 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001536 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.39 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.701 seconds
+Platform modules already initialized, skipping
+Refreshing native plugins compatible for Editor in 0.38 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 1907 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 160.0 MB.
+System memory in use after: 160.2 MB.
+
+Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 2712.
+Total: 1.824600 ms (FindLiveObjects: 0.196400 ms CreateObjectMapping: 0.074200 ms MarkObjects: 1.536600 ms  DeleteObjects: 0.016600 ms)
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.001778 seconds.
+Callback registration failed. Increase kMaxCallback.
+
+Fatal Error! Callback registration failed. Increase kMaxCallback.
+
+Crash!!!
+SymInit: Symbol-SearchPath: 'D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/Mono;.;D:\Projects\Unity Projects\Tactical Retreat;D:\Programlar\UnityEditors\2020.3.0f1\Editor;C:\Windows;C:\Windows\system32;SRV*C:\websymbols*http://msdl.microsoft.com/download/symbols;', symOptions: 534, UserName: 'Hayri'
+OS-Version: 10.0.0
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\Unity.exe:Unity.exe (00007FF68E7A0000), size: 134467584 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2020.3.0.46406
+C:\Windows\SYSTEM32\ntdll.dll:ntdll.dll (00007FF92C5B0000), size: 2052096 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\KERNEL32.DLL:KERNEL32.DLL (00007FF92B8B0000), size: 774144 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.804
+C:\Windows\System32\KERNELBASE.dll:KERNELBASE.dll (00007FF92A340000), size: 2920448 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.804
+C:\Windows\System32\CRYPT32.dll:CRYPT32.dll (00007FF929CF0000), size: 1437696 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\ucrtbase.dll:ucrtbase.dll (00007FF92A240000), size: 1048576 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.789
+C:\Windows\System32\USER32.dll:USER32.dll (00007FF92B250000), size: 1703936 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\win32u.dll:win32u.dll (00007FF929FD0000), size: 139264 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.867
+C:\Windows\System32\GDI32.dll:GDI32.dll (00007FF92B3F0000), size: 172032 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\gdi32full.dll:gdi32full.dll (00007FF92A0A0000), size: 1093632 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\libfbxsdk.dll:libfbxsdk.dll (00007FF8E8940000), size: 8974336 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2020.0.0.0
+C:\Windows\System32\msvcp_win.dll:msvcp_win.dll (00007FF92A000000), size: 643072 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.789
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\OpenImageDenoise.dll:OpenImageDenoise.dll (00007FF8E5F70000), size: 43806720 (result: 0), SymType: '-deferred-', PDB: ''
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\optix.6.0.0.dll:optix.6.0.0.dll (00007FF9246D0000), size: 208896 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.0.0.0
+C:\Windows\System32\ADVAPI32.dll:ADVAPI32.dll (00007FF92A6D0000), size: 704512 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.610
+C:\Windows\System32\msvcrt.dll:msvcrt.dll (00007FF92B1B0000), size: 647168 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 7.0.19041.546
+C:\Windows\System32\sechost.dll:sechost.dll (00007FF92B040000), size: 638976 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.789
+C:\Windows\System32\RPCRT4.dll:RPCRT4.dll (00007FF92B700000), size: 1224704 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\umbraoptimizer64.dll:umbraoptimizer64.dll (00007FF91D980000), size: 1306624 (result: 0), SymType: '-deferred-', PDB: ''
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\FreeImage.dll:FreeImage.dll (0000000180000000), size: 6414336 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 3.18.0.0
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\ispc_texcomp.dll:ispc_texcomp.dll (00007FF8FBC40000), size: 1609728 (result: 0), SymType: '-deferred-', PDB: ''
+C:\Windows\System32\WS2_32.dll:WS2_32.dll (00007FF92B490000), size: 438272 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\WLDAP32.dll:WLDAP32.dll (00007FF92AF00000), size: 352256 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\WinPixEventRuntime.dll:WinPixEventRuntime.dll (00007FF927540000), size: 45056 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 1.0.1812.6001
+C:\Windows\System32\SHELL32.dll:SHELL32.dll (00007FF92B990000), size: 7610368 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\Normaliz.dll:Normaliz.dll (00007FF92B420000), size: 32768 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\SHLWAPI.dll:SHLWAPI.dll (00007FF92AC80000), size: 348160 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\tbb.dll:tbb.dll (00007FF8FC470000), size: 413696 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2017.0.2016.1004
+C:\Windows\System32\ole32.dll:ole32.dll (00007FF92C440000), size: 1220608 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\combase.dll:combase.dll (00007FF92C0E0000), size: 3493888 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\VCRUNTIME140.dll:VCRUNTIME140.dll (00007FF906AC0000), size: 106496 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 14.28.29913.0
+C:\Windows\SYSTEM32\MSVCP140.dll:MSVCP140.dll (00007FF8F5800000), size: 577536 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 14.28.29913.0
+C:\Windows\System32\IMM32.dll:IMM32.dll (00007FF92B500000), size: 196608 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\MSVCP120.dll:MSVCP120.dll (00007FF8FC300000), size: 679936 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 12.0.40664.0
+C:\Windows\SYSTEM32\CRYPTBASE.DLL:CRYPTBASE.DLL (00007FF9296D0000), size: 49152 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\MSVCR120.dll:MSVCR120.dll (00007FF8FB4D0000), size: 978944 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 12.0.40664.0
+C:\Windows\System32\SETUPAPI.dll:SETUPAPI.dll (00007FF92A810000), size: 4624384 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\cfgmgr32.dll:cfgmgr32.dll (00007FF929F80000), size: 319488 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\bcrypt.dll:bcrypt.dll (00007FF92A210000), size: 159744 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.662
+C:\Windows\SYSTEM32\OPENGL32.dll:OPENGL32.dll (00007FF91D850000), size: 1204224 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\GLU32.dll:GLU32.dll (00007FF91DF40000), size: 180224 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\VCRUNTIME140_1.dll:VCRUNTIME140_1.dll (00007FF912830000), size: 49152 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 14.28.29913.0
+C:\Windows\System32\OLEAUT32.dll:OLEAUT32.dll (00007FF92B0E0000), size: 839680 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.804
+C:\Windows\SYSTEM32\IPHLPAPI.DLL:IPHLPAPI.DLL (00007FF929180000), size: 241664 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\WINTRUST.dll:WINTRUST.dll (00007FF92A1B0000), size: 393216 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.804
+C:\Windows\SYSTEM32\WINMM.dll:WINMM.dll (00007FF916520000), size: 159744 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\HID.DLL:HID.DLL (00007FF928600000), size: 53248 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\WINHTTP.dll:WINHTTP.dll (00007FF9236F0000), size: 1097728 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\RadeonImageFilters.dll:RadeonImageFilters.dll (00007FF8E5D00000), size: 2535424 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 1.5.1.0
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\SketchUpAPI.dll:SketchUpAPI.dll (00007FF8DFB10000), size: 8978432 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 19.0.753.0
+C:\Windows\SYSTEM32\VERSION.dll:VERSION.dll (00007FF923F00000), size: 40960 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\WSOCK32.dll:WSOCK32.dll (00007FF925AA0000), size: 36864 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.1
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\SketchUpCommonPreferences.dll:SketchUpCommonPreferences.dll (00007FF905520000), size: 483328 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 19.0.753.20342
+C:\Windows\SYSTEM32\Secur32.dll:Secur32.dll (00007FF90E680000), size: 49152 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\SSPICLI.DLL:SSPICLI.DLL (00007FF929BB0000), size: 245760 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.662
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\OpenRL.dll:OpenRL.dll (000001A88CF20000), size: 12779520 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 1.5.0.2907
+C:\Windows\SYSTEM32\MSVCP100.dll:MSVCP100.dll (0000000057C90000), size: 622592 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.40219.473
+C:\Windows\SYSTEM32\MSVCR100.dll:MSVCR100.dll (0000000057BB0000), size: 860160 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.40219.473
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\embree.dll:embree.dll (00007FF8D1F80000), size: 16711680 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2.14.0.0
+C:\Windows\SYSTEM32\MSWSOCK.DLL:MSWSOCK.DLL (00007FF9294E0000), size: 434176 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\OpenRL_pthread.dll:OpenRL_pthread.dll (000001A88CF00000), size: 61440 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2.9.0.0
+C:\Windows\SYSTEM32\MSASN1.dll:MSASN1.dll (00007FF9298E0000), size: 73728 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\kernel.appcore.dll:kernel.appcore.dll (00007FF927C70000), size: 73728 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\bcryptPrimitives.dll:bcryptPrimitives.dll (00007FF929E50000), size: 524288 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.662
+C:\Windows\system32\uxtheme.dll:uxtheme.dll (00007FF9277B0000), size: 647168 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+D:\Programlar\RivaTuner Statistics Server\RTSSHooks64.dll:RTSSHooks64.dll (000001A8AF570000), size: 2564096 (result: 0), SymType: '-deferred-', PDB: ''
+C:\Windows\System32\shcore.dll:shcore.dll (00007FF92B530000), size: 712704 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\windows.storage.dll:windows.storage.dll (00007FF927E70000), size: 7929856 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\Wldp.dll:Wldp.dll (00007FF929760000), size: 180224 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.662
+C:\Windows\SYSTEM32\profapi.dll:profapi.dll (00007FF929C30000), size: 126976 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\clbcatq.dll:clbcatq.dll (00007FF92A610000), size: 692224 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2001.12.10941.16384
+C:\Windows\System32\netprofm.dll:netprofm.dll (00007FF925750000), size: 253952 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\npmproxy.dll:npmproxy.dll (00007FF91B220000), size: 65536 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\NSI.dll:NSI.dll (00007FF92ACE0000), size: 32768 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.610
+C:\Windows\SYSTEM32\dhcpcsvc6.DLL:dhcpcsvc6.DLL (00007FF923800000), size: 94208 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\dhcpcsvc.DLL:dhcpcsvc.DLL (00007FF9236D0000), size: 118784 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\DNSAPI.dll:DNSAPI.dll (00007FF9291C0000), size: 831488 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\fwpuclnt.dll:fwpuclnt.dll (00007FF9160D0000), size: 520192 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\rasadhlp.dll:rasadhlp.dll (00007FF91B210000), size: 40960 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\d3d11.dll:d3d11.dll (00007FF926070000), size: 2506752 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\dxgi.dll:dxgi.dll (00007FF928640000), size: 995328 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_2635d5c616c804dc\nvldumdx.dll:nvldumdx.dll (00007FF91E010000), size: 1069056 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 27.21.14.6089
+C:\Windows\SYSTEM32\cryptnet.dll:cryptnet.dll (00007FF922010000), size: 200704 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\imagehlp.dll:imagehlp.dll (00007FF92B970000), size: 118784 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\CRYPTSP.dll:CRYPTSP.dll (00007FF9296B0000), size: 98304 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\system32\rsaenh.dll:rsaenh.dll (00007FF928E10000), size: 212992 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\DriverStore\FileRepository\nv_dispi.inf_amd64_2635d5c616c804dc\nvwgf2umx.dll:nvwgf2umx.dll (00007FF8F0D40000), size: 77410304 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 27.21.14.6089
+C:\Windows\SYSTEM32\dxcore.dll:dxcore.dll (00007FF91F480000), size: 241664 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\system32\wbem\wbemprox.dll:wbemprox.dll (00007FF9161F0000), size: 69632 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\wbemcomn.dll:wbemcomn.dll (00007FF916150000), size: 606208 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\system32\wbem\wbemsvc.dll:wbemsvc.dll (00007FF915B20000), size: 81920 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\system32\wbem\fastprox.dll:fastprox.dll (00007FF9155A0000), size: 1093632 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\amsi.dll:amsi.dll (00007FF911580000), size: 102400 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\USERENV.dll:USERENV.dll (00007FF929BF0000), size: 188416 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.572
+C:\ProgramData\Microsoft\Windows Defender\Platform\4.18.2102.4-0\MpOav.dll:MpOav.dll (00007FF9114D0000), size: 503808 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 4.18.2102.4
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\cudart64_90.dll:cudart64_90.dll (00007FF8E3A30000), size: 397312 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.14.11.9000
+C:\Windows\SYSTEM32\opencl.dll:opencl.dll (00007FF8E2700000), size: 1462272 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2.2.8.0
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\radeonrays.dll:radeonrays.dll (00007FF8E3730000), size: 552960 (result: 0), SymType: '-deferred-', PDB: ''
+D:\Programlar\UnityEditors\2020.3.0f1\Editor\Data\MonoBleedingEdge\EmbedRuntime\mono-2.0-bdwgc.dll:mono-2.0-bdwgc.dll (00007FF8CF4D0000), size: 7790592 (result: 0), SymType: '-deferred-', PDB: ''
+C:\Windows\System32\PSAPI.DLL:PSAPI.DLL (00007FF92A6C0000), size: 32768 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\ProgramData\Microsoft\VisualStudio\Setup\x64\Microsoft.VisualStudio.Setup.Configuration.Native.dll:Microsoft.VisualStudio.Setup.Configuration.Native.dll (00007FF8E33E0000), size: 327680 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 2.7.3111.17308
+C:\Windows\SYSTEM32\PROPSYS.dll:PROPSYS.dll (00007FF925950000), size: 1011712 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 7.0.19041.867
+C:\Windows\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.19041.844_none_ca00b6081b84eb1d\comctl32.dll:comctl32.dll (00007FF911890000), size: 2727936 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 6.10.19041.844
+C:\Windows\SYSTEM32\WindowsCodecs.dll:WindowsCodecs.dll (00007FF923380000), size: 1785856 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.867
+C:\Windows\System32\thumbcache.dll:thumbcache.dll (00007FF910000000), size: 417792 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\policymanager.dll:policymanager.dll (00007FF9253E0000), size: 655360 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\msvcp110_win.dll:msvcp110_win.dll (00007FF928EA0000), size: 565248 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\MrmCoreR.dll:MrmCoreR.dll (00007FF91ED50000), size: 999424 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\iertutil.dll:iertutil.dll (00007FF91B370000), size: 2818048 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 11.0.19041.844
+C:\Windows\SYSTEM32\windows.staterepositorycore.dll:windows.staterepositorycore.dll (00007FF912080000), size: 69632 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\bcp47mrm.dll:bcp47mrm.dll (00007FF91F800000), size: 184320 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.867
+C:\Windows\System32\Windows.UI.dll:Windows.UI.dll (00007FF91EB60000), size: 1314816 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\WindowManagementAPI.dll:WindowManagementAPI.dll (00007FF923E50000), size: 659456 (result: 0), SymType: '-deferred-', PDB: ''
+C:\Windows\System32\TextInputFramework.dll:TextInputFramework.dll (00007FF91B270000), size: 1028096 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\wintypes.dll:wintypes.dll (00007FF9262E0000), size: 1392640 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\System32\InputHost.dll:InputHost.dll (00007FF91CFE0000), size: 1384448 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\SYSTEM32\twinapi.appcore.dll:twinapi.appcore.dll (00007FF923AD0000), size: 2101248 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\CoreMessaging.dll:CoreMessaging.dll (00007FF9272D0000), size: 991232 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.746
+C:\Windows\System32\CoreUIComponents.dll:CoreUIComponents.dll (00007FF926F70000), size: 3530752 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\SYSTEM32\ntmarta.dll:ntmarta.dll (00007FF928A40000), size: 208896 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\WinSxS\amd64_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.19041.789_none_faf0a7e97612e7bb\gdiplus.dll:gdiplus.dll (00007FF91CDB0000), size: 1748992 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.789
+C:\Windows\System32\MSCTF.dll:MSCTF.dll (00007FF92B5E0000), size: 1134592 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.867
+C:\Windows\SYSTEM32\edputil.dll:edputil.dll (00007FF912640000), size: 147456 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.546
+C:\Windows\System32\Windows.StateRepositoryPS.dll:Windows.StateRepositoryPS.dll (00007FF90B920000), size: 1335296 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.844
+C:\Windows\SYSTEM32\dbghelp.dll:dbghelp.dll (00007FF90E110000), size: 1982464 (result: 0), SymType: '-deferred-', PDB: '', fileVersion: 10.0.19041.867
+
+========== OUTPUTTING STACK TRACE ==================
+
+0x00007FF92A36D759 (KERNELBASE) RaiseException
+0x00007FF690EA800D (Unity) EditorMonoConsole::LogToConsoleImplementation
+0x00007FF690EA8F5A (Unity) EditorMonoConsole::LogToConsoleImplementation
+0x00007FF692A5C61E (Unity) DebugStringToFilePostprocessedStacktrace
+0x00007FF692A5BBCF (Unity) DebugStringToFile
+0x00007FF68E9FDB73 (Unity) CallbackArraySubBase<void (__cdecl*)(MemoryManager::AllocationLogDetails const & __ptr64)>::Register
+0x00007FF6916741D9 (Unity) LoadDomainAndUserAssemblies
+0x00007FF69167468E (Unity) LoadUserAssemblies
+0x00007FF691AA70B8 (Unity) <lambda_79a3ebc38cb5166d44d10a16a21fca24>::operator()
+0x00007FF691B72132 (Unity) asio::detail::completion_handler<core::mutable_function<void __cdecl(void)> >::do_complete
+0x00007FF691B74290 (Unity) asio::detail::win_iocp_io_service::do_one
+0x00007FF691B77A1E (Unity) asio::io_service::run
+0x00007FF691AEDC10 (Unity) RunAssetImportWorkerClientV2
+0x00007FF691AEDC60 (Unity) RunAssetImporterV2
+0x00007FF690FFFED6 (Unity) Application::InitializeProject
+0x00007FF69197A372 (Unity) WinMain
+0x00007FF6937EF436 (Unity) __scrt_common_main_seh
+0x00007FF92B8C7034 (KERNEL32) BaseThreadInitThunk
+0x00007FF92C602651 (ntdll) RtlUserThreadStart
+
+========== END OF STACKTRACE ===========
+
+A crash has been intercepted by the crash handler. For call stack and other details, see the latest crash report generated in:
+ * C:/Users/Hayri/AppData/Local/Temp/Unity/Editor/Crashes

@@ -12,6 +12,7 @@ public class Resource : ScriptableObject
 	public Sprite resourceIcon;
 	public Sprite obtainedFromTerrainIcon;
 	public Sprite costIcon;
+	public bool canBeCollected;
 	public int resourceCount;
 	public int costToCollect;
 }

@@ -20,5 +20,6 @@ MonoBehaviour:
   obtainedFromTerrainIcon: {fileID: 21300000, guid: 519d89b163a3ab041b092c8901a323ac,
     type: 3}
   costIcon: {fileID: 21300000, guid: f4168ff31126b294da15e7c938a4ce0d, type: 3}
+  canBeCollected: 1
   resourceCount: 50
   costToCollect: 3
