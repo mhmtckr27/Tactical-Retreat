@@ -118,6 +118,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   terrainType: 2
+  resource: {fileID: 8062767962725621943}
   buildablesOnThisTerrain: 
   occupierUnit: {fileID: 0}
 --- !u!114 &7455576006764090492

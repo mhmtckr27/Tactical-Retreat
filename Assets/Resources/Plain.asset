@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceName: 0
   obtainedFromTerrainType: 0
-  description: Plain. Nothing interesting here.
+  description: Nothing interesting here.
   collectText: 
   resourceIcon: {fileID: 0}
   obtainedFromTerrainIcon: {fileID: 21300000, guid: 2d96d67d99e01354b8066179db2997a1,
     type: 3}
   costIcon: {fileID: 0}
+  canBeCollected: 0
   resourceCount: 0
   costToCollect: 0

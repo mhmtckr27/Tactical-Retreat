@@ -27,12 +27,13 @@ public class BuildingBase : NetworkBehaviour
 		if (!isLocalPlayer) { return; }
 		canvas = Instantiate(canvasPrefab);
 		uiManager = canvas.GetComponent<UIManager>();
-		/*if (!hasAuthority)
-		{
-			canvas.SetActive(false);
-			Destroy(canvas);
-		}*/
 
+		//InitCmd();
+	}
+
+	[Command]
+	public virtual void InitCmd()
+	{
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{

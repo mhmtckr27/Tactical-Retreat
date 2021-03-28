@@ -25,15 +25,15 @@ public class TownCenter : BuildingBase
 		base.Start();
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
-		
-		transform.eulerAngles = new Vector3(0, -60, 0);
+		InitCmd();
 		inputManager = GetComponent<InputManager>();
 	}
 
 	[Command]
-	public void asd()
+	public override void InitCmd()
 	{
-
+		base.InitCmd();
+		transform.eulerAngles = new Vector3(0, -60, 0);
 	}
 
 	private void Update()
@@ -69,11 +69,22 @@ public class TownCenter : BuildingBase
 		}
 	}
 
+	[Command]
+	public void UpdateWoodCountCmd(int count)
+	{
+		UpdateWoodCount(count);
+	}
+
 	[Server]
 	public void UpdateWoodCount(int count)
 	{
 		woodCount += count;
 		UpdateWoodCountRpc(woodCount);
+		if (Map.Instance.selectedHexagon != null)
+		{
+			Map.Instance.selectedHexagon.isResourceCollected = true;
+			Map.Instance.selectedHexagon.UpdateTerrainType();
+		}
 	}
 
 	[TargetRpc]

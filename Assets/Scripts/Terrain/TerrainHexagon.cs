@@ -7,6 +7,8 @@ using Mirror;
 public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
+	[SerializeField] private GameObject resource;
+	[SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
 	private GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
@@ -45,6 +47,22 @@ public class TerrainHexagon : NetworkBehaviour
 	public void ToggleOutlineVisibility(int outline_index, bool show_outline)
 	{
 		outlines[outline_index].SetActive(show_outline);
+	}
+
+	private void OnResourceCollected(bool oldVal, bool newVal)
+	{
+		if(newVal)
+		{
+			Debug.LogWarning("gidiyorrr");
+			Destroy(resource);
+		}
+	}
+
+	[Server]
+	public void UpdateTerrainType()
+	{
+		Destroy(resource);
+		terrainType = TerrainType.Plain;
 	}
 
 	public void SetCoordinates(int x, int y, int z)

@@ -73,7 +73,7 @@ public class Map : NetworkBehaviour
 	public void GenerateMap()
 	{
 		string coordinate_key = 0 + "_" + 0 + "_" + 0;
-		mapDictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+		mapDictionary.Add(coordinate_key, Instantiate(GetRandomBlock(), Vector3.zero, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 		mapDictionary["0_0_0"].SetCoordinates(0, 0, 0);
 		TerrainHexagon initialHex = mapDictionary["0_0_0"];
 		TerrainHexagon currentHex = initialHex;
@@ -85,7 +85,7 @@ public class Map : NetworkBehaviour
 			//north neighbour
 			if (!mapDictionary.ContainsKey(currentHex.Neighbour_N))
 			{
-				mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+				mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 				mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
 				NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 				currentHex = mapDictionary[currentHex.Neighbour_N];
@@ -95,7 +95,7 @@ public class Map : NetworkBehaviour
 				//south-east neighbour		
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_SE))
 				{
-					mapDictionary.Add(currentHex.Neighbour_SE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_SE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_SE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SE[0], currentHex.Coordinates[1] + neighbourOffset_SE[1], currentHex.Coordinates[2] + neighbourOffset_SE[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SE];
@@ -106,7 +106,7 @@ public class Map : NetworkBehaviour
 				//south neighbour
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_S))
 				{
-					mapDictionary.Add(currentHex.Neighbour_S, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_S, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_S].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_S[0], currentHex.Coordinates[1] + neighbourOffset_S[1], currentHex.Coordinates[2] + neighbourOffset_S[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_S].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_S];
@@ -118,7 +118,7 @@ public class Map : NetworkBehaviour
 				//south-west neighbour
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_SW))
 				{
-					mapDictionary.Add(currentHex.Neighbour_SW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_SW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_SW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SW[0], currentHex.Coordinates[1] + neighbourOffset_SW[1], currentHex.Coordinates[2] + neighbourOffset_SW[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SW];
@@ -129,7 +129,7 @@ public class Map : NetworkBehaviour
 				//north-west neighbour
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_NW))
 				{
-					mapDictionary.Add(currentHex.Neighbour_NW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_NW, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_NW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NW[0], currentHex.Coordinates[1] + neighbourOffset_NW[1], currentHex.Coordinates[2] + neighbourOffset_NW[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NW];
@@ -140,7 +140,7 @@ public class Map : NetworkBehaviour
 				//north neighbour
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_N))
 				{
-					mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_N, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_N];
@@ -151,7 +151,7 @@ public class Map : NetworkBehaviour
 				//north-east neighbour
 				if (!mapDictionary.ContainsKey(currentHex.Neighbour_NE))
 				{
-					mapDictionary.Add(currentHex.Neighbour_NE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+					mapDictionary.Add(currentHex.Neighbour_NE, Instantiate(GetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 					mapDictionary[currentHex.Neighbour_NE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NE[0], currentHex.Coordinates[1] + neighbourOffset_NE[1], currentHex.Coordinates[2] + neighbourOffset_NE[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NE];
@@ -236,7 +236,7 @@ public class Map : NetworkBehaviour
 		{
 			TerrainHexagon temp = mapDictionary[dilateWaterBlocks[i]];
 			mapDictionary.Remove(dilateWaterBlocks[i]);
-			mapDictionary.Add(dilateWaterBlocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+			mapDictionary.Add(dilateWaterBlocks[i], Instantiate(GetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 			NetworkServer.Spawn(mapDictionary[dilateWaterBlocks[i]].gameObject);
 			mapDictionary[dilateWaterBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
 			//Destroy(temp.gameObject);
@@ -247,7 +247,7 @@ public class Map : NetworkBehaviour
 		{
 			TerrainHexagon temp = mapDictionary[dilateGroundBlocks[i]];
 			mapDictionary.Remove(dilateGroundBlocks[i]);
-			mapDictionary.Add(dilateGroundBlocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity, transform).GetComponent<TerrainHexagon>());
+			mapDictionary.Add(dilateGroundBlocks[i], Instantiate(GetWaterBlock(), temp.transform.position, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
 			NetworkServer.Spawn(mapDictionary[dilateGroundBlocks[i]].gameObject);
 			mapDictionary[dilateGroundBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
 			//Destroy(temp.gameObject);
