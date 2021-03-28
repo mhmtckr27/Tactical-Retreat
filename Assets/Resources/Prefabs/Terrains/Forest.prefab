@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1774787203467907917}
   - component: {fileID: 6444309811665241426}
   - component: {fileID: 7112035847107682168}
-  - component: {fileID: 1951556716257307856}
   m_Layer: 6
   m_Name: Forest
   m_TagString: Untagged
@@ -117,26 +116,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   terrainType: 2
-  buildablesOnThisTerrain: 
   occupierUnit: {fileID: 0}
   occupierBuilding: {fileID: 0}
---- !u!114 &1951556716257307856
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4642739875115892624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  visible: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!1 &8062767962725621943
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,9 +129,8 @@ GameObject:
   - component: {fileID: 6718734494956325262}
   - component: {fileID: 7170886946754132405}
   - component: {fileID: 2488218682174799032}
-  - component: {fileID: 3639160968583085540}
   m_Layer: 6
-  m_Name: Forest
+  m_Name: trees
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -220,18 +200,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3639160968583085540
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8062767962725621943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c39868c0c43aada47a9fd082eaae5d03, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7106481607962039666
 PrefabInstance:
   m_ObjectHideFlags: 0
