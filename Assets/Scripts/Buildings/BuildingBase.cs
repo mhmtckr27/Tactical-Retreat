@@ -8,7 +8,6 @@ public class BuildingBase : NetworkBehaviour
 {
 	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField] public BuildingType buildingType;
-	[SerializeField] public int buildCostWood;
 	
 	[SyncVar] public TerrainHexagon occupiedHex;
 	[SyncVar] public uint playerID;
@@ -60,6 +59,5 @@ public class BuildingBase : NetworkBehaviour
 public enum BuildingType
 {
 	TownCenter,
-	Wood,
-	Meat
+	WoodcutterCottage
 }
