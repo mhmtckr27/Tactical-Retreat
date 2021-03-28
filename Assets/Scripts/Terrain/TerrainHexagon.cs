@@ -7,7 +7,7 @@ using Mirror;
 public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
-	[SerializeField] public List<BuildingType> buildablesOnThisTerrain;
+	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
 	private GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
 	private string key;
@@ -30,9 +30,9 @@ public class TerrainHexagon : NetworkBehaviour
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
 	public string Key { get => key; }
 
-	[SyncVar] public UnitBase occupierUnit;
+	[HideInInspector][SyncVar] public UnitBase occupierUnit;
 
-	[SerializeField][SyncVar] private BuildingBase occupierBuilding;
+	[HideInInspector][SyncVar] private BuildingBase occupierBuilding;
 	public BuildingBase OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
 
 	private void Awake()
@@ -78,7 +78,7 @@ public class TerrainHexagon : NetworkBehaviour
 
 public enum TerrainType
 {
-	Ground,
+	Plain,
 	Water,
 	Forest
 }

@@ -11,6 +11,12 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text meatCountText;
 	[SerializeField] private Text currentToMaxPopulationText;
 	public TownCenterUI townCenterUI;
+	public TerrainHexagonUI terrainHexagonUI;
+
+	private void OnEnable()
+	{
+		terrainHexagonUI.uiManager = this;
+	}
 
 	private void Start()
 	{

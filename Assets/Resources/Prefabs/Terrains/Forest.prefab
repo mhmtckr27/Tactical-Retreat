@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1774787203467907917}
   - component: {fileID: 6444309811665241426}
   - component: {fileID: 7112035847107682168}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Forest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -116,8 +116,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   terrainType: 2
+  buildablesOnThisTerrain: 
   occupierUnit: {fileID: 0}
-  occupierBuilding: {fileID: 0}
 --- !u!1 &8062767962725621943
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +129,7 @@ GameObject:
   - component: {fileID: 6718734494956325262}
   - component: {fileID: 7170886946754132405}
   - component: {fileID: 2488218682174799032}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: trees
   m_TagString: Untagged
   m_Icon: {fileID: 0}

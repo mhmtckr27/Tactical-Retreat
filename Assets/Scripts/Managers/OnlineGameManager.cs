@@ -113,6 +113,7 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			return buildings[playerID];
 		}
+		return null;
 	}
 
 	private bool canGiveTurnToNextPlayer = true;

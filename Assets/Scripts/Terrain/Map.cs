@@ -48,6 +48,8 @@ public class Map : NetworkBehaviour
 		}
 	}
 
+	public TerrainHexagon selectedHexagon;
+
 	public State currentState = State.None;
 
 	public void Awake()
@@ -161,6 +163,12 @@ public class Map : NetworkBehaviour
 			}
 			k++;
 		}
+	}
+
+	[Command]
+	public void ClearSelectedHexagon()
+	{
+		Map.Instance.selectedHexagon = null;
 	}
 
 	//replace water blocks that are single (don't have any water neighbour) with random ground block.

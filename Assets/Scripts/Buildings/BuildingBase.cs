@@ -15,17 +15,23 @@ public class BuildingBase : NetworkBehaviour
 	protected TownCenterUI buildingMenuUI;
 	protected UIManager uiManager;
 	private bool menu_visible = false;
+	private GameObject canvas;
+	public override void OnStartServer()
+	{
+		base.OnStartServer();
+
+	}
 
 	protected virtual void Start()
 	{
-		GameObject tempCanvas = Instantiate(canvasPrefab);
-		uiManager = tempCanvas.GetComponent<UIManager>();
-
-		if (!hasAuthority)
+		if (!isLocalPlayer) { return; }
+		canvas = Instantiate(canvasPrefab);
+		uiManager = canvas.GetComponent<UIManager>();
+		/*if (!hasAuthority)
 		{
-			tempCanvas.SetActive(false);
-			Destroy(tempCanvas);
-		}
+			canvas.SetActive(false);
+			Destroy(canvas);
+		}*/
 
 		RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))

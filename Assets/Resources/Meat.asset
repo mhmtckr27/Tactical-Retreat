@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae1df7b7b3f8b4944bdf716a196b1764, type: 3}
+  m_Name: Meat
+  m_EditorClassIdentifier: 
+  resourceName: 2
+  obtainedFromTerrainType: 0
+  description: Hunt animals to obtain meat. Meat is required to produce more population.
+  collectText: Hunt
+  resourceIcon: {fileID: 21300000, guid: 932af67d36149684eb3e9abdf124705c, type: 3}
+  obtainedFromTerrainIcon: {fileID: 21300000, guid: 519d89b163a3ab041b092c8901a323ac,
+    type: 3}
+  costIcon: {fileID: 21300000, guid: f4168ff31126b294da15e7c938a4ce0d, type: 3}
+  resourceCount: 50
+  costToCollect: 3

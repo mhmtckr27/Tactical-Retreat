@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Mirror;
 using System;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class TownCenter : BuildingBase
 {
@@ -22,11 +21,19 @@ public class TownCenter : BuildingBase
 
 	protected override void Start()
 	{
+		if (!isLocalPlayer) { return; }
 		base.Start();
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
+		
 		transform.eulerAngles = new Vector3(0, -60, 0);
 		inputManager = GetComponent<InputManager>();
+	}
+
+	[Command]
+	public void asd()
+	{
+
 	}
 
 	private void Update()
@@ -34,12 +41,12 @@ public class TownCenter : BuildingBase
 		if (!hasAuthority) { return; }
 
 #if UNITY_EDITOR
-		if (Input.GetMouseButtonUp(0))
+		if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
 		{
 			ValidatePlayRequestCmd();
 		}
 #elif UNITY_ANDROID
-		if (inputManager.HasValidTap())
+		if (inputManager.HasValidTap() && !EventSystem.current.IsPointerOverGameObject())
 		{
 			ValidatePlayRequestCmd();
 		}
@@ -204,8 +211,32 @@ public class TownCenter : BuildingBase
 		}
 		else if(Map.Instance.currentState == State.None)
 		{
-
+			if(terrainHexagon != Map.Instance.selectedHexagon)
+			{
+				Map.Instance.selectedHexagon = terrainHexagon;
+				TerrainHexagonSelectionRpc(-1, false);
+				TerrainHexagonSelectionRpc((int)terrainHexagon.terrainType, true);
+				//uiManager.terrainHexagonUI.SetEnable(true);
+			}
+			else
+			{
+				Map.Instance.selectedHexagon = null;
+				TerrainHexagonSelectionRpc(-1, false);
+				//uiManager.terrainHexagonUI.SetEnable(false);
+			}
 		}
+	}
+
+	[TargetRpc]
+	public void TerrainHexagonSelectionRpc(int terrainType, bool enable)
+	{
+		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
+	}
+
+	[Command]
+	public void ClearSelectedHexagonCmd()
+	{
+		Map.Instance.selectedHexagon = null;
 	}
 
 	[Server]
@@ -213,12 +244,12 @@ public class TownCenter : BuildingBase
 	{
 		hasTurn = newHasTurn;
 		EnableNextTurnButton(newHasTurn);
-		if (hasTurn)
+		/*if (hasTurn)
 		{
 			UpdateResources();
-		}
+		}*/
 	}
-
+	/*
 	[Server]
 	private void UpdateResources()
 	{
@@ -230,7 +261,7 @@ public class TownCenter : BuildingBase
 			}
 		}
 	}
-
+	*/
 	[TargetRpc]
 	private void EnableNextTurnButton(bool enable)
 	{
