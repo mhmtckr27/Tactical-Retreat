@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1df7b7b3f8b4944bdf716a196b1764, type: 3}
   m_Name: Wood
   m_EditorClassIdentifier: 
-  resourceName: 1
+  resourceType: 1
   obtainedFromTerrainType: 2
   description: Cut these trees to obtain wood. Wood is a resource needed to build
     houses.
   collectText: Cut
   resourceIcon: {fileID: 21300000, guid: c9bba9e2a6888694bac4a54cf0af70f1, type: 3}
-  obtainedFromTerrainIcon: {fileID: 21300000, guid: cc5974ae8537a614bb704e6369a2857d,
+  obtainedFromTerrainIcon: {fileID: 21300000, guid: dea83f86238750e49acdf2ee182b158a,
     type: 3}
   costIcon: {fileID: 21300000, guid: f4168ff31126b294da15e7c938a4ce0d, type: 3}
   canBeCollected: 1

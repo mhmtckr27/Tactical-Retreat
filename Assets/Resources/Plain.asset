@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ae1df7b7b3f8b4944bdf716a196b1764, type: 3}
   m_Name: Plain
   m_EditorClassIdentifier: 
-  resourceName: 0
+  resourceType: 0
   obtainedFromTerrainType: 0
   description: Nothing interesting here.
   collectText: 
   resourceIcon: {fileID: 0}
-  obtainedFromTerrainIcon: {fileID: 21300000, guid: 2d96d67d99e01354b8066179db2997a1,
+  obtainedFromTerrainIcon: {fileID: 21300000, guid: f2b095c3ed2095a42975b3081891c16c,
     type: 3}
   costIcon: {fileID: 0}
   canBeCollected: 0

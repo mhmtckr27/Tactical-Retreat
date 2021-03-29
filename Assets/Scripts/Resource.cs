@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Resource", menuName = "ScriptableObjects/Resource", order = 1)]
 public class Resource : ScriptableObject
 {
-	public ResourceType resourceName;
+	public ResourceType resourceType;
 	public TerrainType obtainedFromTerrainType;
 	public string description;
 	public string collectText;

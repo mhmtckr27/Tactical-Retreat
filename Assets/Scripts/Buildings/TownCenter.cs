@@ -13,9 +13,11 @@ public class TownCenter : BuildingBase
 	[SerializeField] private int meatCount;
 	private int currentPopulation;
 	private int maxPopulation;
+	[SyncVar] private int actionPoint;
 
 	public event Action<int> onWoodCountChange;
 	public event Action<int> onMeatCountChange;
+	public event Action<int> onActionPointChange;
 	public event Action<int, int> onCurrentToMaxPopulationChange;
 	
 
@@ -70,9 +72,21 @@ public class TownCenter : BuildingBase
 	}
 
 	[Command]
-	public void UpdateWoodCountCmd(int count)
+	public void UpdateResourceCountCmd(ResourceType resourceType, int count, int cost)
 	{
-		UpdateWoodCount(count);
+		if(cost > actionPoint) { return; }
+		switch (resourceType)
+		{
+			case ResourceType.Wood:
+				UpdateWoodCount(count);
+				break;
+			case ResourceType.Meat:
+				UpdateMeatCount(count);
+				break;
+			default:
+				break;
+		}
+		UpdateActionPoint(-cost);
 	}
 
 	[Server]
@@ -88,11 +102,11 @@ public class TownCenter : BuildingBase
 	}
 
 	[TargetRpc]
-	public void UpdateWoodCountRpc(int count)
+	public void UpdateWoodCountRpc(int newWoodCount)
 	{
 		if (onWoodCountChange != null)
 		{
-			onWoodCountChange.Invoke(count);
+			onWoodCountChange.Invoke(newWoodCount);
 		}
 	}
 
@@ -101,14 +115,19 @@ public class TownCenter : BuildingBase
 	{
 		meatCount += count;
 		UpdateMeatCountRpc(meatCount);
+		if(Map.Instance.selectedHexagon != null)
+		{
+			Map.Instance.selectedHexagon.isResourceCollected = true;
+			Map.Instance.selectedHexagon.UpdateTerrainType();
+		}
 	}
 
 	[TargetRpc]
-	public void UpdateMeatCountRpc(int count)
+	public void UpdateMeatCountRpc(int newMeatCount)
 	{
 		if (onMeatCountChange != null)
 		{
-			onMeatCountChange.Invoke(count);
+			onMeatCountChange.Invoke(newMeatCount);
 		}
 	}
 
@@ -127,11 +146,27 @@ public class TownCenter : BuildingBase
 	}
 
 	[TargetRpc]
-	private void UpdateCurrentToMaxPopulationRpc(int current, int max)
+	private void UpdateCurrentToMaxPopulationRpc(int newCurrent, int newMax)
 	{
 		if (onCurrentToMaxPopulationChange != null)
 		{
-			onCurrentToMaxPopulationChange.Invoke(current, max);
+			onCurrentToMaxPopulationChange.Invoke(newCurrent, newMax);
+		}
+	}
+
+	[Server]
+	public void UpdateActionPoint(int count)
+	{
+		actionPoint += count;
+		UpdateActionPointRpc(actionPoint);
+	}
+
+	[TargetRpc]
+	public void UpdateActionPointRpc(int newActionPoint)
+	{
+		if(onActionPointChange != null)
+		{
+			onActionPointChange.Invoke(newActionPoint);
 		}
 	}
 
@@ -227,13 +262,11 @@ public class TownCenter : BuildingBase
 				Map.Instance.selectedHexagon = terrainHexagon;
 				TerrainHexagonSelectionRpc(-1, false);
 				TerrainHexagonSelectionRpc((int)terrainHexagon.terrainType, true);
-				//uiManager.terrainHexagonUI.SetEnable(true);
 			}
 			else
 			{
 				Map.Instance.selectedHexagon = null;
 				TerrainHexagonSelectionRpc(-1, false);
-				//uiManager.terrainHexagonUI.SetEnable(false);
 			}
 		}
 	}
@@ -255,24 +288,20 @@ public class TownCenter : BuildingBase
 	{
 		hasTurn = newHasTurn;
 		EnableNextTurnButton(newHasTurn);
-		/*if (hasTurn)
+		if (hasTurn)
 		{
-			UpdateResources();
-		}*/
-	}
-	/*
-	[Server]
-	private void UpdateResources()
-	{
-		foreach (BuildingBase building in OnlineGameManager.Instance.GetBuildings(netId))
-		{
-			if(building.buildingType == BuildingType.WoodcutterCottage)
-			{
-				UpdateWoodCount((building as WoodcutterCottage).CollectResource());
-			}
+			int actionPointGain = CalculateActionPointGain();
+			UpdateActionPoint(actionPointGain);
 		}
 	}
-	*/
+
+	[Server]
+	public int CalculateActionPointGain()
+	{
+		//calculate using unit count and many other things
+		return 3;
+	}
+
 	[TargetRpc]
 	private void EnableNextTurnButton(bool enable)
 	{

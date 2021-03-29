@@ -44,7 +44,7 @@ public class TerrainHexagonUI : MonoBehaviour
 
     public void OnCollectButton()
 	{
-        uiManager.townCenterUI.townCenter.UpdateWoodCountCmd(currentResource.resourceCount);
+        uiManager.townCenterUI.townCenter.UpdateResourceCountCmd(currentResource.resourceType, currentResource.resourceCount, currentResource.costToCollect);
         OnCloseButton();
 	}
 

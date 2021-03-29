@@ -8,7 +8,7 @@ public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
 	[SerializeField] private GameObject resource;
-	[SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
+	[HideInInspector][SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
 	private GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
@@ -53,7 +53,6 @@ public class TerrainHexagon : NetworkBehaviour
 	{
 		if(newVal)
 		{
-			Debug.LogWarning("gidiyorrr");
 			Destroy(resource);
 		}
 	}
@@ -98,5 +97,6 @@ public enum TerrainType
 {
 	Plain,
 	Water,
-	Forest
+	Forest,
+	Animals
 }

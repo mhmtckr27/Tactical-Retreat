@@ -57,10 +57,10 @@ MonoBehaviour:
     creationProbability: 0.7
   - blockPrefab: {fileID: 4642739875115892624, guid: 1bdc14dc13c20ef48b5b4118a6a16804,
       type: 3}
+    creationProbability: 0.85
+  - blockPrefab: {fileID: 9040136914932431494, guid: 5e4c937465e826846950dc8a0715c796,
+      type: 3}
     creationProbability: 1
-  resources:
-  - {fileID: 11400000, guid: 39ab0f90d9c20d44aac31786345a0edc, type: 2}
-  - {fileID: 11400000, guid: ead15a15218bfd5409188fee1e26e12a, type: 2}
   unitToMove: {fileID: 0}
   selectedHexagon: {fileID: 0}
   currentState: 2

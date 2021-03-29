@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Button nextTurnButton;
 	[SerializeField] private Text woodCountText;
 	[SerializeField] private Text meatCountText;
+	[SerializeField] private Text actionPointText;
 	[SerializeField] private Text currentToMaxPopulationText;
 	public TownCenterUI townCenterUI;
 	public TerrainHexagonUI terrainHexagonUI;
@@ -22,6 +23,7 @@ public class UIManager : MonoBehaviour
 	{
 		townCenterUI.townCenter.onWoodCountChange += newWoodCount => woodCountText.text = newWoodCount.ToString();
 		townCenterUI.townCenter.onMeatCountChange += newMeatCount => meatCountText.text = newMeatCount.ToString();
+		townCenterUI.townCenter.onActionPointChange += newActionPoint => actionPointText.text = newActionPoint.ToString();
 		townCenterUI.townCenter.onCurrentToMaxPopulationChange += (newCurrentPopulation, newMaxPopulation) => currentToMaxPopulationText.text = newCurrentPopulation.ToString() + "/" + newMaxPopulation;
 	}
 
