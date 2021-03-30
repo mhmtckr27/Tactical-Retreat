@@ -25,7 +25,6 @@ public class OnlineGameManager : NetworkBehaviour
 	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
-	private Dictionary<uint, List<BuildingBase>> buildings = new Dictionary<uint, List<BuildingBase>>();
 
 	[Server]
 	private void Start()
@@ -40,13 +39,14 @@ public class OnlineGameManager : NetworkBehaviour
 	}
 
 	[Server]
-	public void RegisterPlayer(TownCenter player)
+	public void RegisterPlayer(TownCenter player, bool isHost)
 	{
 		if (!players.ContainsKey(player.netId))
 		{
 			players.Add(player.netId, player);
 			units.Add(player.netId, new List<UnitBase>());
 			playerList.Add(player);
+			players[player.netId].isHost = isHost;
 			Debug.Log("Player-" + player.netId + " has joined the game");
 		}
 	}
@@ -90,9 +90,15 @@ public class OnlineGameManager : NetworkBehaviour
 			if (units[playerID].Contains(unit))
 			{
 				units[playerID].Remove(unit);
-				if (units[playerID].Count == 0)
+				if ((units[playerID].Count == 0)/* && players[playerID].isConquered*/)
 				{
-					players[playerID].transform.localScale = Vector3.zero;
+					//players[playerID].transform.localScale = Vector3.zero;
+					if (!players[playerID].isHost)
+					{
+						GameObject player = players[playerID].gameObject;
+						UnregisterPlayer(players[playerID]);
+						NetworkServer.Destroy(player);
+					}
 				}
 			}
 			else
@@ -104,16 +110,6 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			Debug.LogWarning("no player found: " + playerID);
 		}
-	}
-
-	[Server]
-	public List<BuildingBase> GetBuildings(uint playerID)
-	{
-		if (buildings.ContainsKey(playerID))
-		{
-			return buildings[playerID];
-		}
-		return null;
 	}
 
 	private bool canGiveTurnToNextPlayer = true;

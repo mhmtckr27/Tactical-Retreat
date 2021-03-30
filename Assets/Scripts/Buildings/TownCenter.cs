@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class TownCenter : BuildingBase
 {
 	[SyncVar] public bool hasTurn;
-	//[SyncVar] private bool isConquered = false;
+	[SyncVar] public bool isConquered = false;
 	private InputManager inputManager;
 
 	[SerializeField] private int woodCount;
@@ -14,6 +14,8 @@ public class TownCenter : BuildingBase
 	private int currentPopulation;
 	private int maxPopulation;
 	[SyncVar] private int actionPoint;
+
+	public bool isHost = false;
 
 	public event Action<int> onWoodCountChange;
 	public event Action<int> onMeatCountChange;
@@ -37,6 +39,8 @@ public class TownCenter : BuildingBase
 		base.InitCmd();
 		transform.eulerAngles = new Vector3(0, -60, 0);
 	}
+
+	
 
 	private void Update()
 	{
@@ -416,14 +420,13 @@ public class TownCenter : BuildingBase
 	{
 		if (!hasAuthority) { return; }
 		base.OnStartClient();
-
-		CmdRegisterPlayer();
+		CmdRegisterPlayer(isServer);
 	}
 
 	[Command]
-	public void CmdRegisterPlayer()
+	public void CmdRegisterPlayer(bool isHost)
 	{
-		OnlineGameManager.Instance.RegisterPlayer(this);
+		OnlineGameManager.Instance.RegisterPlayer(this, isHost);
 		playerID = netId;
 	}
 

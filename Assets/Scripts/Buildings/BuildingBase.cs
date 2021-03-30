@@ -16,11 +16,6 @@ public class BuildingBase : NetworkBehaviour
 	protected UIManager uiManager;
 	protected bool menu_visible = false;
 	private GameObject canvas;
-	public override void OnStartServer()
-	{
-		base.OnStartServer();
-
-	}
 
 	protected virtual void Start()
 	{
