@@ -38,7 +38,7 @@ public class Map : NetworkBehaviour
 		}
 	}
 
-	public UnitBase unitToMove;
+	private UnitBase unitToMove;
 	public UnitBase UnitToMove
 	{
 		get => unitToMove;

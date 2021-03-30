@@ -55,12 +55,12 @@ public class UnitBase : NetworkBehaviour
 		transform.eulerAngles = initialRotation;
 	}
 
-	public bool TryMoveTo(TerrainHexagon to)
+	/*public bool TryMoveTo(TerrainHexagon to)
 	{
 		if (!hasAuthority) { return false; }
 		CmdRequestToMove(to);
 		return true;
-	}
+	}*/
 	private void UpdateOutlinesClient()
 	{
 		CmdRequestDisableHexagonOutlines();
@@ -175,24 +175,25 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
-	[Server]
+	/*[Server]
 	public void CmdRequestToMove(TerrainHexagon to)
 	{
 		if (!hasAuthority) { return; }
 		ValidateRequestToMove(to);
 	}
-
+	*/
 	[Server]
-	public void ValidateRequestToMove(TerrainHexagon to)
+	public bool ValidateRequestToMove(TerrainHexagon to)
 	{
 		if (!neighboursWithinRange.Contains(to))
 		{
-			return;
+			return false;
 		}
 		else
 		{
 			GetPath(to);
 			Move(to, path.Count - 1);
+			return true;
 		}
 	}
 

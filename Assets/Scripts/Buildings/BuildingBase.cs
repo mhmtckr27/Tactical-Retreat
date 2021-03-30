@@ -14,7 +14,7 @@ public class BuildingBase : NetworkBehaviour
 	
 	protected TownCenterUI buildingMenuUI;
 	protected UIManager uiManager;
-	private bool menu_visible = false;
+	protected bool menu_visible = false;
 	private GameObject canvas;
 	public override void OnStartServer()
 	{
@@ -43,22 +43,27 @@ public class BuildingBase : NetworkBehaviour
 	}
 
 	[Server]
-	public void SelectBuilding(BuildingBase bulding)
+	public void SelectBuilding(BuildingBase building)
 	{
-		if (Map.Instance.currentState != State.UnitAction)
-		{
-			NetworkIdentity target = bulding.netIdentity;
-			ToggleBuildingMenuRpc(target.connectionToClient);
-		}
+		NetworkIdentity target = building.netIdentity;
+		menu_visible = true;
+		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
+	}
+
+	[Server]
+	public void DeselectBuilding(BuildingBase building)
+	{
+		NetworkIdentity target = building.netIdentity;
+		menu_visible = false;
+		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
 	}
 
 	[TargetRpc]
-	public void ToggleBuildingMenuRpc(NetworkConnection target)
+	public void ToggleBuildingMenuRpc(NetworkConnection target, bool enable)
 	{
 		if (isLocalPlayer)
 		{
-			menu_visible = !menu_visible; 
-			buildingMenuUI.gameObject.SetActive(menu_visible);
+			buildingMenuUI.gameObject.SetActive(enable);
 		}
 	}
 }

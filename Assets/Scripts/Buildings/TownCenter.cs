@@ -180,44 +180,160 @@ public class TownCenter : BuildingBase
 	[TargetRpc]
 	protected void PlayRpc()
 	{
-		/*RaycastHit hit;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
-		{
-			PlayCmd(hit);
-		}*/
 		PlayCmd(Camera.main.ScreenPointToRay(Input.mousePosition));
 	}
 
 	[Command]
-	protected void PlayCmd(/*RaycastHit hit*/ Ray ray)
+	protected void PlayCmd(Ray ray)
 	{
 		Play(ray);
 	}
 
 	[Server]
-	protected void Play(/*RaycastHit hit*/ Ray ray)
+	protected void Play(Ray ray)
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit))
 		{
-			UnitBase unit = hit.collider.GetComponent<UnitBase>();
-			if (unit != null)
+			TerrainHexagon selectedHexagon = hit.collider.GetComponent<TerrainHexagon>();
+			//if there is no selected unit before click
+			if(Map.Instance.UnitToMove == null)
 			{
-				SelectUnit(unit);
+				//if selected terrain is empty, show terrain info
+				if((selectedHexagon.occupierUnit == null) && (selectedHexagon.OccupierBuilding == null))
+				{
+					if(Map.Instance.selectedHexagon != selectedHexagon)
+					{
+						DeselectTerrain();
+						if (menu_visible)
+						{
+							DeselectBuilding(this);
+						}
+						SelectTerrain(selectedHexagon);
+					}
+					else
+					{
+						DeselectTerrain();
+					}
+				}
+				//if selected terrain only has a occupier friendly unit and not a building
+				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.occupierUnit != null) && (selectedHexagon.occupierUnit.playerID == playerID))
+				{
+					if (Map.Instance.selectedHexagon != selectedHexagon)
+					{
+						DeselectTerrain();
+						if (menu_visible)
+						{
+							DeselectBuilding(this);
+						}
+						SelectUnit(selectedHexagon.occupierUnit);
+					}
+					else
+					{
+						DeselectTerrain();
+					}
+				}
+				//if selected terrain only has a occupier building and not an unit, open building menu
+				else if((selectedHexagon.occupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.netId == netId))
+				{
+					if(Map.Instance.selectedHexagon != null)
+					{
+						DeselectTerrain();
+					}
+					if (!menu_visible)
+					{
+						SelectBuilding(selectedHexagon.OccupierBuilding);
+					}
+					else
+					{
+						DeselectBuilding(selectedHexagon.OccupierBuilding);
+					}
+				}
+				//if selected terrain has both friendly unit and friendly building, select unit
+				else if((selectedHexagon.occupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.occupierUnit.playerID == netId) && (selectedHexagon.OccupierBuilding.playerID == netId))
+				{
+					if (Map.Instance.selectedHexagon != null)
+					{
+						DeselectTerrain();
+					}
+					if (menu_visible)
+					{
+						DeselectBuilding(this);
+					}
+					SelectUnit(selectedHexagon.occupierUnit);
+				}
+
 			}
+			//if there is a selected unit
 			else
 			{
-				BuildingBase building = hit.collider.GetComponent<BuildingBase>();
-				if (building != null)
+				//if selected terrain is empty, ValidateRequestToMove to that terrain 
+				if ((selectedHexagon.occupierUnit == null) && (selectedHexagon.OccupierBuilding == null))
 				{
-					SelectBuilding(building);
-				}
-				else
-				{
-					TerrainHexagon terrainHexagon = hit.collider.GetComponent<TerrainHexagon>();
-					if (terrainHexagon != null)
+					if (Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
-						SelectTerrain(this, terrainHexagon);
+						DeselectUnit(Map.Instance.UnitToMove);
+						SelectTerrain(selectedHexagon);
+					}
+				}
+				//if selected terrain only has an occupier unit and not a building
+				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.occupierUnit != null) && (selectedHexagon.occupierUnit.playerID == netId))
+				{
+					//currently selected and previously selected units are same, show terrain info
+					if (Map.Instance.UnitToMove == selectedHexagon.occupierUnit)
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+						SelectTerrain(selectedHexagon);
+					}
+					//select lastly selected unit
+					else
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+						SelectUnit(selectedHexagon.occupierUnit);
+					}
+				}
+				//if selected terrain only has an occupier building and not an unit, ValidateRequestToMove building
+				else if ((selectedHexagon.occupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.netId == netId))
+				{
+					if (Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+						SelectBuilding(selectedHexagon.OccupierBuilding);
+					}
+				}
+				//if selected terrain has both friendly unit and friendly building, select unit on town
+				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.occupierUnit != null) && (selectedHexagon.occupierUnit.playerID == playerID) && (selectedHexagon.OccupierBuilding.playerID == netId))
+				{
+					if(Map.Instance.UnitToMove == selectedHexagon.occupierUnit)
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+					}
+					else
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+						SelectUnit(selectedHexagon.occupierUnit);
+					}
+				}
+				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
+				else if ((selectedHexagon.occupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.occupierUnit.playerID != netId) && (selectedHexagon.OccupierBuilding.playerID != netId))
+				{
+					Map.Instance.UnitToMove.ValidateAttack(selectedHexagon.occupierUnit);
+				}
+				//if selected terrain only has an enemy unit and not a building, attack to enemy unit
+				else if((selectedHexagon.occupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.occupierUnit.playerID != netId))
+				{
+					Map.Instance.UnitToMove.ValidateAttack(selectedHexagon.occupierUnit);
+				}
+				//if selected terrain only has an enemy building and not an unit, ValidateRequestToMove to building and can start occupation next turn
+				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.occupierUnit == null) && (selectedHexagon.OccupierBuilding.playerID != netId))
+				{
+					if(Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
+					{
+						DeselectUnit(Map.Instance.UnitToMove);
+					}
+					else
+					{
+						//can start occupation process here because movement was successful
 					}
 				}
 			}
@@ -227,69 +343,34 @@ public class TownCenter : BuildingBase
 	[Server]
 	public void SelectUnit(UnitBase unit)
 	{
-		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
-		NetworkIdentity target2 = null;
-		if (Map.Instance.UnitToMove != null)
+		if (unit.CanMoveCmd())
 		{
-			target2 = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
+			unit.SetIsInMoveMode(true);
 		}
-		if (Map.Instance.UnitToMove == null)
-		{
-			if (unit.playerID == netId /*hasAuthority*/ && unit.CanMoveCmd())
-			{
-				unit.SetIsInMoveMode(true);
-			}
-		}
-		else if (Map.Instance.UnitToMove != unit)
-		{
-			if (Map.Instance.UnitToMove.netId == unit.netId)
-			{
-				Map.Instance.UnitToMove.SetIsInMoveMode(false);
-				if (unit.CanMoveCmd())
-				{
-					unit.SetIsInMoveMode(true);
-				}
-			}
-			else
-			{
-				NetworkIdentity targetIdentity = Map.Instance.UnitToMove.GetComponent<NetworkIdentity>();
-				Map.Instance.UnitToMove.ValidateAttack(unit);
-			}
-		}
-		else
-		{
-			if (Map.Instance.UnitToMove.playerID == netId)
-			{
-				Map.Instance.UnitToMove.SetIsInMoveMode(false);
-			}
-		}
+	}
+	
+	[Server]
+	public void DeselectUnit(UnitBase unit)
+	{
+		unit.SetIsInMoveMode(false);
 	}
 
 	[Server]
-	public void SelectTerrain(BuildingBase townCenter, TerrainHexagon terrainHexagon)
+	public void SelectTerrain(TerrainHexagon terrainHexagon)
 	{
-		if (Map.Instance.currentState == State.UnitAction)
-		{
-			Map.Instance.UnitToMove.ValidateRequestToMove(terrainHexagon);
-		}
-		else if(Map.Instance.currentState == State.None)
-		{
-			if(terrainHexagon != Map.Instance.selectedHexagon)
-			{
-				Map.Instance.selectedHexagon = terrainHexagon;
-				SelectTerrainRpc(-1, false);
-				SelectTerrainRpc((int)terrainHexagon.terrainType, true);
-			}
-			else
-			{
-				Map.Instance.selectedHexagon = null;
-				SelectTerrainRpc(-1, false);
-			}
-		}
+		Map.Instance.selectedHexagon = terrainHexagon;
+		ToggleSelectTerrainRpc((int)terrainHexagon.terrainType, true);
+	}
+
+	[Server]
+	public void DeselectTerrain()
+	{
+		Map.Instance.selectedHexagon = null;
+		ToggleSelectTerrainRpc(-1, false);
 	}
 
 	[TargetRpc]
-	public void SelectTerrainRpc(int terrainType, bool enable)
+	public void ToggleSelectTerrainRpc(int terrainType, bool enable)
 	{
 		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
 	}
@@ -331,7 +412,6 @@ public class TownCenter : BuildingBase
 		OnlineGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
-
 	public override void OnStartClient()
 	{
 		if (!hasAuthority) { return; }
@@ -365,7 +445,7 @@ public class TownCenter : BuildingBase
 		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
 		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
 		temp.GetComponent<UnitBase>().playerID = netId;
-		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient);
+		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
 	}
 }/*
 namespace HayriCakir
