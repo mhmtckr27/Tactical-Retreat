@@ -17,8 +17,10 @@ public class UnitBase : NetworkBehaviour
 	[SerializeField] private bool hasAttacked = false;
 	[SyncVar][HideInInspector] public uint playerID;
 
-	[SyncVar] List<TerrainHexagon> neighboursWithinRange;
-	[SyncVar] List<TerrainHexagon> occupiedNeighboursWithinRange;
+	/*[SyncVar]*/ List<TerrainHexagon> neighboursWithinRange;
+	/*[SyncVar]*/ List<TerrainHexagon> occupiedNeighboursWithinRange;
+	private List<TerrainHexagon> path;
+
 	public List<TerrainType> blockedTerrains;
 	[SyncVar] public TerrainHexagon occupiedHexagon;
 	[SyncVar] private int remainingMovesThisTurn;
@@ -189,15 +191,15 @@ public class UnitBase : NetworkBehaviour
 		}
 		else
 		{
-			List<TerrainHexagon> path = GetPath(to);
+			GetPath(to);
 			Move(to, path.Count - 1);
 		}
 	}
 
 	[Server]
-	public List<TerrainHexagon> GetPath(TerrainHexagon to)
+	public void GetPath(TerrainHexagon to)
 	{
-		return Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
+		path = Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
 	}
 
 	[Server]

@@ -42,8 +42,8 @@ public class BuildingBase : NetworkBehaviour
 		}
 	}
 
-	[Command]
-	public void ValidateBuildingSelectionCmd(BuildingBase bulding)
+	[Server]
+	public void SelectBuilding(BuildingBase bulding)
 	{
 		if (Map.Instance.currentState != State.UnitAction)
 		{

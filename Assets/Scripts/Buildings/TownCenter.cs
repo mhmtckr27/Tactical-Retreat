@@ -174,41 +174,58 @@ public class TownCenter : BuildingBase
 	protected void ValidatePlayRequestCmd()
 	{
 		if (!hasTurn) { return; }
-		Play();
+		PlayRpc();
 	}
 
 	[TargetRpc]
-	protected void Play()
+	protected void PlayRpc()
+	{
+		/*RaycastHit hit;
+		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+		{
+			PlayCmd(hit);
+		}*/
+		PlayCmd(Camera.main.ScreenPointToRay(Input.mousePosition));
+	}
+
+	[Command]
+	protected void PlayCmd(/*RaycastHit hit*/ Ray ray)
+	{
+		Play(ray);
+	}
+
+	[Server]
+	protected void Play(/*RaycastHit hit*/ Ray ray)
 	{
 		RaycastHit hit;
-		if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+		if (Physics.Raycast(ray, out hit))
 		{
 			UnitBase unit = hit.collider.GetComponent<UnitBase>();
 			if (unit != null)
 			{
-				ValidateUnitSelectionCmd(unit, unit.hasAuthority);
+				SelectUnit(unit);
 			}
 			else
 			{
 				BuildingBase building = hit.collider.GetComponent<BuildingBase>();
 				if (building != null)
 				{
-					ValidateBuildingSelectionCmd(building);
+					SelectBuilding(building);
 				}
 				else
 				{
 					TerrainHexagon terrainHexagon = hit.collider.GetComponent<TerrainHexagon>();
 					if (terrainHexagon != null)
 					{
-						ValidateTerrainHexagonSelectionCmd(this, terrainHexagon);
+						SelectTerrain(this, terrainHexagon);
 					}
 				}
 			}
 		}
 	}
 
-	[Command]
-	public void ValidateUnitSelectionCmd(UnitBase unit, bool hasAuthority)
+	[Server]
+	public void SelectUnit(UnitBase unit)
 	{
 		NetworkIdentity target = unit.GetComponent<NetworkIdentity>();
 		NetworkIdentity target2 = null;
@@ -218,14 +235,14 @@ public class TownCenter : BuildingBase
 		}
 		if (Map.Instance.UnitToMove == null)
 		{
-			if (hasAuthority && unit.CanMoveCmd())
+			if (unit.playerID == netId /*hasAuthority*/ && unit.CanMoveCmd())
 			{
 				unit.SetIsInMoveMode(true);
 			}
 		}
 		else if (Map.Instance.UnitToMove != unit)
 		{
-			if (hasAuthority)
+			if (Map.Instance.UnitToMove.netId == unit.netId)
 			{
 				Map.Instance.UnitToMove.SetIsInMoveMode(false);
 				if (unit.CanMoveCmd())
@@ -241,15 +258,15 @@ public class TownCenter : BuildingBase
 		}
 		else
 		{
-			if (hasAuthority)
+			if (Map.Instance.UnitToMove.playerID == netId)
 			{
 				Map.Instance.UnitToMove.SetIsInMoveMode(false);
 			}
 		}
 	}
 
-	[Command]
-	public void ValidateTerrainHexagonSelectionCmd(BuildingBase townCenter, TerrainHexagon terrainHexagon)
+	[Server]
+	public void SelectTerrain(BuildingBase townCenter, TerrainHexagon terrainHexagon)
 	{
 		if (Map.Instance.currentState == State.UnitAction)
 		{
@@ -260,19 +277,19 @@ public class TownCenter : BuildingBase
 			if(terrainHexagon != Map.Instance.selectedHexagon)
 			{
 				Map.Instance.selectedHexagon = terrainHexagon;
-				TerrainHexagonSelectionRpc(-1, false);
-				TerrainHexagonSelectionRpc((int)terrainHexagon.terrainType, true);
+				SelectTerrainRpc(-1, false);
+				SelectTerrainRpc((int)terrainHexagon.terrainType, true);
 			}
 			else
 			{
 				Map.Instance.selectedHexagon = null;
-				TerrainHexagonSelectionRpc(-1, false);
+				SelectTerrainRpc(-1, false);
 			}
 		}
 	}
 
 	[TargetRpc]
-	public void TerrainHexagonSelectionRpc(int terrainType, bool enable)
+	public void SelectTerrainRpc(int terrainType, bool enable)
 	{
 		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
 	}
