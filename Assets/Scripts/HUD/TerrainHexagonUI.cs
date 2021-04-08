@@ -17,7 +17,6 @@ public class TerrainHexagonUI : MonoBehaviour
     [SerializeField] private Text costCount;
     [SerializeField] private Text collectButtonText;
     public UIManager uiManager;
-
 	private void OnEnable()
 	{
         if(currentResource == null) { return; }

@@ -9,7 +9,7 @@ public class Map : NetworkBehaviour
 	private const float blockWidth = 2f;
 	private const float blockOffsetZ = 0.75f * blockWidth;
 
-	[SerializeField] private int mapWidth;
+	[SerializeField] public int mapWidth;
 	[SerializeField] private GameObject peasant;
 	[SerializeField] private BlockPrefabsWithCreationProbability[] terrainPrefabs;
 

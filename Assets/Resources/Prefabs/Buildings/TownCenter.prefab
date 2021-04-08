@@ -134,8 +134,10 @@ MonoBehaviour:
   occupiedHex: {fileID: 0}
   playerID: 0
   hasTurn: 0
+  isConquered: 0
   woodCount: 0
   meatCount: 0
+  isHost: 0
 --- !u!114 &1666085537795614874
 MonoBehaviour:
   m_ObjectHideFlags: 0

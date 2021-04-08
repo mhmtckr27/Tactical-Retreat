@@ -232,6 +232,16 @@ MonoBehaviour:
     type: 3}
   onlineGameManagerPrefab: {fileID: 4514765268696048673, guid: 53b2249cae60edc4f8b6f59eaebfc629,
     type: 3}
+  playerColors:
+  - {r: 0, g: 1, b: 1, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  - {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  - {r: 1, g: 0.5019608, b: 0, a: 1}
 --- !u!4 &526372897
 Transform:
   m_ObjectHideFlags: 0

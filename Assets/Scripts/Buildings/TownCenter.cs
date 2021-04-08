@@ -1,5 +1,6 @@
 using Mirror;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -21,7 +22,13 @@ public class TownCenter : BuildingBase
 	public event Action<int> onMeatCountChange;
 	public event Action<int> onActionPointChange;
 	public event Action<int, int> onCurrentToMaxPopulationChange;
-	
+
+	[SyncVar(hook = nameof(OnPlayerColorSet))] public Color playerColor;
+
+	public void OnPlayerColorSet(Color oldColor, Color newColor)
+	{
+		GetComponent<Renderer>().materials[1].color = newColor;
+	}
 
 	protected override void Start()
 	{
@@ -40,8 +47,6 @@ public class TownCenter : BuildingBase
 		transform.eulerAngles = new Vector3(0, -60, 0);
 	}
 
-	
-
 	private void Update()
 	{
 		if (!hasAuthority) { return; }
@@ -52,7 +57,7 @@ public class TownCenter : BuildingBase
 			ValidatePlayRequestCmd();
 		}
 #elif UNITY_ANDROID
-		if (inputManager.HasValidTap() && !EventSystem.current.IsPointerOverGameObject())
+		if (inputManager.HasValidTap() && !IsPointerOverUIObject())
 		{
 			ValidatePlayRequestCmd();
 		}
@@ -73,6 +78,14 @@ public class TownCenter : BuildingBase
 		{
 			UpdateMaxPopulation(1);
 		}
+	}
+	private bool IsPointerOverUIObject()
+	{
+		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+		List<RaycastResult> results = new List<RaycastResult>();
+		EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+		return results.Count > 0;
 	}
 
 	[Command]
@@ -410,9 +423,18 @@ public class TownCenter : BuildingBase
 		uiManager.EnableNexTurnButton(enable);
 	}
 
+	public void FinishTurn()
+	{
+		FinishTurnCmd();
+	}
+
 	[Command]
 	public void FinishTurnCmd()
 	{
+		if (!hasTurn) { return; }
+		DeselectBuilding(this);
+		DeselectTerrain();
+		if (Map.Instance.UnitToMove != null) { DeselectUnit(Map.Instance.UnitToMove); }
 		OnlineGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
@@ -421,6 +443,10 @@ public class TownCenter : BuildingBase
 		if (!hasAuthority) { return; }
 		base.OnStartClient();
 		CmdRegisterPlayer(isServer);
+		foreach(Camera cam in Camera.allCameras)
+		{
+			cam.transform.position = new Vector3(transform.position.x - 5, cam.transform.position.y, transform.position.z + 0.75f);
+		}
 	}
 
 	[Command]
@@ -443,6 +469,7 @@ public class TownCenter : BuildingBase
 	public void CreateUnit(BuildingBase owner, string unitName)
 	{
 		GameObject temp = Instantiate(NetworkRoomManagerWOT.Instance.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position + UnitBase.positionOffsetOnHexagons, Quaternion.identity);
+		temp.GetComponent<UnitBase>().playerColor = playerColor;
 		NetworkServer.Spawn(temp, gameObject);
 		occupiedHex.occupierUnit = temp.GetComponent<UnitBase>();
 		temp.GetComponent<UnitBase>().occupiedHexagon = occupiedHex;
@@ -450,23 +477,4 @@ public class TownCenter : BuildingBase
 		temp.GetComponent<UnitBase>().playerID = netId;
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
 	}
-}/*
-namespace HayriCakir
-{
-	/*public struct Resources
-	{
-		public int woodCount;
-		public int meatCount;
-		public int currentPopulation;
-		public int maxPopulation;
-		
-		public Resources(int woodCount, int meatCount, int currentPopulation, int maxPopulation)
-		{
-			this.woodCount = woodCount;
-			this.meatCount = meatCount;
-			this.currentPopulation = currentPopulation;
-			this.maxPopulation = maxPopulation;
-		}
-	}
 }
-	*/

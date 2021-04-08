@@ -3,23 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
 
 public class UnitBase : NetworkBehaviour
 {
 	public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
 	[SerializeField] private UnitType unitType;
 	[SerializeField] private Vector3 initialRotation;
-	[SerializeField] private int health;
+	[SerializeField] private int maxHealth;
+	private int currentHealth;
+	[Header("Combat")]
 	[SerializeField] private int armor;
 	[SerializeField] private int damage;
 	[SerializeField] private int moveRange;
 	[SerializeField] private int attackRange;
 	[SerializeField] private bool hasAttacked = false;
+	[SerializeField] private Image healthBar;
+	[SerializeField] private GameObject hitBloodParticle;	
+	[SerializeField] private GameObject deathParticle;	
+	[Header("Movement")]
+	[SerializeField] private float moveSpeed = 0.2f;
+	[SerializeField] private float turnSpeed = 100f;
+	[SerializeField] private float snapToPositionThreshold = 0.1f;
+	[SerializeField] private float waitBetweenMovement = 0.02f;
+	
+	private bool isMoving;
+
+	[SyncVar(hook = nameof(OnPlayerColorChange))] public Color playerColor;
+	
+	public void OnPlayerColorChange(Color oldColor, Color newColor)
+	{
+		GetComponent<Renderer>().materials[0].color = newColor;
+	}
+
 	[SyncVar][HideInInspector] public uint playerID;
 
 	/*[SyncVar]*/ List<TerrainHexagon> neighboursWithinRange;
 	/*[SyncVar]*/ List<TerrainHexagon> occupiedNeighboursWithinRange;
-	private List<TerrainHexagon> path;
+	private SyncList<TerrainHexagon> path = new SyncList<TerrainHexagon>();
 
 	public List<TerrainType> blockedTerrains;
 	[SyncVar] public TerrainHexagon occupiedHexagon;
@@ -45,7 +66,11 @@ public class UnitBase : NetworkBehaviour
 		}
 		UpdateOutlinesClient();
 	}
-	
+	public override void OnStartServer()
+	{
+		base.OnStartServer();
+		currentHealth = maxHealth;
+	}
 	#region Client
 	private void Awake()
 	{
@@ -71,11 +96,54 @@ public class UnitBase : NetworkBehaviour
 	}
 
 	[TargetRpc]
-	public void RpcMove(TerrainHexagon to)
+	public void RpcMove(Vector3 to)
 	{
-		transform.position = to.transform.position + positionOffsetOnHexagons;
+		TerrainHexagon[] tempPath = new TerrainHexagon[path.Count];
+		path.CopyTo(tempPath,0);
+		StartCoroutine(MoveRoutine(to + positionOffsetOnHexagons));
 	}	
 	
+	[Command]
+	public void SetIsMovingCmd(bool isMoving)
+	{
+		this.isMoving = isMoving;
+	}
+
+	IEnumerator RotateRoutine(Quaternion lookAt)
+	{
+		while (true)
+		{
+			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * turnSpeed);
+			if(Quaternion.Angle(transform.rotation, lookAt) < 5f)
+			{
+				transform.rotation = lookAt;
+				break;
+			}
+			yield return new WaitForSeconds(waitBetweenMovement);
+		}
+	}
+
+	IEnumerator MoveRoutine(Vector3 moveToPosition)
+	{
+		SetIsMovingCmd(true);
+		Quaternion oldRot = transform.rotation;
+		Quaternion lookAt = Quaternion.LookRotation(new Vector3(moveToPosition.x, transform.position.y, moveToPosition.z) - transform.position);
+		yield return StartCoroutine(RotateRoutine(lookAt));
+		while (true)
+		{
+			Vector3 oldPos = transform.position;
+			transform.position = Vector3.Lerp(oldPos, moveToPosition, moveSpeed);
+			if(Vector3.Distance(transform.position, moveToPosition) < snapToPositionThreshold)
+			{
+				transform.position = moveToPosition;
+				break;
+			}	
+			yield return new WaitForSeconds(waitBetweenMovement);
+		}
+		yield return StartCoroutine(RotateRoutine(oldRot));
+		SetIsMovingCmd(false);
+	}
+
 	[TargetRpc]
 	public void RpcEnableHexagonOutline(TerrainHexagon hexagon, int outlineIndex, bool enable)
 	{
@@ -85,12 +153,34 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public void ValidateAttack(UnitBase target)
 	{
+		if(isMoving) { return; }
 		if(!occupiedNeighboursWithinRange.Contains(target.occupiedHexagon)) { return; }
 		
 		if (/*!hasAttacked && targetIsInRange*/ true)
 		{
-			Attack(target);
+			AttackRpc(target);
 		}
+	}
+
+	[TargetRpc]
+	public void AttackRpc(UnitBase target)
+	{
+		StartCoroutine(AttackRoutine(target));
+	}
+
+	IEnumerator AttackRoutine(UnitBase target)
+	{
+		Vector3 oldPos = transform.position;
+		SetIsMovingCmd(true);
+		yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f));
+		AttackCmd(target);
+		yield return StartCoroutine(MoveRoutine(oldPos));
+	}
+
+	[Command]
+	public void AttackCmd(UnitBase target)
+	{
+		Attack(target);
 	}
 
 	[Server]
@@ -100,7 +190,40 @@ public class UnitBase : NetworkBehaviour
 		bool isTargetDead = target.TakeDamage(damage);
 		if(isTargetDead)
 		{
+			DieRpc();
 			UpdateOutlinesServer();
+		}
+	}
+
+	[ClientRpc]
+	private void DieRpc()
+	{
+		Instantiate(deathParticle, transform.position, Quaternion.identity);
+	}
+
+	[ClientRpc]
+	private void TakeDamageRpc(float fillAmount)
+	{
+		//healthBar.fillAmount = fillAmount;
+		Instantiate(hitBloodParticle, healthBar.transform.position, Quaternion.identity);
+		StartCoroutine(TakeDamageRoutine(fillAmount));
+	}
+
+	IEnumerator TakeDamageRoutine(float fillAmount)
+	{
+		while (true)
+		{
+			healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, fillAmount, moveSpeed);
+			if(healthBar.fillAmount < 0.25f)
+			{
+				healthBar.color = Color.red;
+			}
+			if(Mathf.Abs(healthBar.fillAmount - fillAmount) < 0.05f)
+			{
+				healthBar.fillAmount = fillAmount;
+				break;
+			}
+			yield return new WaitForSeconds(waitBetweenMovement);
 		}
 	}
 
@@ -108,10 +231,12 @@ public class UnitBase : NetworkBehaviour
 	public bool TakeDamage(int damage)
 	{
 		int damageToApply = (damage - armor) > 0 ? (damage - armor) : 0;
-		health -= damageToApply;
-		if(health <= 0)
+		currentHealth = (currentHealth - damageToApply) > 0 ? currentHealth - damageToApply : 0;
+		TakeDamageRpc((float)currentHealth / maxHealth);
+		if (currentHealth <= 0)
 		{
-			health = 0;
+			currentHealth = 0;
+		//	TakeDamageRpc(0);
 			occupiedHexagon.occupierUnit = null;
 			OnlineGameManager.Instance.UnregisterUnit(playerID, this);
 			NetworkServer.Destroy(gameObject);
@@ -175,20 +300,11 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
-	/*[Server]
-	public void CmdRequestToMove(TerrainHexagon to)
-	{
-		if (!hasAuthority) { return; }
-		ValidateRequestToMove(to);
-	}
-	*/
 	[Server]
 	public bool ValidateRequestToMove(TerrainHexagon to)
 	{
-		if (!neighboursWithinRange.Contains(to))
-		{
-			return false;
-		}
+		if (isMoving) { return false; }
+		if (!neighboursWithinRange.Contains(to)) { return false; }
 		else
 		{
 			GetPath(to);
@@ -200,7 +316,11 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public void GetPath(TerrainHexagon to)
 	{
-		path = Map.Instance.AStar(occupiedHexagon, to, blockedTerrains);
+		path.Clear();
+		foreach(TerrainHexagon hex in Map.Instance.AStar(occupiedHexagon, to, blockedTerrains))
+		{
+			path.Add(hex);
+		}
 	}
 
 	[Server]
@@ -210,7 +330,7 @@ public class UnitBase : NetworkBehaviour
 		occupiedHexagon = to;
 		occupiedHexagon.occupierUnit = this;
 		remainingMovesThisTurn -= cost;
-		RpcMove(to);
+		RpcMove(to.transform.position);
 		if (remainingMovesThisTurn == 0)
 		{
 			isInMoveMode = false;

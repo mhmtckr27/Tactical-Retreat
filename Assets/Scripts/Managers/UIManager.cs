@@ -29,7 +29,7 @@ public class UIManager : MonoBehaviour
 
 	public void OnNextTurnButton()
 	{
-		townCenterUI.townCenter.FinishTurnCmd();
+		townCenterUI.townCenter.FinishTurn();
 	}
 
 	public void EnableNexTurnButton(bool enable)
