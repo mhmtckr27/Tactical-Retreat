@@ -21,10 +21,10 @@ public class UIManager : MonoBehaviour
 
 	private void Start()
 	{
-		townCenterUI.townCenter.onWoodCountChange += newWoodCount => woodCountText.text = newWoodCount.ToString();
-		townCenterUI.townCenter.onMeatCountChange += newMeatCount => meatCountText.text = newMeatCount.ToString();
-		townCenterUI.townCenter.onActionPointChange += newActionPoint => actionPointText.text = newActionPoint.ToString();
-		townCenterUI.townCenter.onCurrentToMaxPopulationChange += (newCurrentPopulation, newMaxPopulation) => currentToMaxPopulationText.text = newCurrentPopulation.ToString() + "/" + newMaxPopulation;
+		townCenterUI.townCenter.OnWoodCountChange += newWoodCount => woodCountText.text = newWoodCount.ToString();
+		townCenterUI.townCenter.OnMeatCountChange += newMeatCount => meatCountText.text = newMeatCount.ToString();
+		townCenterUI.townCenter.OnActionPointChange += newActionPoint => actionPointText.text = newActionPoint.ToString();
+		townCenterUI.townCenter.OnCurrentToMaxPopulationChange += (newCurrentPopulation, newMaxPopulation) => currentToMaxPopulationText.text = newCurrentPopulation.ToString() + "/" + newMaxPopulation;
 	}
 
 	public void OnNextTurnButton()

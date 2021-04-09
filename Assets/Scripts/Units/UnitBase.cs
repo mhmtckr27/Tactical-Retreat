@@ -245,7 +245,7 @@ public class UnitBase : NetworkBehaviour
 		{
 			currentHealth = 0;
 		//	TakeDamageRpc(0);
-			occupiedHexagon.occupierUnit = null;
+			occupiedHexagon.OccupierUnit = null;
 			OnlineGameManager.Instance.UnregisterUnit(playerID, this);
 			NetworkServer.Destroy(gameObject);
 			return true;
@@ -301,7 +301,7 @@ public class UnitBase : NetworkBehaviour
 		}
 		foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
 		{
-			if (occupied_neighbour.occupierUnit.playerID != playerID)
+			if (occupied_neighbour.OccupierUnit.playerID != playerID)
 			{
 				RpcEnableHexagonOutline(occupied_neighbour, 1, true);
 			}
@@ -334,9 +334,9 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public void Move(TerrainHexagon to, int cost)
 	{
-		occupiedHexagon.occupierUnit = null;
+		occupiedHexagon.OccupierUnit = null;
 		occupiedHexagon = to;
-		occupiedHexagon.occupierUnit = this;
+		occupiedHexagon.OccupierUnit = this;
 		remainingMovesThisTurn -= cost;
 		RpcMove(to.transform.position);
 		if (remainingMovesThisTurn == 0)

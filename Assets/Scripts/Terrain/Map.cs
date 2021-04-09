@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class Map : NetworkBehaviour
 {
@@ -297,7 +298,7 @@ public class Map : NetworkBehaviour
 	[Server]
 	private GameObject GetRandomBlock()
 	{
-		float result = Random.Range((float)0, 1);
+		float result = UnityEngine.Random.Range((float)0, 1);
 		int index = 0;
 		for(int i = 0; i < terrainPrefabs.Length; i++)
 		{
@@ -371,7 +372,7 @@ public class Map : NetworkBehaviour
 
 					if (neighbour != null && !blockedHexagonTypes.Contains(neighbour.terrainType))
 					{
-						if ((neighbour.occupierUnit == null))
+						if ((neighbour.OccupierUnit == null))
 						{
 							if (!reachableHexagons.Contains(neighbour))
 							{

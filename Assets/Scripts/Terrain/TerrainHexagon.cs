@@ -19,8 +19,25 @@ public class TerrainHexagon : NetworkBehaviour
 		{
 			isDiscovered = value;
 			OnIsDiscoveredChange();
+			OnIsDiscoveredChangeCmd();
 		}
 	}
+
+	[Command(requiresAuthority = false)]
+	public void OnIsDiscoveredChangeCmd()
+	{
+		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 0);
+		}
+		if ((OnTerrainOccupiersChange != null) && (occupierBuilding != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 1);
+		}
+	}
+
+	public static event Action<string, int> OnTerrainOccupiersChange;
+
 	public void OnIsDiscoveredChange()
 	{
 		undiscoveredBlock.GetComponent<MeshRenderer>().enabled = !IsDiscovered;
@@ -28,9 +45,9 @@ public class TerrainHexagon : NetworkBehaviour
 		{
 			meshRenderer.enabled = IsDiscovered;
 		}
-		if(occupierUnit != null)
+		/*if(OccupierUnit != null)
 		{
-			foreach (MeshRenderer meshRenderer in occupierUnit.GetComponentsInChildren<MeshRenderer>())
+			foreach (MeshRenderer meshRenderer in OccupierUnit.GetComponentsInChildren<MeshRenderer>())
 			{
 				meshRenderer.enabled = IsDiscovered;
 			}
@@ -41,7 +58,7 @@ public class TerrainHexagon : NetworkBehaviour
 			{
 				meshRenderer.enabled = IsDiscovered;
 			}
-		}
+		}*/
 	}
 
 	[HideInInspector][SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
@@ -68,10 +85,34 @@ public class TerrainHexagon : NetworkBehaviour
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
 	public string Key { get => key; }
 
-	[HideInInspector][SyncVar] public UnitBase occupierUnit;
+	[HideInInspector][SyncVar] private UnitBase occupierUnit;
 
 	[HideInInspector][SyncVar] private BuildingBase occupierBuilding;
-	public BuildingBase OccupierBuilding { get => occupierBuilding; set => occupierBuilding = value; }
+	public UnitBase OccupierUnit 
+	{ 
+		get => occupierUnit;
+		set
+		{
+			occupierUnit = value;
+			if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+			{
+				OnTerrainOccupiersChange.Invoke(Key, 0);
+			}
+		}
+	}
+	public BuildingBase OccupierBuilding
+	{
+		get => occupierBuilding;
+		set
+		{
+			occupierBuilding = value;
+			if ((OnTerrainOccupiersChange != null) && (occupierBuilding != null))
+			{
+				OnTerrainOccupiersChange.Invoke(Key, 1);
+			}
+		}
+	}
+
 
 	private void Awake()
 	{
