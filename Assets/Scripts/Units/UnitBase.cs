@@ -20,8 +20,9 @@ public class UnitBase : NetworkBehaviour
 	[SerializeField] private bool hasAttacked = false;
 	[SerializeField] private Image healthBar;
 	[SerializeField] private GameObject hitBloodParticle;	
-	[SerializeField] private GameObject deathParticle;	
+	[SerializeField] private GameObject deathParticle;
 	[Header("Movement")]
+	[SerializeField] private int explorationDistance = 2;
 	[SerializeField] private float moveSpeed = 0.2f;
 	[SerializeField] private float turnSpeed = 100f;
 	[SerializeField] private float snapToPositionThreshold = 0.1f;
@@ -140,8 +141,15 @@ public class UnitBase : NetworkBehaviour
 			}	
 			yield return new WaitForSeconds(waitBetweenMovement);
 		}
+		DiscoverTerrains();
 		yield return StartCoroutine(RotateRoutine(oldRot));
 		SetIsMovingCmd(false);
+	}
+
+	[Command]
+	public void DiscoverTerrains()
+	{
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHexagon.Key, explorationDistance);
 	}
 
 	[TargetRpc]

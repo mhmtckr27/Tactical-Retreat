@@ -8,6 +8,42 @@ public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
 	[SerializeField] private GameObject resource;
+
+	[SyncVar] public GameObject undiscoveredBlock;
+
+	private bool isDiscovered;
+	public bool IsDiscovered
+	{
+		get => isDiscovered;
+		set
+		{
+			isDiscovered = value;
+			OnIsDiscoveredChange();
+		}
+	}
+	public void OnIsDiscoveredChange()
+	{
+		undiscoveredBlock.GetComponent<MeshRenderer>().enabled = !IsDiscovered;
+		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
+		{
+			meshRenderer.enabled = IsDiscovered;
+		}
+		if(occupierUnit != null)
+		{
+			foreach (MeshRenderer meshRenderer in occupierUnit.GetComponentsInChildren<MeshRenderer>())
+			{
+				meshRenderer.enabled = IsDiscovered;
+			}
+		}
+		if(occupierBuilding != null)
+		{
+			foreach (MeshRenderer meshRenderer in occupierBuilding.GetComponentsInChildren<MeshRenderer>())
+			{
+				meshRenderer.enabled = IsDiscovered;
+			}
+		}
+	}
+
 	[HideInInspector][SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
 	private GameObject[] outlines = new GameObject[2];

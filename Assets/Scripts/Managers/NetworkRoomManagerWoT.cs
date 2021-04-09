@@ -18,7 +18,6 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	[SerializeField] private List<Color> playerColors;
 	private bool[] colorsUsed;
 
-
 	public override void Awake()
 	{
 		base.Awake();
@@ -37,12 +36,13 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	{
 		Vector3 startPos = Vector3.zero;
 		bool isValidPosToSpawn = false;
+		string hexKey;
 		do
 		{
 			int x = Random.Range(-Map.Instance.mapWidth + 1, Map.Instance.mapWidth);
 			int y = Random.Range(-Map.Instance.mapWidth + 1, Map.Instance.mapWidth);
 			int z = 0 - x - y;
-			string hexKey = x + "_" + y + "_" + z;
+			hexKey = x + "_" + y + "_" + z;
 			if (Map.Instance.mapDictionary.ContainsKey(hexKey) && (Map.Instance.mapDictionary[hexKey].OccupierBuilding == null) && (Map.Instance.mapDictionary[hexKey].terrainType == TerrainType.Plain))
 			{
 				isValidPosToSpawn = true;
@@ -55,10 +55,10 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 		do
 		{
 			colorIndex = Random.Range(0, playerColors.Count);
-			Debug.LogWarning(colorIndex);
 		} while (colorsUsed[colorIndex] == true);
-		//player.GetComponent<Renderer>().materials[1].color = playerColors[colorIndex];
-		player.GetComponent<TownCenter>().playerColor = playerColors[colorIndex];
+		TownCenter tempPlayer = player.GetComponent<TownCenter>();
+		tempPlayer.occupiedHex = Map.Instance.mapDictionary[hexKey];
+		tempPlayer.playerColor = playerColors[colorIndex];
 		colorsUsed[colorIndex] = true;
 		return player;
 	}
@@ -67,9 +67,10 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	{
 		if (sceneName == GameplayScene)
 		{
-			Instantiate(MapPrefab);
+			GameObject map = Instantiate(MapPrefab);
+			NetworkServer.Spawn(map);
 			Map.Instance.GenerateMap();
-			Map.Instance.DilateMap();
+			//Map.Instance.DilateMap();
 			Instantiate(onlineGameManagerPrefab);
 		}
 	}

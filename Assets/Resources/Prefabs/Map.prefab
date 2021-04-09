@@ -61,6 +61,8 @@ MonoBehaviour:
   - blockPrefab: {fileID: 9040136914932431494, guid: 5e4c937465e826846950dc8a0715c796,
       type: 3}
     creationProbability: 1
+  undiscoveredBlock: {fileID: 2535368626507396376, guid: 99e8140b561b34b4f84ad86a5e8f894c,
+    type: 3}
   selectedHexagon: {fileID: 0}
   currentState: 2
 --- !u!114 &8817684899006194438

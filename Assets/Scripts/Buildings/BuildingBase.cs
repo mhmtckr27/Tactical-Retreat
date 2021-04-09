@@ -22,19 +22,17 @@ public class BuildingBase : NetworkBehaviour
 		if (!isLocalPlayer) { return; }
 		canvas = Instantiate(canvasPrefab);
 		uiManager = canvas.GetComponent<UIManager>();
-
-		//InitCmd();
 	}
 
 	[Command]
 	public virtual void InitCmd()
 	{
-		RaycastHit hit;
+		/*RaycastHit hit;
 		if (Physics.Raycast(transform.position + Vector3.up * .1f, Vector3.down, out hit, .2f))
 		{
 			occupiedHex = hit.collider.GetComponent<TerrainHexagon>();
 			occupiedHex.OccupierBuilding = this;
-		}
+		}*/
 	}
 
 	[Server]

@@ -24,10 +24,16 @@ public class TownCenter : BuildingBase
 	public event Action<int, int> onCurrentToMaxPopulationChange;
 
 	[SyncVar(hook = nameof(OnPlayerColorSet))] public Color playerColor;
-
+	//SyncList<string> discoveredTerrains = new SyncList<string>();
 	public void OnPlayerColorSet(Color oldColor, Color newColor)
 	{
 		GetComponent<Renderer>().materials[1].color = newColor;
+	}
+
+	public override void OnStartServer()
+	{
+		base.OnStartServer();
+		occupiedHex.OccupierBuilding = this;
 	}
 
 	protected override void Start()
@@ -45,6 +51,19 @@ public class TownCenter : BuildingBase
 	{
 		base.InitCmd();
 		transform.eulerAngles = new Vector3(0, -60, 0);
+
+		DiscoverTerrainsRpc(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary["0_0_0"], Map.Instance.mapWidth), false);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
+	}
+
+
+	[TargetRpc]
+	public void DiscoverTerrainsRpc(List<TerrainHexagon> distantNeighbours, bool isDiscovered)
+	{
+		foreach (TerrainHexagon hex in distantNeighbours)
+		{
+			hex.IsDiscovered = isDiscovered;
+		}
 	}
 
 	private void Update()
@@ -213,6 +232,11 @@ public class TownCenter : BuildingBase
 		if (Physics.Raycast(ray, out hit))
 		{
 			TerrainHexagon selectedHexagon = hit.collider.GetComponent<TerrainHexagon>();
+			if(OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID) && !OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(selectedHexagon.Key)) 
+			{
+				DeselectEverything();
+				return; 
+			}
 			//if there is no selected unit before click
 			if(Map.Instance.UnitToMove == null)
 			{
@@ -432,10 +456,16 @@ public class TownCenter : BuildingBase
 	public void FinishTurnCmd()
 	{
 		if (!hasTurn) { return; }
+		DeselectEverything();
+		OnlineGameManager.Instance.PlayerFinishedTurn(this);
+	}
+
+	[Server]
+	private void DeselectEverything()
+	{
 		DeselectBuilding(this);
 		DeselectTerrain();
 		if (Map.Instance.UnitToMove != null) { DeselectUnit(Map.Instance.UnitToMove); }
-		OnlineGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
 	public override void OnStartClient()

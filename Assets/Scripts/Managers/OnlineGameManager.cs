@@ -8,6 +8,7 @@ public class OnlineGameManager : NetworkBehaviour
 	[SerializeField] private int totalPlayerCount;
 	private static OnlineGameManager instance;
 	public static OnlineGameManager Instance { get => instance; }
+	public SyncDictionary<uint, List<string>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
 
 	[Server]
 	private void Awake()
@@ -25,6 +26,7 @@ public class OnlineGameManager : NetworkBehaviour
 	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
+	private SyncDictionary<uint, List<string>> playersToDiscoveredTerrains = new SyncDictionary<uint, List<string>>();
 
 	[Server]
 	private void Start()
@@ -36,6 +38,24 @@ public class OnlineGameManager : NetworkBehaviour
 	public override void OnStartServer()
 	{
 		base.OnStartServer();
+	}
+
+	[Server]
+	public void AddDiscoveredTerrains(uint playerID, string key, int distance)
+	{
+		List<TerrainHexagon> distantNeighbours = Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary[key], distance);
+		if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
+		{
+			PlayersToDiscoveredTerrains.Add(playerID, new List<string>());
+		}
+		foreach (TerrainHexagon hex in distantNeighbours)
+		{
+			if (!PlayersToDiscoveredTerrains[playerID].Contains(hex.Key))
+			{
+				PlayersToDiscoveredTerrains[playerID].Add(hex.Key);
+			}
+		}
+		players[playerID].DiscoverTerrainsRpc(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary[key], distance), true);
 	}
 
 	[Server]

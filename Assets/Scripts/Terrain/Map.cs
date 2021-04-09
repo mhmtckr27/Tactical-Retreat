@@ -12,6 +12,7 @@ public class Map : NetworkBehaviour
 	[SerializeField] public int mapWidth;
 	[SerializeField] private GameObject peasant;
 	[SerializeField] private BlockPrefabsWithCreationProbability[] terrainPrefabs;
+	[SerializeField] private GameObject undiscoveredBlock;
 
 	private int[] neighbourOffset_N = { 0, 1, -1 };
 	private int[] neighbourOffset_NE = { 1, 0, -1 };
@@ -64,6 +65,11 @@ public class Map : NetworkBehaviour
 		}
 	}
 
+	public void Discover(string key)
+	{
+		mapDictionary[key].gameObject.SetActive(false);
+	}
+
 	public void RequestCreateUnit(GameObject unit)
 	{
 		NetworkServer.Spawn(unit);
@@ -79,6 +85,8 @@ public class Map : NetworkBehaviour
 		TerrainHexagon currentHex = initialHex;
 		NetworkServer.Spawn(initialHex.gameObject);
 
+		CreateUndiscoveredBlocks(currentHex);
+
 		int k = 0;
 		while (k < mapWidth - 1)
 		{
@@ -89,6 +97,8 @@ public class Map : NetworkBehaviour
 				mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
 				NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 				currentHex = mapDictionary[currentHex.Neighbour_N];
+
+				CreateUndiscoveredBlocks(currentHex);
 			}
 			for (int j = 0; j < k + 1; j++)
 			{
@@ -99,6 +109,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_SE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SE[0], currentHex.Coordinates[1] + neighbourOffset_SE[1], currentHex.Coordinates[2] + neighbourOffset_SE[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SE];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -110,6 +122,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_S].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_S[0], currentHex.Coordinates[1] + neighbourOffset_S[1], currentHex.Coordinates[2] + neighbourOffset_S[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_S].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_S];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 
 			}
@@ -122,6 +136,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_SW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SW[0], currentHex.Coordinates[1] + neighbourOffset_SW[1], currentHex.Coordinates[2] + neighbourOffset_SW[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SW];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -133,6 +149,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_NW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NW[0], currentHex.Coordinates[1] + neighbourOffset_NW[1], currentHex.Coordinates[2] + neighbourOffset_NW[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NW];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -144,6 +162,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_N];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -155,6 +175,8 @@ public class Map : NetworkBehaviour
 					mapDictionary[currentHex.Neighbour_NE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NE[0], currentHex.Coordinates[1] + neighbourOffset_NE[1], currentHex.Coordinates[2] + neighbourOffset_NE[2]);
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NE];
+
+					CreateUndiscoveredBlocks(currentHex);
 				}
 				else
 				{
@@ -162,6 +184,23 @@ public class Map : NetworkBehaviour
 				}
 			}
 			k++;
+		}
+	}
+
+	[Server]
+	private void CreateUndiscoveredBlocks(TerrainHexagon currentHex)
+	{
+		GameObject tempUndiscovered = Instantiate(undiscoveredBlock, currentHex.transform.position, Quaternion.identity);
+		NetworkServer.Spawn(tempUndiscovered);
+		currentHex.undiscoveredBlock = tempUndiscovered;
+	}
+
+	[Server]
+	public void DisableAllTerrains()
+	{
+		foreach(KeyValuePair<string, TerrainHexagon> kvp in mapDictionary)
+		{
+			kvp.Value.IsDiscovered = false;
 		}
 	}
 
@@ -301,7 +340,10 @@ public class Map : NetworkBehaviour
 			{
 				int z = -x - y;
 				string key = (x + block.Coordinates[0]) + "_" + (y + block.Coordinates[1]) + "_" + (z + block.Coordinates[2]);
-				neighbours.Add(mapDictionary[key]);
+				if (mapDictionary.ContainsKey(key))
+				{
+					neighbours.Add(mapDictionary[key]);
+				}
 			}
 		}
 		return neighbours; 
