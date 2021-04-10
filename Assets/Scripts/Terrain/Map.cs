@@ -196,15 +196,6 @@ public class Map : NetworkBehaviour
 		currentHex.undiscoveredBlock = tempUndiscovered;
 	}
 
-	[Server]
-	public void DisableAllTerrains()
-	{
-		foreach(KeyValuePair<string, TerrainHexagon> kvp in mapDictionary)
-		{
-			kvp.Value.IsDiscovered = false;
-		}
-	}
-
 	[Command]
 	public void ClearSelectedHexagon()
 	{
