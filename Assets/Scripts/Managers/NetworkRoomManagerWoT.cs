@@ -50,7 +50,7 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			}
 		} while (!isValidPosToSpawn);
 
-		GameObject player = Instantiate(playerPrefab, startPos, Quaternion.identity);
+		GameObject player = Instantiate(playerPrefab, startPos, Quaternion.Euler(0, -60, 0));
 		int colorIndex;
 		do
 		{

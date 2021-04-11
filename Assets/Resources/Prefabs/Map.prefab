@@ -51,7 +51,7 @@ MonoBehaviour:
   terrainPrefabs:
   - blockPrefab: {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a,
       type: 3}
-    creationProbability: 0.9
+    creationProbability: 1
   - blockPrefab: {fileID: 5810350800546516640, guid: 85fc9e19538e73142b0bea32c1bc201e,
       type: 3}
     creationProbability: 0.9

@@ -41,11 +41,11 @@ public class UnitBase : NetworkBehaviour
 
 	/*[SyncVar]*/ List<TerrainHexagon> neighboursWithinRange;
 	/*[SyncVar]*/ List<TerrainHexagon> occupiedNeighboursWithinRange;
-	private SyncList<TerrainHexagon> path = new SyncList<TerrainHexagon>();
+	public SyncList<TerrainHexagon> path = new SyncList<TerrainHexagon>();
 
 	public List<TerrainType> blockedTerrains;
-	[SyncVar] public TerrainHexagon occupiedHexagon;
-	[SyncVar] private int remainingMovesThisTurn;
+	public TerrainHexagon occupiedHexagon;
+	[SyncVar] public int remainingMovesThisTurn;
 	[Server]
 	public bool CanMoveCmd() 
 	{
@@ -407,3 +407,38 @@ public enum UnitActionType
 	Move,
 	Attack
 }
+/*
+
+public static class CustomReadWriteFunctions3
+{
+	public static void WriteUnitBase(this NetworkWriter writer, UnitBase value)
+	{
+		if (value == null) { return; }
+
+		NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+		writer.WriteNetworkIdentity(networkIdentity);
+
+		writer.WriteColor(value.playerColor);
+		writer.WriteUInt32(value.playerID);
+		writer.WriteTerrainHexagon(value.occupiedHexagon);
+		writer.WriteInt32(value.remainingMovesThisTurn);
+	}
+
+	public static UnitBase ReadUnitBase(this NetworkReader reader)
+	{
+		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+		UnitBase unitBase = networkIdentity != null
+			? networkIdentity.GetComponent<UnitBase>()
+			: null;
+
+		if(unitBase == null) { return null; }
+
+		unitBase.playerColor = reader.ReadColor();
+		unitBase.playerID = reader.ReadUInt32();
+		unitBase.occupiedHexagon = reader.ReadTerrainHexagon();
+		unitBase.remainingMovesThisTurn = reader.ReadInt32();
+		
+		return unitBase;
+	}
+}
+*/

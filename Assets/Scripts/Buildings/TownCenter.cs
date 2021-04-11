@@ -14,7 +14,7 @@ public class TownCenter : BuildingBase
 	[SerializeField] private int meatCount;
 	private int currentPopulation;
 	private int maxPopulation;
-	[SyncVar] private int actionPoint;
+	[SyncVar] public int actionPoint;
 
 	public bool isHost = false;
 
@@ -78,7 +78,7 @@ public class TownCenter : BuildingBase
 	public override void InitCmd()
 	{
 		base.InitCmd();
-		transform.eulerAngles = new Vector3(0, -60, 0);
+		//transform.eulerAngles = new Vector3(0, -60, 0);
 
 		DiscoverTerrainsRpc(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary["0_0_0"], Map.Instance.mapWidth), false);
 		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
@@ -535,3 +535,52 @@ public class TownCenter : BuildingBase
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
 	}
 }
+/*
+public static class CustomReadWriteFunctions2
+{
+	public static void WriteTownCenter(this NetworkWriter writer, TownCenter value)
+	{
+		if (value == null) { return; }
+
+		NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+		writer.WriteNetworkIdentity(networkIdentity);
+
+		writer.WriteUInt32(value.playerID);
+		writer.WriteBoolean(value.hasTurn);
+		writer.WriteBoolean(value.isConquered);
+		writer.WriteInt32(value.actionPoint);
+		writer.WriteColor(value.playerColor);
+		//writer.WriteTerrainHexagon(value.occupiedHex);
+
+	}
+
+	public static TownCenter ReadTownCenter(this NetworkReader reader)
+	{
+		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+		TownCenter townCenter = networkIdentity != null
+			? networkIdentity.GetComponent<TownCenter>()
+			: null;
+
+		if (townCenter == null) { return null; }
+
+		uint playerID = reader.ReadUInt32();
+		bool hasTurn = reader.ReadBoolean();
+		bool isConquered = reader.ReadBoolean();
+		int actionPoint = reader.ReadInt32();
+		Color playerColor = reader.ReadColor();
+		//TerrainHexagon occupiedHex = reader.ReadTerrainHexagon();
+
+
+
+
+		townCenter.playerID = playerID;
+		townCenter.hasTurn = hasTurn;
+		townCenter.isConquered = isConquered;
+		townCenter.actionPoint = actionPoint;
+		townCenter.playerColor = playerColor;
+		//townCenter.occupiedHex = occupiedHex;
+
+		return townCenter;
+	}
+}
+*/

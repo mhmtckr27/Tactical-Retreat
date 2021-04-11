@@ -9,7 +9,7 @@ public class BuildingBase : NetworkBehaviour
 	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField] public BuildingType buildingType;
 	
-	[SyncVar] public TerrainHexagon occupiedHex;
+	/*[SyncVar]*/ public TerrainHexagon occupiedHex;
 	[SyncVar] public uint playerID;
 	
 	protected TownCenterUI buildingMenuUI;
@@ -66,3 +66,25 @@ public enum BuildingType
 	TownCenter,
 	WoodcutterCottage
 }
+
+/*
+public static class CustomReadWriteFunctions2
+{
+	public static void WriteBuildingBase(this NetworkWriter writer, BuildingBase value)
+	{
+		if (value == null) { return; }
+
+		NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+		writer.WriteNetworkIdentity(networkIdentity);
+	}
+
+	public static BuildingBase ReadTownCenter(this NetworkReader reader)
+	{
+		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+		BuildingBase hex = networkIdentity != null
+			? networkIdentity.GetComponent<BuildingBase>()
+			: null;
+		return hex;
+	}
+}
+*/

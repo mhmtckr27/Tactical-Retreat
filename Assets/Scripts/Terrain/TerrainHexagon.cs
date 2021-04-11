@@ -83,7 +83,7 @@ public class TerrainHexagon : NetworkBehaviour
 	public string Neighbour_SW { get => neighbour_SW; set => neighbour_SW = value; }
 	public string Neighbour_NW { get => neighbour_NW; set => neighbour_NW = value; }
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
-	public string Key { get => key; }
+	public string Key { get => key; set => key = value; }
 
 	[HideInInspector][SyncVar] private UnitBase occupierUnit;
 
@@ -119,6 +119,7 @@ public class TerrainHexagon : NetworkBehaviour
 		outlines[0] = transform.GetChild(0).gameObject;
 		outlines[1] = transform.GetChild(1).gameObject;
 		NeighbourKeys = new List<string>();
+		
 	}
 
 	public void ToggleOutlineVisibility(int outline_index, bool show_outline)
@@ -168,6 +169,17 @@ public class TerrainHexagon : NetworkBehaviour
 		NeighbourKeys.Add(Neighbour_SW);
 		NeighbourKeys.Add(Neighbour_NW);
 	}
+	public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	{
+		Debug.LogWarning("onser:" + writer.Length);
+		return base.OnSerialize(writer, initialState);
+	}
+
+	public override void OnDeserialize(NetworkReader reader, bool initialState)
+	{
+		Debug.LogWarning("ondeser:" + reader.Length);
+		base.OnDeserialize(reader, initialState);
+	}
 }
 
 public enum TerrainType
@@ -176,4 +188,85 @@ public enum TerrainType
 	Water,
 	Forest,
 	Animals
+}
+
+
+public static class CustomReadWriteFunctions
+{
+	public static void WriteTerrainHexagon(this NetworkWriter writer, TerrainHexagon value)
+	{
+		if (value == null) { return; }
+		/*
+		writer.WriteInt32((int)value.terrainType);
+		writer.WriteGameObject(value.resource);
+		writer.WriteArray(value.Outlines);*/
+		/*writer.WriteBoolean(value.IsDiscovered);
+		writer.WriteArray(value.Coordinates);
+		writer.WriteString(value.Key);
+		writer.WriteList(value.NeighbourKeys);
+		writer.WriteString(value.Neighbour_N);
+		writer.WriteString(value.Neighbour_NE);
+		writer.WriteString(value.Neighbour_SE);
+		writer.WriteString(value.Neighbour_S);
+		writer.WriteString(value.Neighbour_NW);
+		writer.WriteString(value.Neighbour_SW);*/
+		//writer.WriteBoolean(value.IsDiscovered);
+
+		NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
+		writer.WriteNetworkIdentity(networkIdentity);
+
+		writer.WriteBoolean(value.isResourceCollected);
+		writer.WriteGameObject(value.undiscoveredBlock);
+		//writer.WriteUnitBase(value.OccupierUnit);
+		//writer.WriteTownCenter(value.OccupierBuilding as TownCenter);
+	}
+	
+	public static TerrainHexagon ReadTerrainHexagon(this NetworkReader reader)
+	{
+		/*TerrainType terrainType = (TerrainType)reader.ReadInt32();
+		GameObject resource = reader.ReadGameObject();
+		*/
+		/*
+		GameObject[] outlines = reader.ReadArray<GameObject>();
+		int[] coordinates = reader.ReadArray<int>();
+		string key = reader.ReadString();
+		List<string> neighbourKeys = reader.ReadList<string>();
+		string neighbour_N = reader.ReadString();
+		string neighbour_NE = reader.ReadString();
+		string neighbour_SE = reader.ReadString();
+		string neighbour_S = reader.ReadString();
+		string neighbour_NW = reader.ReadString();
+		string neighbour_SW = reader.ReadString();*/
+		//bool isDiscovered = reader.ReadBoolean();
+
+		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
+		TerrainHexagon hex = networkIdentity != null
+			? networkIdentity.GetComponent<TerrainHexagon>()
+			: null;
+		//if(hex == null) { return null; }
+
+		hex.isResourceCollected = reader.ReadBoolean();
+		hex.undiscoveredBlock = reader.ReadGameObject();
+		//hex.OccupierUnit = reader.ReadUnitBase();
+		//hex.OccupierBuilding = reader.ReadTownCenter();
+
+
+		/*hex.terrainType = terrainType;
+		hex.resource = resource;
+
+		//
+		//hex.Outlines = outlines;*/
+		//hex.Coordinates = coordinates;
+		//hex.Key = key;
+		/*hex.NeighbourKeys = neighbourKeys;
+		hex.Neighbour_N = neighbour_N;
+		hex.Neighbour_NE = neighbour_NE;
+		hex.Neighbour_SE = neighbour_SE;
+		hex.Neighbour_S = neighbour_S;
+		hex.Neighbour_NW = neighbour_NW;
+		hex.Neighbour_SW = neighbour_SW;*/
+		//hex.IsDiscovered = isDiscovered;		
+		return hex;
+
+	}
 }
