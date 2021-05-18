@@ -3,7 +3,7 @@
     "m_SelectedPackage": {
         "deviceId": "861b723b",
         "name": "com.DefaultCompany.TacticalRetreat",
-        "processId": 3148,
+        "processId": 27720,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -102,6 +102,12 @@
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
             "processId": 3148,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 27720,
             "exited": false
         },
         {

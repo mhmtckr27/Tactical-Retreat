@@ -1,0 +1,138 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5450011388078360030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5450011388078360034}
+  - component: {fileID: 5450011388078360035}
+  - component: {fileID: 5450011388078360028}
+  - component: {fileID: 5450011388078360029}
+  m_Layer: 0
+  m_Name: NetworkRoomManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5450011388078360034
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450011388078360030}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5450011388078360035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450011388078360030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1c2f702cb5437408857c11ea6efc32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dontDestroyOnLoad: 1
+  runInBackground: 1
+  autoStartServerBuild: 1
+  showDebugMessages: 0
+  serverTickRate: 30
+  serverBatching: 0
+  serverBatchInterval: 0
+  offlineScene: 
+  onlineScene: 
+  transport: {fileID: 5450011388078360028}
+  networkAddress: localhost
+  maxConnections: 100
+  disconnectInactiveConnections: 0
+  disconnectInactiveTimeout: 60
+  authenticator: {fileID: 0}
+  playerPrefab: {fileID: 1033752471153055306, guid: 159639d21a29fcf4fb7c15bf4470cf7c,
+    type: 3}
+  autoCreatePlayer: 1
+  playerSpawnMethod: 1
+  spawnPrefabs:
+  - {fileID: 2891735083327226504, guid: bebc4bb7f01363c4e93f933d6cbe542a, type: 3}
+  - {fileID: 4642739875115892624, guid: 1bdc14dc13c20ef48b5b4118a6a16804, type: 3}
+  - {fileID: 9040136914932431494, guid: 5e4c937465e826846950dc8a0715c796, type: 3}
+  - {fileID: 5810350800546516640, guid: 85fc9e19538e73142b0bea32c1bc201e, type: 3}
+  - {fileID: 2535368626507396376, guid: 99e8140b561b34b4f84ad86a5e8f894c, type: 3}
+  - {fileID: 7985596192823979291, guid: 39ac123128b787a43a0e1d420811734e, type: 3}
+  - {fileID: 7088238405828413640, guid: 00e077fd77ce8174db865a3420872d22, type: 3}
+  - {fileID: 3761040840066398345, guid: 27418b7ba7b535b49bf9cf3893e5b0b1, type: 3}
+  - {fileID: 8663531919945395808, guid: 27c7a1b2770a75c4f886e825a70b990c, type: 3}
+  - {fileID: 8817684899006194439, guid: 8a2f449168da25c4ab93ead9c0278732, type: 3}
+  - {fileID: 6323004867853748578, guid: 42899c97e227b2a42b1616d844849b56, type: 3}
+  showRoomGUI: 0
+  minPlayers: 1
+  roomPlayerPrefab: {fileID: 132530222994975048, guid: 30114c0b7b0ee6b4a880a930a1ff5098,
+    type: 3}
+  RoomScene: 
+  GameplayScene: 
+  _allPlayersReady: 0
+  roomSlots: []
+  clientIndex: 0
+  MapPrefab: {fileID: 8817684899006194439, guid: 8a2f449168da25c4ab93ead9c0278732,
+    type: 3}
+  onlineGameManagerPrefab: {fileID: 4514765268696048673, guid: 53b2249cae60edc4f8b6f59eaebfc629,
+    type: 3}
+  playerColors:
+  - {r: 0, g: 1, b: 1, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 1, g: 1, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
+  - {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
+  - {r: 1, g: 0.5019608, b: 0, a: 1}
+--- !u!114 &5450011388078360028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450011388078360030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Port: 7777
+  NoDelay: 1
+  Interval: 10
+  FastResend: 2
+  CongestionWindow: 0
+  SendWindowSize: 4096
+  ReceiveWindowSize: 4096
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
+--- !u!114 &5450011388078360029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5450011388078360030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77224d0ef85a2c44288845108cf201c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  showGUI: 0
+  offsetX: 0
+  offsetY: 0
