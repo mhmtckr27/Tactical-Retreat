@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 0
   obtainedFromTerrainType: 0
+  obtainedFromTerrainName: Plain
   description: Nothing interesting here.
   collectText: 
   resourceIcon: {fileID: 0}

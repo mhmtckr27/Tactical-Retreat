@@ -7,21 +7,21 @@ public class SPBuildingBase : MonoBehaviour
 	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField] public BuildingType buildingType;
 
-	public TerrainHexagon occupiedHex;
+	public SPTerrainHexagon occupiedHex;
 	public uint playerID;
 
-	protected TownCenterUI buildingMenuUI;
-	protected UIManager uiManager;
+	protected SPTownCenterUI buildingMenuUI;
+	protected SPUIManager uiManager;
 	protected bool menu_visible = false;
 	private GameObject canvas;
 
-	protected virtual void Start()
+	protected virtual void Awake()
 	{
 		canvas = Instantiate(canvasPrefab);
-		uiManager = canvas.GetComponent<UIManager>();
+		uiManager = canvas.GetComponent<SPUIManager>();
 	}
 
-	public void SelectBuilding(BuildingBase building)
+	public void SelectBuilding(SPBuildingBase building)
 	{
 		menu_visible = true;
 		ToggleBuildingMenu(menu_visible);

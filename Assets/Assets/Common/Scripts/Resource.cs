@@ -7,6 +7,7 @@ public class Resource : ScriptableObject
 {
 	public ResourceType resourceType;
 	public TerrainType obtainedFromTerrainType;
+	public string obtainedFromTerrainName;
 	public string description;
 	public string collectText;
 	public Sprite resourceIcon;

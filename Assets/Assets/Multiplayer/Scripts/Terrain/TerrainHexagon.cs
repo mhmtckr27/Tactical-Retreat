@@ -194,7 +194,7 @@ public enum TerrainType
 
 public static class CustomReadWriteFunctions
 {
-	public static void WriteTerrainHexagon(this NetworkWriter writer, TerrainHexagon value)
+	public static void WriteTerrainHexagon(this NetworkWriter writer, SPTerrainHexagon value)
 	{
 		if (value == null) { return; }
 		/*
@@ -223,7 +223,7 @@ public static class CustomReadWriteFunctions
 		//writer.WriteTownCenter(value.OccupierBuilding as TownCenter);
 	}
 	
-	public static TerrainHexagon ReadTerrainHexagon(this NetworkReader reader)
+	public static SPTerrainHexagon ReadTerrainHexagon(this NetworkReader reader)
 	{
 		/*TerrainType terrainType = (TerrainType)reader.ReadInt32();
 		GameObject resource = reader.ReadGameObject();
@@ -242,8 +242,8 @@ public static class CustomReadWriteFunctions
 		//bool isDiscovered = reader.ReadBoolean();
 
 		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-		TerrainHexagon hex = networkIdentity != null
-			? networkIdentity.GetComponent<TerrainHexagon>()
+		SPTerrainHexagon hex = networkIdentity != null
+			? networkIdentity.GetComponent<SPTerrainHexagon>()
 			: null;
 		//if(hex == null) { return null; }
 

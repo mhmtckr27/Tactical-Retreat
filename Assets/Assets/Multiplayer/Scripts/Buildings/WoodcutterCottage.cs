@@ -5,8 +5,6 @@ using Mirror;
 
 public class WoodcutterCottage : BuildingBase
 {
-	
-
 	[Server]
 	public int CollectResource()
 	{

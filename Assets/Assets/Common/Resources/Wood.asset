@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resourceType: 1
   obtainedFromTerrainType: 2
+  obtainedFromTerrainName: Forest
   description: Cut these trees to obtain wood. Wood is a resource needed to build
     houses.
   collectText: Cut

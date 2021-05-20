@@ -28,6 +28,9 @@ public class OnlineGameManager : NetworkBehaviour
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
 	private SyncDictionary<uint, List<string>> playersToDiscoveredTerrains = new SyncDictionary<uint, List<string>>();
 
+	private bool canGiveTurnToNextPlayer = true;
+	private int hasTurnIndex = 0;
+
 	[Server]
 	private void Start()
 	{
@@ -136,9 +139,6 @@ public class OnlineGameManager : NetworkBehaviour
 			Debug.LogWarning("no player found: " + playerID);
 		}
 	}
-
-	private bool canGiveTurnToNextPlayer = true;
-	private int hasTurnIndex = 0;
 
 	[Server]
 	public void NextTurn()

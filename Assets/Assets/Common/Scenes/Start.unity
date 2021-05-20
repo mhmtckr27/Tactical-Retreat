@@ -838,8 +838,8 @@ MonoBehaviour:
   actionPointText: {fileID: 0}
   currentToMaxPopulationText: {fileID: 0}
   settingsMenu: {fileID: 0}
-  singleplayerScene: Assets/Scenes/SingleplayerLobby.unity
-  multiplayerScene: Assets/Scenes/Offline.unity
+  singleplayerScene: Assets/Assets/Common/Scenes/SingleplayerLobby.unity
+  multiplayerScene: Assets/Assets/Common/Scenes/Offline.unity
   networkAddress: {fileID: 0}
   mapWidth: {fileID: 0}
   aiPlayerCount: {fileID: 0}

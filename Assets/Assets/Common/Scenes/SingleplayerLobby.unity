@@ -285,7 +285,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1295808033}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
         m_MethodName: OnMainMenuButton
         m_Mode: 1
@@ -828,7 +828,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1295808033}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: SPUIManager, Assembly-CSharp
         m_MethodName: OnSPStartButton
         m_Mode: 1
         m_Arguments:
@@ -1152,7 +1152,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1295808032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51c68c6c58f34a347818862e058521fd, type: 3}
+  m_Script: {fileID: 11500000, guid: 67b71bece14de6b4f957bb9fc6d48ec1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   nextTurnButton: {fileID: 0}
@@ -1161,9 +1161,7 @@ MonoBehaviour:
   actionPointText: {fileID: 0}
   currentToMaxPopulationText: {fileID: 0}
   settingsMenu: {fileID: 0}
-  singleplayerScene: 
-  multiplayerScene: 
-  networkAddress: {fileID: 0}
+  singleplayerScene: Assets/Assets/Common/Scenes/Singleplayer.unity
   mapWidth: {fileID: 1542700450}
   aiPlayerCount: {fileID: 1875655886}
   townCenterUI: {fileID: 0}
@@ -1657,8 +1655,207 @@ PrefabInstance:
         type: 3}
       propertyPath: mapPrefab
       value: 
-      objectReference: {fileID: 8817684899006194439, guid: 8a2f449168da25c4ab93ead9c0278732,
+      objectReference: {fileID: 8817684899006194439, guid: f2bfa62496de36e41b6573790426cb3a,
         type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerPrefab
+      value: 
+      objectReference: {fileID: 1033752471153055306, guid: 0c5d00c9f6e43044a9b0449e31f870ab,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[0].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[0].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[0].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[1].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[1].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[2].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[2].g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[2].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[3].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[3].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[4].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[4].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[4].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[5].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[5].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[6].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[6].b
+      value: 0.7264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[6].g
+      value: 0.7264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[6].r
+      value: 0.7264151
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[7].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[7].b
+      value: 0.2830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[7].g
+      value: 0.2830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[7].r
+      value: 0.2830189
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[8].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[8].g
+      value: 0.5019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: playerColors.Array.data[8].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 2891735083327226504, guid: f5fd796d1f60636469f9cc461dbedd37,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[1]
+      value: 
+      objectReference: {fileID: 4642739875115892624, guid: 891cfb15cb3ac18488167127dec66c5d,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[2]
+      value: 
+      objectReference: {fileID: 9040136914932431494, guid: 1709e651c52afdf44946660bd6fa761d,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[3]
+      value: 
+      objectReference: {fileID: 5810350800546516640, guid: 23b5dd4009e17f441a43212cad43edcc,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[4]
+      value: 
+      objectReference: {fileID: 2535368626507396376, guid: 336dbfac75ebb7b46aae6eae9d8a783a,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[5]
+      value: 
+      objectReference: {fileID: 7985596192823979291, guid: becd76df81a345248a6bf687ef432be1,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[6]
+      value: 
+      objectReference: {fileID: 7088238405828413640, guid: 1fa64896056a5cf449589094f59d5bc8,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[7]
+      value: 
+      objectReference: {fileID: 3761040840066398345, guid: 712a0ca875b24d74482564c115a28a41,
+        type: 3}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: spawnablePrefabs.Array.data[8]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8232991092676305389, guid: b59eafb51c1f3d14d880259d87bc31f2,
         type: 3}
       propertyPath: m_RootOrder

@@ -749,8 +749,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
         type: 3}
+      propertyPath: RoomScene
+      value: Assets/Assets/Common/Scenes/Room.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
+        type: 3}
+      propertyPath: onlineScene
+      value: Assets/Assets/Common/Scenes/Room.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
+        type: 3}
       propertyPath: showRoomGUI
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
+        type: 3}
+      propertyPath: offlineScene
+      value: Assets/Assets/Common/Scenes/Offline.unity
+      objectReference: {fileID: 0}
+    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
+        type: 3}
+      propertyPath: GameplayScene
+      value: Assets/Assets/Common/Scenes/Online.unity
       objectReference: {fileID: 0}
     - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
         type: 3}
@@ -1428,7 +1448,7 @@ MonoBehaviour:
   currentToMaxPopulationText: {fileID: 0}
   settingsMenu: {fileID: 0}
   singleplayerScene: 
-  multiplayerScene: Assets/Scenes/Offline.unity
+  multiplayerScene: 
   networkAddress: {fileID: 1875655886}
   mapWidth: {fileID: 0}
   aiPlayerCount: {fileID: 0}
