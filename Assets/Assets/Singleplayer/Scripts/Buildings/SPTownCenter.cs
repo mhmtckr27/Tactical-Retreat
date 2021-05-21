@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SPTownCenter : SPBuildingBase
+public class SPTownCenter : SPBuilding
 {
 	public bool hasTurn;
 	public bool isConquered = false;
@@ -37,7 +37,7 @@ public class SPTownCenter : SPBuildingBase
 		GetComponent<Renderer>().materials[1].color = newColor;
 	}
 
-	protected void Start()
+	protected virtual void Start()
 	{
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
@@ -49,7 +49,7 @@ public class SPTownCenter : SPBuildingBase
 		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
 	}
 
-	public void Init()
+	public virtual void Init()
 	{
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
@@ -103,7 +103,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	private void Update()
+	protected virtual void Update()
 	{
 
 #if UNITY_EDITOR
@@ -134,7 +134,7 @@ public class SPTownCenter : SPBuildingBase
 			UpdateMaxPopulation(1);
 		}
 	}
-	private bool IsPointerOverUIObject()
+	private virtual bool IsPointerOverUIObject()
 	{
 		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
 		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -215,14 +215,14 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	protected void ValidatePlayRequest()
+	protected virtual void ValidatePlayRequest()
 	{
 		if (!hasTurn) { return; }
 		Play(Camera.main.ScreenPointToRay(Input.mousePosition));
 	}
 
 	//TODO update
-	protected void Play(Ray ray)
+	protected virtual void Play(Ray ray)
 	{
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit))
@@ -390,18 +390,18 @@ public class SPTownCenter : SPBuildingBase
 		unit.SetIsInMoveMode(false);
 	}
 
-	public void SelectTerrain(SPTerrainHexagon terrainHexagon)
+	public virtual void SelectTerrain(SPTerrainHexagon terrainHexagon)
 	{
 		SPMap.Instance.selectedHexagon = terrainHexagon;
 		ToggleSelectTerrain((int)terrainHexagon.terrainType, true);
 	}
-	public void DeselectTerrain()
+	public virtual void DeselectTerrain()
 	{
 		SPMap.Instance.selectedHexagon = null;
 		ToggleSelectTerrain(-1, false);
 	}
 
-	public void ToggleSelectTerrain(int terrainType, bool enable)
+	public virtual void ToggleSelectTerrain(int terrainType, bool enable)
 	{
 		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
 	}
@@ -428,27 +428,27 @@ public class SPTownCenter : SPBuildingBase
 		return 3;
 	}
 
-	private void EnableNextTurnButton(bool enable)
+	private virtual void EnableNextTurnButton(bool enable)
 	{
 		uiManager.EnableNexTurnButton(enable);
 	}
 
 	//TODO update
-	public void FinishTurn()
+	public virtual void FinishTurn()
 	{
 		if (!hasTurn) { return; }
 		DeselectEverything();
 		SPGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
-	private void DeselectEverything()
+	protected virtual void DeselectEverything()
 	{
 		DeselectBuilding(this);
 		DeselectTerrain();
 		if (SPMap.Instance.UnitToMove != null) { DeselectUnit(SPMap.Instance.UnitToMove); }
 	}
 
-	private void SetAllCameraPositions(Vector3 position)
+	protected virtual void SetAllCameraPositions(Vector3 position)
 	{
 		foreach (Camera cam in Camera.allCameras)
 		{
@@ -456,7 +456,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void CreateUnit(string unitName)
+	public virtual void CreateUnit(string unitName)
 	{
 		if (!occupiedHex.OccupierUnit)
 		{
@@ -465,7 +465,7 @@ public class SPTownCenter : SPBuildingBase
 	}
 
 	//TODO update
-	public void CreateUnit(SPBuildingBase owner, string unitName)
+	public virtual void CreateUnit(SPBuilding owner, string unitName)
 	{
 		GameObject temp = Instantiate(SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName), transform.position + SPUnitBase.positionOffsetOnHexagons, Quaternion.identity);
 		temp.GetComponent<SPUnitBase>().PlayerColor = PlayerColor;

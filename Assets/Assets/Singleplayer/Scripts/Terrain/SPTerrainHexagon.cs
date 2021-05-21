@@ -75,7 +75,7 @@ public class SPTerrainHexagon : MonoBehaviour
 
 	private SPUnitBase occupierUnit;
 
-	private SPBuildingBase occupierBuilding;
+	private SPBuilding occupierBuilding;
 	public SPUnitBase OccupierUnit
 	{
 		get => occupierUnit;
@@ -88,7 +88,7 @@ public class SPTerrainHexagon : MonoBehaviour
 			}
 		}
 	}
-	public SPBuildingBase OccupierBuilding
+	public SPBuilding OccupierBuilding
 	{
 		get => occupierBuilding;
 		set

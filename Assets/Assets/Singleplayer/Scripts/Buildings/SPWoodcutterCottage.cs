@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SPWoodcutterCottage : SPBuildingBase
+public class SPWoodcutterCottage : SPBuilding
 {
 	public int CollectResource()
 	{
