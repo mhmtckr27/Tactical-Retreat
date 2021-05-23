@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SPTownCenter : SPBuilding
+public class SPTownCenter : SPBuildingBase
 {
 	public bool hasTurn;
 	public bool isConquered = false;
@@ -134,7 +134,7 @@ public class SPTownCenter : SPBuilding
 			UpdateMaxPopulation(1);
 		}
 	}
-	private virtual bool IsPointerOverUIObject()
+	protected virtual bool IsPointerOverUIObject()
 	{
 		PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
 		eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
@@ -428,7 +428,7 @@ public class SPTownCenter : SPBuilding
 		return 3;
 	}
 
-	private virtual void EnableNextTurnButton(bool enable)
+	protected virtual void EnableNextTurnButton(bool enable)
 	{
 		uiManager.EnableNexTurnButton(enable);
 	}
@@ -465,7 +465,7 @@ public class SPTownCenter : SPBuilding
 	}
 
 	//TODO update
-	public virtual void CreateUnit(SPBuilding owner, string unitName)
+	public virtual void CreateUnit(SPBuildingBase owner, string unitName)
 	{
 		GameObject temp = Instantiate(SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName), transform.position + SPUnitBase.positionOffsetOnHexagons, Quaternion.identity);
 		temp.GetComponent<SPUnitBase>().PlayerColor = PlayerColor;
