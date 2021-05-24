@@ -10,7 +10,7 @@ public class SPArcher : SPUnitBase
 
 	public override void Attack(SPUnitBase target)
 	{
-		hasAttacked = true;
+		HasAttacked = true;
 		Vector3 lookRotBegin = target.transform.position;
 		Vector3 lookRotEnd = new Vector3(arrowSpawnPoint.position.x, target.transform.position.y, arrowSpawnPoint.position.z);
 		Quaternion lookRot = Quaternion.LookRotation(lookRotBegin - lookRotEnd);
@@ -35,8 +35,8 @@ public class SPArcher : SPUnitBase
 
 	public void OnArrowHit(SPUnitBase target, GameObject arrow)
 	{
-		Destroy(gameObject);
-		bool isTargetDead = target.TakeDamage(damage);
+		Destroy(arrow);
+		bool isTargetDead = target.TakeDamage(unitProperties.damage);
 		if (isTargetDead)
 		{
 			PlayDeathEffects(target.transform.position);

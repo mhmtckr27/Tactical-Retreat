@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1d5d8b5a4f38d428f9dcccd1578865, type: 3}
+  m_Name: Warrior
+  m_EditorClassIdentifier: 
+  initialRotation: {x: 0, y: -60, z: 0}
+  unitType: 1
+  unitCombatType: 0
+  actionPointCostToCreate: 2
+  actionPointCostToAttack: 1
+  health: 10
+  armor: 5
+  damage: 3
+  attackRange: 2
+  hitBloodParticle: {fileID: 1850033487435682, guid: 2c4b2397ab17cce4bae0e99c1004869d,
+    type: 3}
+  deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
+    type: 3}
+  actionPointCostToMove: 1
+  moveRange: 2
+  exploreRange: 3
+  lerpSpeed: 0.25
+  turnSpeed: 200
+  snapToPositionThreshold: 0.1
+  waitBetweenMovement: 0.02

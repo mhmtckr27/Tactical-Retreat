@@ -355,24 +355,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f96634bc568febd41bd6fddad4222408, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitType: 1
-  unitCombatType: 0
-  initialRotation: {x: 0, y: -60, z: 0}
-  maxHealth: 11
-  armor: 3
-  damage: 6
-  moveRange: 3
-  attackRange: 2
   healthBar: {fileID: 5076136322838006001}
-  hitBloodParticle: {fileID: 1850033487435682, guid: 2c4b2397ab17cce4bae0e99c1004869d,
-    type: 3}
-  deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
-    type: 3}
-  explorationDistance: 2
-  lerpSpeed: 0.2
-  turnSpeed: 100
-  snapToPositionThreshold: 0.07
-  waitBetweenMovement: 0.01
+  unitProperties: {fileID: 11400000, guid: 449faf488fd27f0458b9cfaa3dbdc9e6, type: 2}
   playerID: 0
   path: []
   blockedTerrains: 01000000

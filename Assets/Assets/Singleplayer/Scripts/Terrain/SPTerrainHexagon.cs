@@ -11,12 +11,12 @@ public class SPTerrainHexagon : MonoBehaviour
 	public GameObject unexploredBlock;
 
 	private bool isExplored;
-	public bool IsExplored
+
+	public void Explore(bool newVal, bool isAI)
 	{
-		get => isExplored;
-		set
+		isExplored = newVal;
+		if (!isAI)
 		{
-			isExplored = value;
 			OnIsExploredChanged();
 		}
 	}
@@ -31,10 +31,10 @@ public class SPTerrainHexagon : MonoBehaviour
 		{
 			OnTerrainOccupiersChange.Invoke(Key, 1);
 		}
-		unexploredBlock.GetComponent<MeshRenderer>().enabled = !IsExplored;
+		unexploredBlock.GetComponent<MeshRenderer>().enabled = !isExplored;
 		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
 		{
-			meshRenderer.enabled = IsExplored;
+			meshRenderer.enabled = isExplored;
 		}
 	}
 

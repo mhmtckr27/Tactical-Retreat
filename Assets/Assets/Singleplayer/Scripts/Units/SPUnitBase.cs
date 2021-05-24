@@ -5,27 +5,11 @@ using UnityEngine.UI;
 
 public class SPUnitBase : MonoBehaviour
 {
-	public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
-	[SerializeField] protected UnitType unitType;
-	[SerializeField] protected UnitCombatType unitCombatType;
-	[SerializeField] protected Vector3 initialRotation;
-	[Header("Combat")]
-	protected int currentHealth;
-	[SerializeField] protected int maxHealth;
-	[SerializeField] protected int armor;
-	[SerializeField] protected int damage;
-	[SerializeField] protected int moveRange;
-	[SerializeField] protected int attackRange;
-	protected bool hasAttacked = false;
+	public int currentHealth;
+	public int currentArmor;
+	public bool HasAttacked { get; set; }
 	[SerializeField] protected Image healthBar;
-	[SerializeField] protected GameObject hitBloodParticle;
-	[SerializeField] protected GameObject deathParticle;
-	[Header("Movement")]
-	[SerializeField] protected int explorationDistance = 2;
-	[SerializeField] protected float lerpSpeed = 0.2f;
-	[SerializeField] protected float turnSpeed = 100f;
-	[SerializeField] protected float snapToPositionThreshold = 0.1f;
-	[SerializeField] protected float waitBetweenMovement = 0.02f;
+	[SerializeField] public UnitProperties unitProperties;
 
 	protected bool isMoving;
 
@@ -37,7 +21,6 @@ public class SPUnitBase : MonoBehaviour
 			playerColor = value;
 		}
 	}
-
 
 	public void OnPlayerColorChange(Color oldColor, Color newColor)
 	{
@@ -66,9 +49,18 @@ public class SPUnitBase : MonoBehaviour
 		set
 		{
 			isInMoveMode = value;
-			OnIsInMoveModeChange(value);
 		}
 	}
+
+	public void SetIsInMoveMode(bool newIsInMoveMode)
+	{
+		IsInMoveMode = newIsInMoveMode;
+		if (!SPGameManager.Instance.GetPlayer(playerID).IsAI)
+		{
+			OnIsInMoveModeChange(newIsInMoveMode);
+		}
+	}
+
 	public void OnIsInMoveModeChange(bool newValue)
 	{
 		DisableHexagonOutlines();
@@ -87,15 +79,16 @@ public class SPUnitBase : MonoBehaviour
 	{
 		neighboursWithinRange = new List<SPTerrainHexagon>();
 		occupiedNeighboursWithinRange = new List<SPTerrainHexagon>();
-		remainingMovesThisTurn = moveRange;
-		transform.eulerAngles = initialRotation;
-		currentHealth = maxHealth;
+		remainingMovesThisTurn = unitProperties.moveRange;
+		transform.eulerAngles = unitProperties.initialRotation;
+		currentArmor = unitProperties.armor;
+		currentHealth = unitProperties.health;
 	}
 
 	//TODO update
 	private void Start()
 	{
-		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, explorationDistance);
+		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
 	}
 
 
@@ -110,7 +103,7 @@ public class SPUnitBase : MonoBehaviour
 	{
 		SPTerrainHexagon[] tempPath = new SPTerrainHexagon[path.Count];
 		path.CopyTo(tempPath, 0);
-		StartCoroutine(MoveRoutine(to + positionOffsetOnHexagons));
+		StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons));
 	}
 
 	public void SetIsMoving(bool isMoving)
@@ -122,13 +115,13 @@ public class SPUnitBase : MonoBehaviour
 	{
 		while (true)
 		{
-			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * turnSpeed);
+			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * unitProperties.turnSpeed);
 			if (Quaternion.Angle(transform.rotation, lookAt) < 5f)
 			{
 				transform.rotation = lookAt;
 				break;
 			}
-			yield return new WaitForSeconds(waitBetweenMovement);
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
 	}
 
@@ -141,13 +134,13 @@ public class SPUnitBase : MonoBehaviour
 		while (true)
 		{
 			Vector3 oldPos = transform.position;
-			transform.position = Vector3.Lerp(oldPos, moveToPosition, lerpSpeed);
-			if (Vector3.Distance(transform.position, moveToPosition) < snapToPositionThreshold)
+			transform.position = Vector3.Lerp(oldPos, moveToPosition, unitProperties.lerpSpeed);
+			if (Vector3.Distance(transform.position, moveToPosition) < unitProperties.snapToPositionThreshold)
 			{
 				transform.position = moveToPosition;
 				break;
 			}
-			yield return new WaitForSeconds(waitBetweenMovement);
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
 		ExploreTerrains();
 		yield return StartCoroutine(RotateRoutine(oldRot));
@@ -157,7 +150,7 @@ public class SPUnitBase : MonoBehaviour
 	//TODO update
 	public void ExploreTerrains()
 	{
-		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, explorationDistance);
+		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
 	}
 
 	public void EnableHexagonOutline(SPTerrainHexagon hexagon, int outlineIndex, bool enable)
@@ -183,19 +176,23 @@ public class SPUnitBase : MonoBehaviour
 		yield return null;
 	}
 
-	//TODO update
 	public void ValidateAttack(SPUnitBase target)
 	{
 		if (isMoving) { return; }
 		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { return; }
+		//TODO: visual feedback
+		if (unitProperties.actionPointCostToAttack > SPGameManager.Instance.GetPlayer(playerID).actionPoint) { return; }
 
-		if (/*!hasAttacked && targetIsInRange*/ true)
+		if (true/*!HasAttacked/* && targetIsInRange*/)
 		{
 			if (!SPGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex.Key))
 			{
 				target.SeeAttacker(this, true);
 			}
-			target.StartCoroutine(SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f)));
+			if (!SPGameManager.Instance.GetPlayer(target.playerID).IsAI)
+			{
+				target.StartCoroutine(SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f)));
+			}
 			StartCoroutine(AttackRoutine(target));
 		}
 	}
@@ -204,7 +201,7 @@ public class SPUnitBase : MonoBehaviour
 	{
 		yield return new WaitForSeconds(.25f);
 		Vector3 oldPos = transform.position;
-		if (unitCombatType != UnitCombatType.RangedCombat)
+		if (unitProperties.unitCombatType != UnitCombatType.RangedCombat)
 		{
 			yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f));
 			Attack(target);
@@ -233,8 +230,8 @@ public class SPUnitBase : MonoBehaviour
 
 	public virtual void Attack(SPUnitBase target)
 	{
-		hasAttacked = true;
-		bool isTargetDead = target.TakeDamage(damage);
+		HasAttacked = true;
+		bool isTargetDead = target.TakeDamage(unitProperties.damage);
 		if (isTargetDead)
 		{
 			PlayDeathEffects(target.transform.position);
@@ -244,19 +241,22 @@ public class SPUnitBase : MonoBehaviour
 
 	protected void PlayDeathEffects(Vector3 pos)
 	{
-		Instantiate(deathParticle, pos, Quaternion.identity);
+		Instantiate(unitProperties.deathParticle, pos, Quaternion.identity);
 	}
 
 	private void TakeDamage2(float fillAmount)
 	{
 		//healthBar.fillAmount = fillAmount;
-		Instantiate(hitBloodParticle, healthBar.transform.position, Quaternion.identity);
+		Instantiate(unitProperties.hitBloodParticle, healthBar.transform.position, Quaternion.identity);
 		StartCoroutine(TakeDamageRoutine(fillAmount));
 	}
 
 	private void SeeAttacker(SPUnitBase attacker, bool see)
 	{
-		attacker.gameObject.SetActive(see);
+		if (!SPGameManager.Instance.GetPlayer(attacker.playerID).IsAI)
+		{
+			attacker.gameObject.SetActive(see);
+		}
 	}
 
 	IEnumerator TakeDamageRoutine(float fillAmount)
@@ -273,36 +273,44 @@ public class SPUnitBase : MonoBehaviour
 				healthBar.fillAmount = fillAmount;
 				break;
 			}
-			yield return new WaitForSeconds(waitBetweenMovement);
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
 	}
 
 	//TODO update
 	public bool TakeDamage(int damage)
 	{
-		int damageToApply = (damage - armor) > 0 ? (damage - armor) : 0;
-		currentHealth = (currentHealth - damageToApply) > 0 ? currentHealth - damageToApply : 0;
-		TakeDamage2((float)currentHealth / maxHealth);
-		if (currentHealth <= 0)
+		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
+		if(damage > currentArmor)
 		{
-			currentHealth = 0;
-			occupiedHex.OccupierUnit = null;
-			SPGameManager.Instance.UnregisterUnit(playerID, this);
-			Destroy(gameObject);
-			return true;
+			damageToHealth = damage - currentArmor;
+			currentArmor = 0;
+		}
+		else
+		{
+			damageToHealth = 0;
+			currentArmor -= damage;
+		}
+		if(damageToHealth > 0)
+		{
+			currentHealth = (currentHealth - damageToHealth) > 0 ? currentHealth - damageToHealth : 0;
+			TakeDamage2((float)currentHealth / unitProperties.health);
+			if (currentHealth <= 0)
+			{
+				currentHealth = 0;
+				occupiedHex.OccupierUnit = null;
+				SPGameManager.Instance.UnregisterUnit(playerID, this);
+				Destroy(gameObject);
+				return true;
+			}
 		}
 		return false;
-	}
-
-	public void SetIsInMoveMode(bool newIsInMoveMode)
-	{
-		IsInMoveMode = newIsInMoveMode;
 	}
 
 	public void GetReachables(SPUnitBase targetUnit)
 	{
 		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, attackRange, blockedTerrains, occupiedNeighboursWithinRange);
+		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
 		EnableOutlines();
 	}
 
@@ -324,7 +332,7 @@ public class SPUnitBase : MonoBehaviour
 	{
 		foreach (SPTerrainHexagon neighbour in neighboursWithinRange)
 		{
-			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
+			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.PlayerID != playerID))
 			{
 				EnableHexagonOutline(neighbour, 1, true);
 			}
@@ -346,6 +354,8 @@ public class SPUnitBase : MonoBehaviour
 	{
 		if (isMoving) { return false; }
 		if (!neighboursWithinRange.Contains(to)) { return false; }
+		//TODO: visual feedback that indicates why it cant move there.
+		if (unitProperties.actionPointCostToMove > SPGameManager.Instance.GetPlayer(playerID).actionPoint) { return false; }
 		else
 		{
 			GetPath(to);
@@ -373,6 +383,7 @@ public class SPUnitBase : MonoBehaviour
 		if (remainingMovesThisTurn == 0)
 		{
 			IsInMoveMode = false;
+			SetIsInMoveMode(false);
 		}
 		else
 		{

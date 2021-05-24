@@ -13,6 +13,7 @@ public class SPGameManager : MonoBehaviour
 
     [SerializeField] private GameObject mapPrefab;
     [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject aiPlayerPrefab;
     [SerializeField] public List<GameObject> spawnablePrefabs;
     [SerializeField] private List<Color> playerColors;
     private bool[] colorsUsed;
@@ -66,6 +67,7 @@ public class SPGameManager : MonoBehaviour
         currentPlayerIndex = 0;
         map = Instantiate(mapPrefab).GetComponent<SPMap>();
         map.mapWidth = mapWidth;
+        Debug.LogError(map.mapWidth + " " + mapWidth);
         map.SPGenerateMap();
         //map.SPDilateMap();
         map.SPCreateUndiscoveredBlocks();
@@ -79,6 +81,7 @@ public class SPGameManager : MonoBehaviour
         string hexKey;
         for(int i = 0; i < totalPlayerCount; i++)
 		{
+            isValidPosToSpawn = false;
             do
             {
                 int x = Random.Range(-SPMap.Instance.mapWidth + 1, SPMap.Instance.mapWidth);
@@ -91,41 +94,74 @@ public class SPGameManager : MonoBehaviour
                     startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
                 }
             } while (!isValidPosToSpawn);
+            if (i == 0)
+            {
+                hexKey = "5_-5_0";
+                startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
+            }
+			else
+			{
+                hexKey = "0_0_0";
+                startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
+            }
 
-            GameObject player = Instantiate(playerPrefab, startPos, Quaternion.Euler(0, -60, 0));
+            GameObject player;
+            SPTownCenter tempPlayer;
             int colorIndex;
+
             do
             {
                 colorIndex = Random.Range(0, playerColors.Count);
             } while (colorsUsed[colorIndex] == true);
-            SPTownCenter tempPlayer = player.GetComponent<SPTownCenter>();
-            tempPlayer.occupiedHex = SPMap.Instance.mapDictionary[hexKey];
+
+            if (i == 0)
+			{
+                player = Instantiate(playerPrefab, startPos, Quaternion.Euler(0, -60, 0));
+                tempPlayer = player.GetComponent<SPTownCenter>();
+                tempPlayer.IsAI = false;
+            }
+            else
+            {
+                player = Instantiate(aiPlayerPrefab, startPos, Quaternion.Euler(0, -60, 0));
+                tempPlayer = player.GetComponent<SPTownCenterAI>();
+                tempPlayer.IsAI = true;
+                tempPlayer.PluggableAI = tempPlayer.gameObject.AddComponent<PluggableAI>();
+            }
+
+            tempPlayer.OccupiedHex = SPMap.Instance.mapDictionary[hexKey];
             tempPlayer.PlayerColor = playerColors[colorIndex];
-            tempPlayer.playerID = currentPlayerIndex;
+            tempPlayer.PlayerID = currentPlayerIndex;
+
             currentPlayerIndex++;
             colorsUsed[colorIndex] = true;
             RegisterPlayer(tempPlayer);
 		}
-        NextTurn();
+        StartCoroutine(StartGame());
     }
+
+    private IEnumerator StartGame()
+	{
+        yield return new WaitForEndOfFrame();
+        NextTurn();
+	}
 
 	public void RegisterPlayer(SPTownCenter player)
     {
-        if (!players.ContainsKey(player.playerID))
+        if (!players.ContainsKey(player.PlayerID))
         {
-            players.Add(player.playerID, player);
-            units.Add(player.playerID, new List<SPUnitBase>());
+            players.Add(player.PlayerID, player);
+            units.Add(player.PlayerID, new List<SPUnitBase>());
             playerList.Add(player);
-            Debug.Log("Player-" + player.playerID + " has joined the game");
+            Debug.Log("Player-" + player.PlayerID + " has joined the game");
         }
     }
 
     public void UnregisterPlayer(SPTownCenter player)
     {
-        if (players.ContainsKey(player.playerID))
+        if (players.ContainsKey(player.PlayerID))
         {
-            players.Remove(player.playerID);
-            units.Remove(player.playerID);
+            players.Remove(player.PlayerID);
+            units.Remove(player.PlayerID);
             if (playerList.Contains(player))
             {
                 if (hasTurnIndex == playerList.IndexOf(player))
@@ -134,7 +170,7 @@ public class SPGameManager : MonoBehaviour
                 }
                 playerList.Remove(player);
             }
-            Debug.Log("Player-" + player.playerID + " has left the game");
+            Debug.Log("Player-" + player.PlayerID + " has left the game");
         }
     }
     public void RegisterUnit(uint playerID, SPUnitBase unit)
@@ -195,6 +231,24 @@ public class SPGameManager : MonoBehaviour
             players[playerID].ExploreTerrains(distantNeighbours, true);
         }
     }
+
+    public List<SPUnitBase> GetUnits(uint playerID)
+	{
+		if (units.ContainsKey(playerID))
+		{
+            return units[playerID];
+		}
+        return null;
+	}
+
+    public SPTownCenter GetPlayer(uint playerID)
+	{
+		if (units.ContainsKey(playerID))
+		{
+            return players[playerID];
+		}
+        return null;
+	}
 
     public void NextTurn()
     {

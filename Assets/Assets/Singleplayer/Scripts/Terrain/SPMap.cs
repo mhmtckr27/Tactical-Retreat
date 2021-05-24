@@ -297,7 +297,12 @@ public class SPMap : MonoBehaviour
 		SPMap.Instance.selectedHexagon = null;
 	}
 
-	//this function gets all neighbours within certain distance, no matter if blocked or water block etc.
+	/// <summary>
+	/// Gets all neighbours within certain distance, no matter if blocked or water block etc.
+	/// </summary>
+	/// <param name="block">Center block</param>
+	/// <param name="distance">Radius</param>
+	/// <returns></returns>
 	public List<SPTerrainHexagon> GetDistantHexagons(SPTerrainHexagon block, int distance)
 	{
 		List<SPTerrainHexagon> neighbours = new List<SPTerrainHexagon>();

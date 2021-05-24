@@ -6,14 +6,16 @@ using UnityEngine.EventSystems;
 
 public class SPTownCenter : SPBuildingBase
 {
-	public bool hasTurn;
-	public bool isConquered = false;
+	public bool HasTurn { get; set; }
+	public bool IsConquered { get; set; }
+	/*public bool canBeConquered;
+	public SPTownCenter currentConqueror;*/
 	private InputManager inputManager;
 
-	[SerializeField] private int woodCount;
-	[SerializeField] private int meatCount;
-	private int currentPopulation;
-	private int maxPopulation;
+	[SerializeField] protected int woodCount;
+	[SerializeField] protected int meatCount;
+	protected int currentPopulation;
+	protected int maxPopulation;
 	public int actionPoint;
 
 	public event Action<int> OnWoodCountChange;
@@ -37,7 +39,20 @@ public class SPTownCenter : SPBuildingBase
 		GetComponent<Renderer>().materials[1].color = newColor;
 	}
 
-	protected virtual void Start()
+	protected override void Start()
+	{
+		base.Start();
+		buildingMenuUI = uiManager.townCenterUI;
+		buildingMenuUI.townCenter = this; 
+		inputManager = GetComponent<InputManager>();
+		OccupiedHex.OccupierBuilding = this;
+		SetAllCameraPositions(new Vector3(transform.position.x - 5, 0, transform.position.z + 0.75f));
+		OnTerrainOccupiersChange(OccupiedHex.Key, 1);
+		ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
+		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
+	}
+
+	/*public virtual void Init()
 	{
 		buildingMenuUI = uiManager.townCenterUI;
 		buildingMenuUI.townCenter = this;
@@ -47,77 +62,70 @@ public class SPTownCenter : SPBuildingBase
 		SetAllCameraPositions(new Vector3(transform.position.x - 5, 0, transform.position.z + 0.75f));
 		ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
 		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
-	}
+	}*/
 
-	public virtual void Init()
-	{
-		buildingMenuUI = uiManager.townCenterUI;
-		buildingMenuUI.townCenter = this;
-		inputManager = GetComponent<InputManager>();
-		occupiedHex.OccupierBuilding = this;
-		OnTerrainOccupiersChange(occupiedHex.Key, 1);
-		SetAllCameraPositions(new Vector3(transform.position.x - 5, 0, transform.position.z + 0.75f));
-		ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
-		SPGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
-	}
-
-	private void OnEnable()
+	protected virtual void OnEnable()
 	{
 		SPTerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
 	}
 
-	private void OnDisable()
+	protected virtual void OnDisable()
 	{
 		SPTerrainHexagon.OnTerrainOccupiersChange -= OnTerrainOccupiersChange;
 	}
 
 	//invoker: 0 means unit, 1 means building
-	public void OnTerrainOccupiersChange(string key, int invoker)
+	public virtual void OnTerrainOccupiersChange(string key, int invoker)
 	{
 		if (invoker == 0)
 		{
-			if ((SPMap.Instance.mapDictionary.ContainsKey(key)) && (SPMap.Instance.mapDictionary[key].OccupierUnit.playerID != playerID) && (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
+			if ((SPMap.Instance.mapDictionary.ContainsKey(key)) && (SPMap.Instance.mapDictionary[key].OccupierUnit.playerID != PlayerID) && (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(PlayerID)))
 			{
-				ShowHideOccupier(SPMap.Instance.mapDictionary[key].OccupierUnit, SPGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(key));
+				ShowHideOccupier(SPMap.Instance.mapDictionary[key].OccupierUnit, SPGameManager.Instance.PlayersToDiscoveredTerrains[PlayerID].Contains(key));
 			}
 		}
 		else
 		{
-			if ((SPMap.Instance.mapDictionary.ContainsKey(key)) && (SPMap.Instance.mapDictionary[key].OccupierBuilding.playerID != playerID) && (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
+			if ((SPMap.Instance.mapDictionary.ContainsKey(key)) && (SPMap.Instance.mapDictionary[key].OccupierBuilding.PlayerID != PlayerID) && (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(PlayerID)))
 			{
-				ShowHideOccupier(SPMap.Instance.mapDictionary[key].OccupierBuilding, SPGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(key));
+				ShowHideOccupier(SPMap.Instance.mapDictionary[key].OccupierBuilding, SPGameManager.Instance.PlayersToDiscoveredTerrains[PlayerID].Contains(key));
 			}
 		}
 	}
 
-	public void ShowHideOccupier(MonoBehaviour occupier, bool isDiscovered)
+	public virtual void ShowHideOccupier(MonoBehaviour occupier, bool isDiscovered)
 	{
 		occupier.gameObject.SetActive(isDiscovered);
 	}
 
-	public void ExploreTerrains(List<SPTerrainHexagon> distantNeighbours, bool isDiscovered)
+	public virtual void ExploreTerrains(List<SPTerrainHexagon> distantNeighbours, bool isDiscovered)
 	{
 		foreach (SPTerrainHexagon hex in distantNeighbours)
 		{
-			hex.IsExplored = isDiscovered;
+			hex.Explore(isDiscovered, false);
 		}
 	}
 
 	protected virtual void Update()
 	{
-
-#if UNITY_EDITOR
+		#if UNITY_EDITOR
 		if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
 		{
-			ValidatePlayRequest();
+			if (ValidatePlayRequest())
+			{
+				Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+			}
 		}
-#elif UNITY_ANDROID
+		#elif UNITY_ANDROID
 		if (inputManager.HasValidTap() && !IsPointerOverUIObject())
 		{
-			ValidatePlayRequest();
+			if (ValidatePlayRequest())
+			{
+				Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+			}
 		}
-#endif
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+		#endif
+		/*if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			UpdateWoodCount(1);
 		}
@@ -132,7 +140,7 @@ public class SPTownCenter : SPBuildingBase
 		else if (Input.GetKeyDown(KeyCode.Alpha4))
 		{
 			UpdateMaxPopulation(1);
-		}
+		}*/
 	}
 	protected virtual bool IsPointerOverUIObject()
 	{
@@ -143,7 +151,7 @@ public class SPTownCenter : SPBuildingBase
 		return results.Count > 0;
 	}
 
-	public void UpdateResourceCount(ResourceType resourceType, int count, int cost)
+	public virtual void UpdateResourceCount(ResourceType resourceType, int count, int cost)
 	{
 		if (cost > actionPoint) { return; }
 		switch (resourceType)
@@ -160,7 +168,7 @@ public class SPTownCenter : SPBuildingBase
 		UpdateActionPoint(-cost);
 	}
 
-	public void UpdateWoodCount(int count)
+	public virtual void UpdateWoodCount(int count)
 	{
 		woodCount += count;
 		if(OnWoodCountChange != null)
@@ -174,7 +182,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void UpdateMeatCount(int count)
+	public virtual void UpdateMeatCount(int count)
 	{
 		meatCount += count;
 		if(OnMeatCountChange != null)
@@ -188,7 +196,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void UpdateCurrentPopulation(int count)
+	public virtual void UpdateCurrentPopulation(int count)
 	{
 		currentPopulation += count;
 		if (OnCurrentToMaxPopulationChange != null)
@@ -197,7 +205,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	private void UpdateMaxPopulation(int count)
+	protected virtual void UpdateMaxPopulation(int count)
 	{
 		maxPopulation += count;
 		if (OnCurrentToMaxPopulationChange != null)
@@ -206,7 +214,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void UpdateActionPoint(int count)
+	public virtual void UpdateActionPoint(int count)
 	{
 		actionPoint += count;
 		if (OnActionPointChange != null)
@@ -215,10 +223,9 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	protected virtual void ValidatePlayRequest()
+	protected virtual bool ValidatePlayRequest()
 	{
-		if (!hasTurn) { return; }
-		Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+		return HasTurn;
 	}
 
 	//TODO update
@@ -228,7 +235,7 @@ public class SPTownCenter : SPBuildingBase
 		if (Physics.Raycast(ray, out hit))
 		{
 			SPTerrainHexagon selectedHexagon = hit.collider.GetComponent<SPTerrainHexagon>();
-			if (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID) && !SPGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(selectedHexagon.Key))
+			if (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(PlayerID) && !SPGameManager.Instance.PlayersToDiscoveredTerrains[PlayerID].Contains(selectedHexagon.Key))
 			{
 				DeselectEverything();
 				return;
@@ -254,7 +261,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain only has a occupier friendly unit and not a building
-				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == playerID))
+				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID))
 				{
 					if (SPMap.Instance.selectedHexagon != selectedHexagon)
 					{
@@ -271,7 +278,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain only has a occupier building and not an unit, open building menu
-				else if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.playerID == playerID))
+				else if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.PlayerID == PlayerID))
 				{
 					if (SPMap.Instance.selectedHexagon != null)
 					{
@@ -287,7 +294,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain has both friendly unit and friendly building, select unit
-				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID == playerID) && (selectedHexagon.OccupierBuilding.playerID == playerID))
+				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID == PlayerID))
 				{
 					if (SPMap.Instance.selectedHexagon != null)
 					{
@@ -314,7 +321,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain only has an occupier unit and not a building
-				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == playerID))
+				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID))
 				{
 					//currently selected and previously selected units are same, show terrain info
 					if (SPMap.Instance.UnitToMove == selectedHexagon.OccupierUnit)
@@ -330,7 +337,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain only has an occupier building and not an unit, ValidateRequestToMove building
-				else if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.playerID == playerID))
+				else if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.PlayerID == PlayerID))
 				{
 					if (SPMap.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
@@ -339,7 +346,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain has both friendly unit and friendly building, select unit on town
-				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == playerID) && (selectedHexagon.OccupierBuilding.playerID == playerID))
+				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID == PlayerID))
 				{
 					if (SPMap.Instance.UnitToMove == selectedHexagon.OccupierUnit)
 					{
@@ -352,17 +359,17 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
-				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != playerID) && (selectedHexagon.OccupierBuilding.playerID != playerID))
+				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
 				{
 					SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit);
 				}
 				//if selected terrain only has an enemy unit and not a building, attack to enemy unit
-				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit.playerID != playerID))
+				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit.playerID != PlayerID))
 				{
 					SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit);
 				}
 				//if selected terrain only has an enemy building and not an unit, ValidateRequestToMove to building and can start occupation next turn
-				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding.playerID != playerID))
+				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
 				{
 					if (SPMap.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
@@ -377,7 +384,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void SelectUnit(SPUnitBase unit)
+	public virtual void SelectUnit(SPUnitBase unit)
 	{
 		if (unit.CanMove())
 		{
@@ -385,7 +392,7 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public void DeselectUnit(SPUnitBase unit)
+	public virtual void DeselectUnit(SPUnitBase unit)
 	{
 		unit.SetIsInMoveMode(false);
 	}
@@ -406,23 +413,28 @@ public class SPTownCenter : SPBuildingBase
 		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
 	}
 
-	public void ClearSelectedHexagon()
+	public virtual void ClearSelectedHexagon()
 	{
 		SPMap.Instance.selectedHexagon = null;
 	}
 
-	public void SetHasTurn(bool newHasTurn)
+	public virtual void SetHasTurn(bool newHasTurn)
 	{
-		hasTurn = newHasTurn;
+		HasTurn = newHasTurn;
+		foreach(SPUnitBase unit in SPGameManager.Instance.GetUnits(PlayerID))
+		{
+			unit.remainingMovesThisTurn = unit.unitProperties.moveRange;
+			unit.HasAttacked = false;
+		}
 		EnableNextTurnButton(newHasTurn);
-		if (hasTurn)
+		if (HasTurn)
 		{
 			int actionPointGain = CalculateActionPointGain();
 			UpdateActionPoint(actionPointGain);
 		}
 	}
 
-	public int CalculateActionPointGain()
+	public virtual int CalculateActionPointGain()
 	{
 		//TODO calculate using unit count and many other things
 		return 3;
@@ -436,7 +448,7 @@ public class SPTownCenter : SPBuildingBase
 	//TODO update
 	public virtual void FinishTurn()
 	{
-		if (!hasTurn) { return; }
+		if (!HasTurn) { return; }
 		DeselectEverything();
 		SPGameManager.Instance.PlayerFinishedTurn(this);
 	}
@@ -456,23 +468,34 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public virtual void CreateUnit(string unitName)
+	public virtual bool CreateUnit(string unitName)
 	{
-		if (!occupiedHex.OccupierUnit)
+		if (!OccupiedHex.OccupierUnit)
 		{
-			CreateUnit(this, unitName);
+			GameObject temp = SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName);
+			if(temp.GetComponent<SPUnitBase>().unitProperties.actionPointCostToCreate <= actionPoint)
+			{
+				return CreateUnit(this, temp);
+			}
+			else
+			{
+				//visual feedback that says sth like: you dont have enough action point,
+				//or just lock the create button.
+			}
 		}
+		return false;
 	}
 
 	//TODO update
-	public virtual void CreateUnit(SPBuildingBase owner, string unitName)
+	public virtual bool CreateUnit(SPBuildingBase owner, GameObject unit)
 	{
-		GameObject temp = Instantiate(SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName), transform.position + SPUnitBase.positionOffsetOnHexagons, Quaternion.identity);
+		GameObject temp = Instantiate(unit, transform.position + UnitProperties.positionOffsetOnHexagons, Quaternion.identity);
 		temp.GetComponent<SPUnitBase>().PlayerColor = PlayerColor;
-		temp.GetComponent<SPUnitBase>().occupiedHex = occupiedHex;
-		SPGameManager.Instance.RegisterUnit(playerID, temp.GetComponent<SPUnitBase>());
-		temp.GetComponent<SPUnitBase>().playerID = playerID;
-		occupiedHex.OccupierUnit = temp.GetComponent<SPUnitBase>();
+		temp.GetComponent<SPUnitBase>().occupiedHex = OccupiedHex;
+		SPGameManager.Instance.RegisterUnit(PlayerID, temp.GetComponent<SPUnitBase>());
+		temp.GetComponent<SPUnitBase>().playerID = PlayerID;
+		OccupiedHex.OccupierUnit = temp.GetComponent<SPUnitBase>();
 		ToggleBuildingMenu(false);
+		return true;
 	}
 }

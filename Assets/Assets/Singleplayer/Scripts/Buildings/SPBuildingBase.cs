@@ -7,15 +7,19 @@ public class SPBuildingBase : MonoBehaviour
 	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField] public BuildingType buildingType;
 
-	public SPTerrainHexagon occupiedHex;
-	public uint playerID;
+	public SPTerrainHexagon OccupiedHex { get; set; }
+	public uint PlayerID { get; set; }
 
 	protected SPTownCenterUI buildingMenuUI;
 	protected SPUIManager uiManager;
 	protected bool menu_visible = false;
 	private GameObject canvas;
 
-	protected virtual void Awake()
+	public PluggableAI PluggableAI { get; set; }
+
+	public bool IsAI { get; set; }
+
+	protected virtual void Start()
 	{
 		canvas = Instantiate(canvasPrefab);
 		uiManager = canvas.GetComponent<SPUIManager>();
