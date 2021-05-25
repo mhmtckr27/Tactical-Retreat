@@ -198,7 +198,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   terrainType: 3
-  resource: {fileID: 2124920024700861615}
+  resourceGameObject: {fileID: 2124920024700861615}
+  resource: {fileID: 11400000, guid: ead15a15218bfd5409188fee1e26e12a, type: 2}
   unexploredBlock: {fileID: 2535368626507396376, guid: 336dbfac75ebb7b46aae6eae9d8a783a,
     type: 3}
   buildablesOnThisTerrain: 

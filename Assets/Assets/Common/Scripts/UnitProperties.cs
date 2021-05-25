@@ -11,7 +11,7 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public UnitCombatType unitCombatType;
 	[SerializeField] public int actionPointCostToCreate;
 	[Header("Combat")]
-	[SerializeField] public int actionPointCostToAttack;
+	[SerializeField] public int moveCostToAttack;
 	[SerializeField] public int health;
 	[SerializeField] public int armor;
 	[SerializeField] public int damage;
@@ -19,7 +19,6 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public GameObject hitBloodParticle;
 	[SerializeField] public GameObject deathParticle;
 	[Header("Movement")]
-	[SerializeField] public int actionPointCostToMove;
 	[SerializeField] public int moveRange;
 	[SerializeField] public int exploreRange = 2;
 	[SerializeField] public float lerpSpeed = 0.2f;

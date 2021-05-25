@@ -12,6 +12,7 @@ public class SPGameManager : MonoBehaviour
     }
 
     [SerializeField] private GameObject mapPrefab;
+    [SerializeField] public bool enableMapVisibilityHack;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject aiPlayerPrefab;
     [SerializeField] public List<GameObject> spawnablePrefabs;
@@ -20,18 +21,17 @@ public class SPGameManager : MonoBehaviour
 
     public int mapWidth = 6;
     public int aiPlayerCount = 1;
-    private SPMap map;
     private int totalPlayerCount;
     private uint currentPlayerIndex;
 
-    private Dictionary<uint, List<string>> playersToDiscoveredTerrains = new Dictionary<uint, List<string>>();
-    public Dictionary<uint, List<string>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
+    private Dictionary<uint, List<SPTerrainHexagon>> playersToDiscoveredTerrains = new Dictionary<uint, List<SPTerrainHexagon>>();
+    public Dictionary<uint, List<SPTerrainHexagon>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
     private List<SPTownCenter> playerList = new List<SPTownCenter>();
     private Dictionary<uint, SPTownCenter> players = new Dictionary<uint, SPTownCenter>();
     private Dictionary<uint, List<SPUnitBase>> units = new Dictionary<uint, List<SPUnitBase>>();
 
     private bool canGiveTurnToNextPlayer = true;
-    private int hasTurnIndex = 0;
+    private int hasTurnIndex;
 
     private void Awake()
     {
@@ -47,6 +47,7 @@ public class SPGameManager : MonoBehaviour
 
 	private void Start()
 	{
+        hasTurnIndex = 0;
     }
 
 	private void OnEnable()
@@ -65,12 +66,14 @@ public class SPGameManager : MonoBehaviour
         totalPlayerCount = aiPlayerCount + 1;
         colorsUsed = new bool[playerColors.Count];
         currentPlayerIndex = 0;
-        map = Instantiate(mapPrefab).GetComponent<SPMap>();
-        map.mapWidth = mapWidth;
-        Debug.LogError(map.mapWidth + " " + mapWidth);
-        map.SPGenerateMap();
-        //map.SPDilateMap();
-        map.SPCreateUndiscoveredBlocks();
+        Instantiate(mapPrefab).GetComponent<SPMap>();
+        SPMap.Instance.mapWidth = mapWidth;
+        SPMap.Instance.SPGenerateMap();
+		//map.SPDilateMap();
+		if (!enableMapVisibilityHack)
+		{
+            SPMap.Instance.SPCreateUndiscoveredBlocks();
+		}
         SpawnPlayers();
 	}
 
@@ -216,13 +219,13 @@ public class SPGameManager : MonoBehaviour
         List<SPTerrainHexagon> distantNeighbours = SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary[key], distance);
         if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
         {
-            PlayersToDiscoveredTerrains.Add(playerID, new List<string>());
+            PlayersToDiscoveredTerrains.Add(playerID, new List<SPTerrainHexagon>());
         }
         foreach (SPTerrainHexagon hex in distantNeighbours)
         {
-            if (!PlayersToDiscoveredTerrains[playerID].Contains(hex.Key))
+            if (!PlayersToDiscoveredTerrains[playerID].Contains(hex))
             {
-                PlayersToDiscoveredTerrains[playerID].Add(hex.Key);
+                PlayersToDiscoveredTerrains[playerID].Add(hex);
                 shouldDiscover = true;
             }
         }

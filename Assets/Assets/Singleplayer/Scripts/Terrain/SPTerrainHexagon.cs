@@ -6,7 +6,8 @@ using UnityEngine;
 public class SPTerrainHexagon : MonoBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
-	[SerializeField] private GameObject resource;
+	[SerializeField] public GameObject resourceGameObject;
+	[SerializeField] public Resource resource;
 
 	public GameObject unexploredBlock;
 
@@ -118,13 +119,14 @@ public class SPTerrainHexagon : MonoBehaviour
 	{
 		if (newVal)
 		{
-			Destroy(resource);
+			Destroy(resourceGameObject);
+			resource = null;
 		}
 	}
 
 	public void UpdateTerrainType()
 	{
-		Destroy(resource);
+		Destroy(resourceGameObject);
 		terrainType = TerrainType.Plain;
 	}
 

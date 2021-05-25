@@ -11,7 +11,7 @@ public class SPUnitBase : MonoBehaviour
 	[SerializeField] protected Image healthBar;
 	[SerializeField] public UnitProperties unitProperties;
 
-	protected bool isMoving;
+	public bool IsMoving { get; set; }
 
 	private Color playerColor;
 	public Color PlayerColor { get => playerColor;
@@ -55,6 +55,7 @@ public class SPUnitBase : MonoBehaviour
 	public void SetIsInMoveMode(bool newIsInMoveMode)
 	{
 		IsInMoveMode = newIsInMoveMode;
+		//TODO:
 		if (!SPGameManager.Instance.GetPlayer(playerID).IsAI)
 		{
 			OnIsInMoveModeChange(newIsInMoveMode);
@@ -79,7 +80,8 @@ public class SPUnitBase : MonoBehaviour
 	{
 		neighboursWithinRange = new List<SPTerrainHexagon>();
 		occupiedNeighboursWithinRange = new List<SPTerrainHexagon>();
-		remainingMovesThisTurn = unitProperties.moveRange;
+		//remainingMovesThisTurn = unitProperties.moveRange;
+		HasAttacked = true;
 		transform.eulerAngles = unitProperties.initialRotation;
 		currentArmor = unitProperties.armor;
 		currentHealth = unitProperties.health;
@@ -108,7 +110,7 @@ public class SPUnitBase : MonoBehaviour
 
 	public void SetIsMoving(bool isMoving)
 	{
-		this.isMoving = isMoving;
+		this.IsMoving = isMoving;
 	}
 
 	protected IEnumerator RotateRoutine(Quaternion lookAt)
@@ -178,27 +180,46 @@ public class SPUnitBase : MonoBehaviour
 
 	public void ValidateAttack(SPUnitBase target)
 	{
-		if (isMoving) { return; }
-		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { return; }
+		if (IsMoving) { Debug.LogError("moving"); return; }
+		GetReachables();
+		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { Debug.LogError("yakin degil"); return; }
 		//TODO: visual feedback
-		if (unitProperties.actionPointCostToAttack > SPGameManager.Instance.GetPlayer(playerID).actionPoint) { return; }
-
-		if (true/*!HasAttacked/* && targetIsInRange*/)
+		if (unitProperties.moveCostToAttack > remainingMovesThisTurn) { return; }
+		
+		if (/*true*/!HasAttacked/* && targetIsInRange*/)
 		{
-			if (!SPGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex.Key))
-			{
-				target.SeeAttacker(this, true);
-			}
-			if (!SPGameManager.Instance.GetPlayer(target.playerID).IsAI)
-			{
-				target.StartCoroutine(SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f)));
-			}
-			StartCoroutine(AttackRoutine(target));
+			StartCoroutine(AttackRoutines(target));
 		}
+	}
+
+	IEnumerator AttackRoutines(SPUnitBase target)
+	{
+		yield return AttackValidated(target);
+		if(target != null)
+		{
+			target.ValidateAttack(this);
+		}
+	}
+
+	private IEnumerator AttackValidated(SPUnitBase target)
+	{
+		if (!SPGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex) && !SPGameManager.Instance.GetPlayer(playerID).IsAI)
+		{
+			target.SeeAttacker(this, true);
+		}
+		if (!SPGameManager.Instance.GetPlayer(target.playerID).IsAI)
+		{
+			float x = (transform.position.x - target.transform.position.x) / 2 + target.transform.position.x - 5;
+			float y = 0;
+			float z = (transform.position.z - target.transform.position.z) / 2 + target.transform.position.z + 0.75f;
+			target.StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
+		}
+		yield return StartCoroutine(AttackRoutine(target));
 	}
 
 	IEnumerator AttackRoutine(SPUnitBase target)
 	{
+		SetIsMoving(true);
 		yield return new WaitForSeconds(.25f);
 		Vector3 oldPos = transform.position;
 		if (unitProperties.unitCombatType != UnitCombatType.RangedCombat)
@@ -215,14 +236,18 @@ public class SPUnitBase : MonoBehaviour
 			Attack(target);
 			yield return StartCoroutine(RotateRoutine(oldRot));
 		}
-		SeeAttacker(target);
+		if (!SPGameManager.Instance.GetPlayer(target.playerID).IsAI)
+		{
+			SeeAttacker(target);
+		}
+		SetIsMoving(false);
 	}
 
 	//TODO Update
 	public void SeeAttacker(SPUnitBase target)
 	{
 		if (target == null) { return; }
-		if (!SPGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex.Key))
+		if (!SPGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
 		{
 			target.SeeAttacker(this, false);
 		}
@@ -231,6 +256,15 @@ public class SPUnitBase : MonoBehaviour
 	public virtual void Attack(SPUnitBase target)
 	{
 		HasAttacked = true;
+		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
+		if(remainingMovesThisTurn <= 0)
+		{
+			SetIsInMoveMode(false);
+		}
+		else
+		{
+			GetReachablesVisual(null);
+		}
 		bool isTargetDead = target.TakeDamage(unitProperties.damage);
 		if (isTargetDead)
 		{
@@ -307,11 +341,17 @@ public class SPUnitBase : MonoBehaviour
 		return false;
 	}
 
-	public void GetReachables(SPUnitBase targetUnit)
+	public void GetReachablesVisual(SPUnitBase targetUnit)
 	{
 		occupiedNeighboursWithinRange.Clear();
 		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
 		EnableOutlines();
+	}
+
+	public void GetReachables()
+	{
+		occupiedNeighboursWithinRange.Clear();
+		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
 	}
 
 	public void DisableHexagonOutlines()
@@ -343,7 +383,7 @@ public class SPUnitBase : MonoBehaviour
 		}
 		foreach (SPTerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
 		{
-			if (occupied_neighbour.OccupierUnit.playerID != playerID)
+			if (occupied_neighbour.OccupierUnit.playerID != playerID && remainingMovesThisTurn >= unitProperties.moveCostToAttack && !HasAttacked)
 			{
 				EnableHexagonOutline(occupied_neighbour, 1, true);
 			}
@@ -352,13 +392,15 @@ public class SPUnitBase : MonoBehaviour
 
 	public bool ValidateRequestToMove(SPTerrainHexagon to)
 	{
-		if (isMoving) { return false; }
+		if (IsMoving) { return false; }
 		if (!neighboursWithinRange.Contains(to)) { return false; }
-		//TODO: visual feedback that indicates why it cant move there.
-		if (unitProperties.actionPointCostToMove > SPGameManager.Instance.GetPlayer(playerID).actionPoint) { return false; }
 		else
 		{
 			GetPath(to);
+			if(remainingMovesThisTurn < path.Count - 1)
+			{
+				return false;
+			}
 			Move(to, path.Count - 1);
 			return true;
 		}
@@ -382,7 +424,6 @@ public class SPUnitBase : MonoBehaviour
 		Move2(to.transform.position);
 		if (remainingMovesThisTurn == 0)
 		{
-			IsInMoveMode = false;
 			SetIsInMoveMode(false);
 		}
 		else
@@ -396,7 +437,7 @@ public class SPUnitBase : MonoBehaviour
 		DisableHexagonOutlines();
 		if (IsInMoveMode)
 		{
-			GetReachables(this);
+			GetReachablesVisual(this);
 		}
 	}
 
@@ -405,7 +446,7 @@ public class SPUnitBase : MonoBehaviour
 		//in future, implement some logic that will prevent user from cheating. e.g. if it is not this player's turn, ignore this request.
 		if ((targetUnit != null) && (IsInMoveMode) && (SPMap.Instance.UnitToMove == targetUnit) && (remainingMovesThisTurn > 0))
 		{
-			GetReachables(targetUnit);
+			GetReachablesVisual(targetUnit);
 		}
 	}
 

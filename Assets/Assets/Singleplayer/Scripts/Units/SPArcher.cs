@@ -11,10 +11,22 @@ public class SPArcher : SPUnitBase
 	public override void Attack(SPUnitBase target)
 	{
 		HasAttacked = true;
+		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
+
+		if (remainingMovesThisTurn <= 0)
+		{
+			SetIsInMoveMode(false);
+		}
+		else
+		{
+			UpdateOutlines();
+		}
+
 		Vector3 lookRotBegin = target.transform.position;
 		Vector3 lookRotEnd = new Vector3(arrowSpawnPoint.position.x, target.transform.position.y, arrowSpawnPoint.position.z);
 		Quaternion lookRot = Quaternion.LookRotation(lookRotBegin - lookRotEnd);
 		GameObject arrow = Instantiate(arrowProjectile, arrowSpawnPoint.transform.position, lookRot);
+
 		StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
 	}
 

@@ -50,7 +50,7 @@ public class SPTerrainHexagonUI : MonoBehaviour
 
     public void OnCollectButton()
     {
-        uiManager.townCenterUI.townCenter.UpdateResourceCount(currentResource.resourceType, currentResource.resourceCount, currentResource.costToCollect);
+        uiManager.townCenterUI.townCenter.UpdateResourceCount(currentResource);
         OnCloseButton();
     }
 

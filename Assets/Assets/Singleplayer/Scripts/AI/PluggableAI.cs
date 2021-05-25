@@ -2,24 +2,61 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PluggableAI : MonoBehaviour
 {
-	public SPTownCenter TownCenter { get; set; }
+	public SPTownCenterAI TownCenter { get; set; }
 	public bool IsPlaying { get; set; }
 	private Priority currentPriority;
 	//parameterize these
 	public int townCenterDangerRadius = 3;
 	//
 	int prevIterationActionPoint = -1;
+
+	SPUnitBase closestEnemyToTownCenter;
 	public void Think()
 	{
-		while (!MustFinishTurn(TownCenter.actionPoint))
+		PlayTown();
+		PlayUnits();
+		/*while (!MustFinishTurn(TownCenter.actionPoint))
 		{
 			DeterminePriority();
 			Play();
 		}
+		TownCenter.FinishTurn();*/
 		TownCenter.FinishTurn();
+	}
+
+	private void PlayUnits()
+	{
+		List<SPUnitBase> units = SPGameManager.Instance.GetUnits(TownCenter.PlayerID);
+		List<bool> areUnitsPlayed = new List<bool>(units.Count);
+
+		foreach(SPUnitBase unit in units)
+		{
+			//DeterminePriority()
+		}
+	}
+
+	private void PlayTown()
+	{
+		string unitName = SPGameManager.Instance.spawnablePrefabs[Random.Range(0, SPGameManager.Instance.spawnablePrefabs.Count)].name;
+		TownCenter.CreateUnit(unitName);
+		CollectResource();
+	}
+
+	private void CollectResource()
+	{
+		List<SPTerrainHexagon> exploreds = SPGameManager.Instance.PlayersToDiscoveredTerrains[TownCenter.PlayerID];
+		foreach (SPTerrainHexagon explored in exploreds)
+		{
+			if (explored.resource != null && explored.resource.canBeCollected)
+			{
+				SPMap.Instance.selectedHexagon = explored;
+				TownCenter.UpdateResourceCount(explored.resource);
+			}
+		}
 	}
 
 	private bool MustFinishTurn(int thisIterationActionPoint)
@@ -43,6 +80,11 @@ public class PluggableAI : MonoBehaviour
 			currentPriority = Priority.DefendTownCenter;
 		}
 		//else if()
+		//else if()
+		else
+		{
+			currentPriority = Priority.ExploreMap;
+		}
 	}
 
 	private void Play()
@@ -53,9 +95,45 @@ public class PluggableAI : MonoBehaviour
 				break;
 			case Priority.DefendTownCenter:
 				DefendTownCenter();
+				Attack(closestEnemyToTownCenter);
+				break;
+			case Priority.AttackUnit:
+				//Attack()
+				break;
+			case Priority.ExploreMap:
+				ExploreMap();
 				break;
 		}
 		Think();
+	}
+
+	private void ExploreMap()
+	{
+		List<SPUnitBase> units = SPGameManager.Instance.GetUnits(TownCenter.PlayerID);
+		if(units.Count == 0) { return; }
+		do
+		{
+			TownCenter.SelectUnit(units[UnityEngine.Random.Range(0, units.Count)]);
+		} while (!SPMap.Instance.UnitToMove.CanMove());
+
+		SPTerrainHexagon to;
+		List<SPTerrainHexagon> distants = SPMap.Instance.GetDistantHexagons(SPMap.Instance.UnitToMove.occupiedHex, SPMap.Instance.UnitToMove.remainingMovesThisTurn);
+
+		do
+		{
+			to = distants[Random.Range(0, distants.Count)];
+		} while (SPMap.Instance.AStar(SPMap.Instance.UnitToMove.occupiedHex, to, SPMap.Instance.UnitToMove.blockedTerrains) == null);
+
+		SPMap.Instance.UnitToMove.ValidateRequestToMove(to);
+	}
+
+	private void Attack(SPUnitBase target)
+	{
+		if(TownCenter.OccupiedHex.OccupierUnit != null)
+		{
+			TownCenter.SelectUnit(TownCenter.OccupiedHex.OccupierUnit);
+			TownCenter.OccupiedHex.OccupierUnit.ValidateAttack(target);
+		}
 	}
 
 	private void DefendTownCenter()
@@ -99,8 +177,9 @@ public class PluggableAI : MonoBehaviour
 	{
 		foreach(SPTerrainHexagon hex in SPMap.Instance.GetDistantHexagons(TownCenter.OccupiedHex, townCenterDangerRadius))
 		{
-			if(hex.OccupierUnit && hex.OccupierUnit.playerID != TownCenter.PlayerID && TownCenter.OccupiedHex.OccupierUnit == null)
+			if(hex.OccupierUnit && hex.OccupierUnit.playerID != TownCenter.PlayerID)
 			{
+				closestEnemyToTownCenter = hex.OccupierUnit;
 				return true;
 			}
 		}

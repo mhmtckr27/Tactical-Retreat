@@ -16,7 +16,7 @@ MonoBehaviour:
   unitType: 2
   unitCombatType: 1
   actionPointCostToCreate: 2
-  actionPointCostToAttack: 1
+  moveCostToAttack: 1
   health: 10
   armor: 2
   damage: 2
@@ -25,10 +25,9 @@ MonoBehaviour:
     type: 3}
   deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
     type: 3}
-  actionPointCostToMove: 1
-  moveRange: 3
+  moveRange: 2
   exploreRange: 5
   lerpSpeed: 0.25
-  turnSpeed: 200
+  turnSpeed: 75
   snapToPositionThreshold: 0.1
   waitBetweenMovement: 0.02

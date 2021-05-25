@@ -16,17 +16,16 @@ MonoBehaviour:
   unitType: 1
   unitCombatType: 0
   actionPointCostToCreate: 2
-  actionPointCostToAttack: 1
+  moveCostToAttack: 1
   health: 10
   armor: 5
   damage: 3
-  attackRange: 2
+  attackRange: 1
   hitBloodParticle: {fileID: 1850033487435682, guid: 2c4b2397ab17cce4bae0e99c1004869d,
     type: 3}
   deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
     type: 3}
-  actionPointCostToMove: 1
-  moveRange: 2
+  moveRange: 1
   exploreRange: 3
   lerpSpeed: 0.25
   turnSpeed: 200

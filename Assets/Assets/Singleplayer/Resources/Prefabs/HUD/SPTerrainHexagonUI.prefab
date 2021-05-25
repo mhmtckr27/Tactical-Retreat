@@ -633,8 +633,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: TerrainHexagonUI, Assembly-CSharp
+      - m_Target: {fileID: 547837147048962585}
+        m_TargetAssemblyTypeName: SPTerrainHexagonUI, Assembly-CSharp
         m_MethodName: OnCollectButton
         m_Mode: 1
         m_Arguments:

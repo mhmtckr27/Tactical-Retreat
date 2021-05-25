@@ -87,9 +87,9 @@ public class SPTownCenterAI : SPTownCenter
 		}
 	}
 
-	public override void UpdateResourceCount(ResourceType resourceType, int count, int cost)
+	public override void UpdateResourceCount(Resource resource)
 	{
-		base.UpdateResourceCount(resourceType, count, cost);
+		base.UpdateResourceCount(resource);
 	}
 
 	public override void UpdateWoodCount(int count)
@@ -160,6 +160,11 @@ public class SPTownCenterAI : SPTownCenter
 	public override void SetHasTurn(bool newHasTurn)
 	{
 		HasTurn = newHasTurn;
+		foreach (SPUnitBase unit in SPGameManager.Instance.GetUnits(PlayerID))
+		{
+			unit.remainingMovesThisTurn = unit.unitProperties.moveRange;
+			unit.HasAttacked = false;
+		}
 		if (HasTurn)
 		{
 			int actionPointGain = CalculateActionPointGain();
@@ -189,9 +194,12 @@ public class SPTownCenterAI : SPTownCenter
 			GameObject temp = SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName);
 			if (temp.GetComponent<SPUnitBase>().unitProperties.actionPointCostToCreate <= actionPoint)
 			{
+				//Debug.LogError("created");
 				return CreateUnit(this, temp);
 			}
+			//Debug.LogError("not enough action point");
 		}
+		//Debug.LogError("already occupied");
 		return false;
 	}
 
