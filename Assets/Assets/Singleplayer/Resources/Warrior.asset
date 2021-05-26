@@ -26,7 +26,7 @@ MonoBehaviour:
   deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
     type: 3}
   moveRange: 1
-  exploreRange: 3
+  exploreRange: 2
   lerpSpeed: 0.25
   turnSpeed: 200
   snapToPositionThreshold: 0.1

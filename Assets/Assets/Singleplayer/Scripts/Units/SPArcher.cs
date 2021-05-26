@@ -8,7 +8,7 @@ public class SPArcher : SPUnitBase
 	[SerializeField] private Transform arrowSpawnPoint;
 	[SerializeField] private GameObject arrowProjectile;
 
-	public override void Attack(SPUnitBase target)
+	public override IEnumerator Attack(SPUnitBase target)
 	{
 		HasAttacked = true;
 		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
@@ -27,7 +27,7 @@ public class SPArcher : SPUnitBase
 		Quaternion lookRot = Quaternion.LookRotation(lookRotBegin - lookRotEnd);
 		GameObject arrow = Instantiate(arrowProjectile, arrowSpawnPoint.transform.position, lookRot);
 
-		StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
+		yield return StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
 	}
 
 	IEnumerator ArrowThrowedRoutine(SPUnitBase target, Transform arrowTransform)

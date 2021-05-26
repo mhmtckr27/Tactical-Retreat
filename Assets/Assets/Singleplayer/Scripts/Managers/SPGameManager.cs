@@ -15,6 +15,7 @@ public class SPGameManager : MonoBehaviour
     [SerializeField] public bool enableMapVisibilityHack;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject aiPlayerPrefab;
+    [SerializeField] private PluggableAI pluggableAIPrefab;
     [SerializeField] public List<GameObject> spawnablePrefabs;
     [SerializeField] private List<Color> playerColors;
     private bool[] colorsUsed;
@@ -128,7 +129,7 @@ public class SPGameManager : MonoBehaviour
                 player = Instantiate(aiPlayerPrefab, startPos, Quaternion.Euler(0, -60, 0));
                 tempPlayer = player.GetComponent<SPTownCenterAI>();
                 tempPlayer.IsAI = true;
-                tempPlayer.PluggableAI = tempPlayer.gameObject.AddComponent<PluggableAI>();
+                tempPlayer.PluggableAI = Instantiate(pluggableAIPrefab, tempPlayer.transform).GetComponent<PluggableAI>();
             }
 
             tempPlayer.OccupiedHex = SPMap.Instance.mapDictionary[hexKey];
@@ -172,6 +173,13 @@ public class SPGameManager : MonoBehaviour
                     hasTurnIndex++;
                 }
                 playerList.Remove(player);
+
+                foreach(SPTownCenterAI tc in playerList)
+				{
+                    //TODO: may throw error, check .Contains first.
+                    tc.exploredEnemyTowns.Remove(player);
+				}
+                Destroy(player.gameObject);
             }
             Debug.Log("Player-" + player.PlayerID + " has left the game");
         }
@@ -196,10 +204,10 @@ public class SPGameManager : MonoBehaviour
                 units[playerID].Remove(unit);
                 if ((units[playerID].Count == 0)/* && players[playerID].isConquered*/)
                 {
-                    //players[playerID].transform.localScale = Vector3.zero;
+                   /*//players[playerID].transform.localScale = Vector3.zero;
                     GameObject player = players[playerID].gameObject;
                     UnregisterPlayer(players[playerID]);
-                    Destroy(player.gameObject);
+                    Destroy(player.gameObject);*/
                 }
             }
             else

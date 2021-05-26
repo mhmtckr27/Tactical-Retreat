@@ -8,6 +8,8 @@ public class SPTerrainHexagon : MonoBehaviour
 	[SerializeField] public TerrainType terrainType;
 	[SerializeField] public GameObject resourceGameObject;
 	[SerializeField] public Resource resource;
+	//TODO: remove
+	[SerializeField] public GameObject aiDebuggerForExploredTerrains;
 
 	public GameObject unexploredBlock;
 

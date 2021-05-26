@@ -45,17 +45,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPrefab: {fileID: 8817684899006194439, guid: f2bfa62496de36e41b6573790426cb3a,
     type: 3}
+  enableMapVisibilityHack: 1
   playerPrefab: {fileID: 1033752471153055306, guid: 0c5d00c9f6e43044a9b0449e31f870ab,
     type: 3}
   aiPlayerPrefab: {fileID: 1033752471153055306, guid: d668f7ecc7b9a014699f8760fe2bc77d,
     type: 3}
+  pluggableAIPrefab: {fileID: 4381220585118577062, guid: 3e833420e4232cd4298bd0aca8819d5f,
+    type: 3}
   spawnablePrefabs:
-  - {fileID: 2891735083327226504, guid: f5fd796d1f60636469f9cc461dbedd37, type: 3}
-  - {fileID: 4642739875115892624, guid: 891cfb15cb3ac18488167127dec66c5d, type: 3}
-  - {fileID: 9040136914932431494, guid: 1709e651c52afdf44946660bd6fa761d, type: 3}
-  - {fileID: 5810350800546516640, guid: 23b5dd4009e17f441a43212cad43edcc, type: 3}
-  - {fileID: 2535368626507396376, guid: 336dbfac75ebb7b46aae6eae9d8a783a, type: 3}
-  - {fileID: 7985596192823979291, guid: becd76df81a345248a6bf687ef432be1, type: 3}
   - {fileID: 7088238405828413640, guid: 1fa64896056a5cf449589094f59d5bc8, type: 3}
   - {fileID: 3761040840066398345, guid: 712a0ca875b24d74482564c115a28a41, type: 3}
   playerColors:

@@ -113,6 +113,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasPrefab: {fileID: 0}
   buildingType: 0
-  woodCount: 0
-  meatCount: 0
+  woodCount: 50
+  meatCount: 50
+  currentPopulation: 0
+  maxPopulation: 0
   actionPoint: 0
+  exploredEnemyTowns: []

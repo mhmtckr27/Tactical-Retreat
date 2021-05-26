@@ -12,10 +12,10 @@ public class SPTownCenter : SPBuildingBase
 	public SPTownCenter currentConqueror;*/
 	private InputManager inputManager;
 
-	[SerializeField] protected int woodCount;
-	[SerializeField] protected int meatCount;
-	protected int currentPopulation;
-	protected int maxPopulation;
+	[SerializeField] public int woodCount;
+	[SerializeField] public int meatCount;
+	public int currentPopulation;
+	public int maxPopulation;
 	public int actionPoint;
 
 	public event Action<int> OnWoodCountChange;
@@ -154,7 +154,9 @@ public class SPTownCenter : SPBuildingBase
 
 	public virtual void UpdateResourceCount(Resource resource)
 	{
-		if (resource.costToCollect > actionPoint) { return; }
+		if(resource == null) { return; }
+		if(resource.canBeCollected == false) { return; }
+		if(resource.costToCollect > actionPoint) { return; }
 
 		switch (resource.resourceType)
 		{

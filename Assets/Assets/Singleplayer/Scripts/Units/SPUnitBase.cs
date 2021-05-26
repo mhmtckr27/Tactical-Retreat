@@ -29,8 +29,8 @@ public class SPUnitBase : MonoBehaviour
 
 	[HideInInspector] public uint playerID;
 
-	protected List<SPTerrainHexagon> neighboursWithinRange;
-	protected List<SPTerrainHexagon> occupiedNeighboursWithinRange;
+	public List<SPTerrainHexagon> neighboursWithinRange;
+	public List<SPTerrainHexagon> occupiedNeighboursWithinRange;
 	public List<SPTerrainHexagon> path = new List<SPTerrainHexagon>();
 
 	public List<TerrainType> blockedTerrains;
@@ -56,19 +56,27 @@ public class SPUnitBase : MonoBehaviour
 	{
 		IsInMoveMode = newIsInMoveMode;
 		//TODO:
-		if (!SPGameManager.Instance.GetPlayer(playerID).IsAI)
-		{
-			OnIsInMoveModeChange(newIsInMoveMode);
-		}
+		OnIsInMoveModeChange(newIsInMoveMode);
 	}
 
 	public void OnIsInMoveModeChange(bool newValue)
 	{
-		DisableHexagonOutlines();
+		if (!SPGameManager.Instance.GetPlayer(playerID).IsAI)
+		{
+			DisableHexagonOutlines();
+		}
+
 		if (newValue)
 		{
 			RequestToggleActionMode(this);
-			RequestReachableHexagons(this);
+			if (!SPGameManager.Instance.GetPlayer(playerID).IsAI)
+			{
+				RequestReachableHexagons(this);
+			}
+			else
+			{
+				GetReachables();
+			}
 		}
 		else
 		{
@@ -106,6 +114,13 @@ public class SPUnitBase : MonoBehaviour
 		SPTerrainHexagon[] tempPath = new SPTerrainHexagon[path.Count];
 		path.CopyTo(tempPath, 0);
 		StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons));
+	}
+
+	public IEnumerator Move2(Vector3 to, int dummy)
+	{
+		SPTerrainHexagon[] tempPath = new SPTerrainHexagon[path.Count];
+		path.CopyTo(tempPath, 0);
+		yield return StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons));
 	}
 
 	public void SetIsMoving(bool isMoving)
@@ -181,7 +196,6 @@ public class SPUnitBase : MonoBehaviour
 	public void ValidateAttack(SPUnitBase target)
 	{
 		if (IsMoving) { Debug.LogError("moving"); return; }
-		GetReachables();
 		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { Debug.LogError("yakin degil"); return; }
 		//TODO: visual feedback
 		if (unitProperties.moveCostToAttack > remainingMovesThisTurn) { return; }
@@ -192,12 +206,26 @@ public class SPUnitBase : MonoBehaviour
 		}
 	}
 
+	public IEnumerator ValidateAttack(SPUnitBase target, int dummy)
+	{
+		if(!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+		{
+			if (/*true*/!HasAttacked/* && targetIsInRange*/)
+			{
+				yield return StartCoroutine(AttackRoutines(target));
+			}
+		}
+
+	}
+
 	IEnumerator AttackRoutines(SPUnitBase target)
 	{
-		yield return AttackValidated(target);
+		yield return StartCoroutine(AttackValidated(target));
 		if(target != null)
 		{
-			target.ValidateAttack(this);
+			target.GetReachables();
+			yield return StartCoroutine(target.ValidateAttack(this, 0));
+			target.HasAttacked = false;
 		}
 	}
 
@@ -225,7 +253,7 @@ public class SPUnitBase : MonoBehaviour
 		if (unitProperties.unitCombatType != UnitCombatType.RangedCombat)
 		{
 			yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f));
-			Attack(target);
+			yield return StartCoroutine(Attack(target));
 			yield return StartCoroutine(MoveRoutine(oldPos));
 		}
 		else
@@ -233,7 +261,7 @@ public class SPUnitBase : MonoBehaviour
 			Quaternion oldRot = transform.rotation;
 			Quaternion lookAt = Quaternion.LookRotation(new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z) - transform.position);
 			yield return StartCoroutine(RotateRoutine(lookAt));
-			Attack(target);
+			yield return StartCoroutine(Attack(target));
 			yield return StartCoroutine(RotateRoutine(oldRot));
 		}
 		if (!SPGameManager.Instance.GetPlayer(target.playerID).IsAI)
@@ -253,7 +281,8 @@ public class SPUnitBase : MonoBehaviour
 		}
 	}
 
-	public virtual void Attack(SPUnitBase target)
+
+	public virtual IEnumerator Attack(SPUnitBase target)
 	{
 		HasAttacked = true;
 		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
@@ -271,6 +300,7 @@ public class SPUnitBase : MonoBehaviour
 			PlayDeathEffects(target.transform.position);
 			UpdateOutlines();
 		}
+		yield return null;
 	}
 
 	protected void PlayDeathEffects(Vector3 pos)
@@ -345,7 +375,10 @@ public class SPUnitBase : MonoBehaviour
 	{
 		occupiedNeighboursWithinRange.Clear();
 		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
-		EnableOutlines();
+		if (!SPGameManager.Instance.GetPlayer(targetUnit.playerID).IsAI)
+		{
+			EnableOutlines();
+		}
 	}
 
 	public void GetReachables()
@@ -405,6 +438,17 @@ public class SPUnitBase : MonoBehaviour
 			return true;
 		}
 	}
+	public IEnumerator ValidateRequestToMove(SPTerrainHexagon to, int dummy)
+	{
+		if(!IsMoving && neighboursWithinRange.Contains(to))
+		{
+			GetPath(to);
+			if (remainingMovesThisTurn >= (path.Count - 1))
+			{
+				yield return Move(to, path.Count - 1, 0);
+			}
+		}
+	}
 
 	public void GetPath(SPTerrainHexagon to)
 	{
@@ -422,6 +466,23 @@ public class SPUnitBase : MonoBehaviour
 		occupiedHex.OccupierUnit = this;
 		remainingMovesThisTurn -= cost;
 		Move2(to.transform.position);
+		if (remainingMovesThisTurn == 0)
+		{
+			SetIsInMoveMode(false);
+		}
+		else
+		{
+			UpdateOutlines();
+		}
+	}
+
+	public IEnumerator Move(SPTerrainHexagon to, int cost, int dummy)
+	{
+		occupiedHex.OccupierUnit = null;
+		occupiedHex = to;
+		occupiedHex.OccupierUnit = this;
+		remainingMovesThisTurn -= cost;
+		yield return Move2(to.transform.position, dummy);
 		if (remainingMovesThisTurn == 0)
 		{
 			SetIsInMoveMode(false);

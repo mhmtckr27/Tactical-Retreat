@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SPTownCenterAI : SPTownCenter
 {
-
+	public List<SPTownCenter> exploredEnemyTowns;
 	#region Empty Overrides
 	public override void SelectBuilding(SPBuildingBase building)
 	{
@@ -64,6 +64,7 @@ public class SPTownCenterAI : SPTownCenter
 	#region Overrides
 	protected override void Start()
 	{
+		exploredEnemyTowns = new List<SPTownCenter>();
 		OccupiedHex.OccupierBuilding = this;
 		ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
 		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
@@ -75,7 +76,7 @@ public class SPTownCenterAI : SPTownCenter
 		//TODO: startta invoke repeating ile yap, her framede kontrol yapmak zorunda degilsin.
 		if (ValidatePlayRequest())
 		{
-			PluggableAI.Think();
+			StartCoroutine(PluggableAI.Think());
 		}
 	}
 
@@ -84,6 +85,15 @@ public class SPTownCenterAI : SPTownCenter
 		foreach (SPTerrainHexagon hex in distantNeighbours)
 		{
 			hex.Explore(isDiscovered, true);
+			if(hex.OccupierBuilding && hex.OccupierBuilding.PlayerID != PlayerID && isDiscovered == true)
+			{
+				exploredEnemyTowns.Add((SPTownCenter)hex.OccupierBuilding);
+			}
+			if(isDiscovered == true)
+			{
+				//TODO: debugger
+				hex.aiDebuggerForExploredTerrains.SetActive(true);
+			}
 		}
 	}
 
