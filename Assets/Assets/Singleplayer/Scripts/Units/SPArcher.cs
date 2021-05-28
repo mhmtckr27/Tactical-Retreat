@@ -21,10 +21,12 @@ public class SPArcher : SPUnitBase
 		{
 			UpdateOutlines();
 		}
-
+		audioSource.clip = unitProperties.attackSound;
+		audioSource.Play();
 		Vector3 lookRotBegin = target.transform.position;
 		Vector3 lookRotEnd = new Vector3(arrowSpawnPoint.position.x, target.transform.position.y, arrowSpawnPoint.position.z);
 		Quaternion lookRot = Quaternion.LookRotation(lookRotBegin - lookRotEnd);
+		yield return new WaitForSeconds(0.2f);
 		GameObject arrow = Instantiate(arrowProjectile, arrowSpawnPoint.transform.position, lookRot);
 
 		yield return StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
@@ -48,7 +50,7 @@ public class SPArcher : SPUnitBase
 	public void OnArrowHit(SPUnitBase target, GameObject arrow)
 	{
 		Destroy(arrow);
-		bool isTargetDead = target.TakeDamage(unitProperties.damage);
+		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
 		if (isTargetDead)
 		{
 			PlayDeathEffects(target.transform.position);

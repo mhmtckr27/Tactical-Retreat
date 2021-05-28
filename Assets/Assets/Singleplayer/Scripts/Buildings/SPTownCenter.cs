@@ -50,19 +50,21 @@ public class SPTownCenter : SPBuildingBase
 		if (!SPGameManager.Instance.enableMapVisibilityHack)
 		{
 			ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
+			OnTerrainOccupiersChange(OccupiedHex.Key, 1);
 		}
-		OnTerrainOccupiersChange(OccupiedHex.Key, 1);
 		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
 	}
 
 	protected virtual void OnEnable()
 	{
-		SPTerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
+		if (!SPGameManager.Instance.enableMapVisibilityHack)
+			SPTerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
 	}
 
 	protected virtual void OnDisable()
 	{
-		SPTerrainHexagon.OnTerrainOccupiersChange -= OnTerrainOccupiersChange;
+		if (!SPGameManager.Instance.enableMapVisibilityHack)
+			SPTerrainHexagon.OnTerrainOccupiersChange -= OnTerrainOccupiersChange;
 	}
 
 	//invoker: 0 means unit, 1 means building
@@ -472,7 +474,7 @@ public class SPTownCenter : SPBuildingBase
 		{
 			SPMap.Instance.UnitToMove.DisableHexagonOutlines();
 		}*/
-		Debug.Log(SPMap.Instance.UnitToMove);
+		//Debug.Log(SPMap.Instance.UnitToMove);
 		DeselectBuilding(this);
 		DeselectTerrain();
 		if (SPMap.Instance.UnitToMove != null) { DeselectUnit(SPMap.Instance.UnitToMove); }

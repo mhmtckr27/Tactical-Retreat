@@ -13,6 +13,7 @@ public class SPUnitBase : MonoBehaviour
 	[SerializeField] protected Image armorBar;
 	[SerializeField] public UnitProperties unitProperties;
 
+	protected AudioSource audioSource;
 	public bool IsMoving { get; set; }
 
 	private Color playerColor;
@@ -95,6 +96,7 @@ public class SPUnitBase : MonoBehaviour
 		transform.eulerAngles = unitProperties.initialRotation;
 		currentArmor = unitProperties.armor;
 		currentHealth = unitProperties.health;
+		audioSource = GetComponent<AudioSource>();
 	}
 
 	//TODO update
@@ -310,7 +312,9 @@ public class SPUnitBase : MonoBehaviour
 		{
 			GetReachablesVisual(null);
 		}
-		bool isTargetDead = target.TakeDamage(unitProperties.damage);
+		audioSource.clip = unitProperties.attackSound;
+		audioSource.Play();
+		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
 		if (isTargetDead)
 		{
 			target.DisableHexagonOutlines();
@@ -325,10 +329,15 @@ public class SPUnitBase : MonoBehaviour
 		Instantiate(unitProperties.deathParticle, pos, Quaternion.identity);
 	}
 
-	private void TakeDamage2(Image bar, float fillAmount)
+	private void TakeDamage2(SPUnitBase attacker, Image bar, float fillAmount)
 	{
 		//healthBar.fillAmount = fillAmount;
 		Instantiate(unitProperties.hitBloodParticle, healthBar.transform.position, Quaternion.identity);
+		audioSource.clip = attacker.unitProperties.hitSound;
+		if(audioSource.clip != null)
+		{
+			audioSource.Play();
+		}
 		StartCoroutine(TakeDamageRoutine(bar, fillAmount));
 	}
 
@@ -363,7 +372,7 @@ public class SPUnitBase : MonoBehaviour
 	}
 
 	//TODO update
-	public bool TakeDamage(int damage)
+	public bool TakeDamage(SPUnitBase attacker, int damage)
 	{
 		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
 		if(damage > currentArmor)
@@ -378,17 +387,19 @@ public class SPUnitBase : MonoBehaviour
 		}
 		if(armorBar != null)
 		{
-			TakeDamage2(armorBar, (float)currentArmor / unitProperties.armor);
+			TakeDamage2(attacker, armorBar, (float)currentArmor / unitProperties.armor);
 		}
 		if(damageToHealth > 0)
 		{
 			currentHealth = (currentHealth - damageToHealth) > 0 ? currentHealth - damageToHealth : 0;
-			TakeDamage2(healthBar, (float)currentHealth / unitProperties.health);
+			TakeDamage2(attacker, healthBar, (float)currentHealth / unitProperties.health);
 			if (currentHealth <= 0)
 			{
 				currentHealth = 0;
 				occupiedHex.OccupierUnit = null;
 				SPGameManager.Instance.UnregisterUnit(playerID, this);
+				audioSource.clip = unitProperties.deathSound;
+				audioSource.Play();
 				Destroy(gameObject);
 				return true;
 			}

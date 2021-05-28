@@ -26,6 +26,9 @@ MonoBehaviour:
     type: 3}
   deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
     type: 3}
+  attackSound: {fileID: 8300000, guid: 166ec713390cceb4887e838c55a0b23e, type: 3}
+  hitSound: {fileID: 0}
+  deathSound: {fileID: 8300000, guid: 042c7f04529919e4ebaff45b51d1cc75, type: 3}
   moveRange: 1
   exploreRange: 2
   lerpSpeed: 0.25

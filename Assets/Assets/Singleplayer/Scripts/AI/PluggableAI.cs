@@ -116,9 +116,9 @@ public class PluggableAI : MonoBehaviour
 
 		for (int i = 0; i < units.Count; i++)
 		{
-			Debug.LogError(units.Count + " " + i);
+			//Debug.LogError(units.Count + " " + i);
 			yield return StartCoroutine(PlayUnit(units[i]));
-			Debug.LogError(units.Count + " " + i);
+			//Debug.LogError(units.Count + " " + i);
 		}
 		yield return null;
 	}
@@ -169,7 +169,7 @@ public class PluggableAI : MonoBehaviour
 		if (closestEnemyTown.OccupiedHex.OccupierUnit == null)
 		{
 			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, closestEnemyTown.OccupiedHex, unit.blockedTerrains);
-			if (unit.remainingMovesThisTurn <= (path.Count - 1))
+			if (unit.neighboursWithinRange.Contains(closestEnemyTown.OccupiedHex))
 			{
 				yield return StartCoroutine(unit.ValidateRequestToMove(closestEnemyTown.OccupiedHex, 0));
 			}
@@ -323,7 +323,7 @@ public class PluggableAI : MonoBehaviour
 		{
 			TownCenter.SelectUnit(unit);
 			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, TownCenter.OccupiedHex, unit.blockedTerrains);
-			if (unit.remainingMovesThisTurn <= (path.Count - 1))
+			if (unit.neighboursWithinRange.Contains(TownCenter.OccupiedHex))
 			{
 				unit.ValidateRequestToMove(TownCenter.OccupiedHex);
 			}
@@ -443,24 +443,67 @@ public class PluggableAI : MonoBehaviour
 	private IEnumerator ExploreMap(SPUnitBase unit)
 	{
 		TownCenter.SelectUnit(unit);
-		SPTerrainHexagon to;
+		SPTerrainHexagon to = null;
 		//List<SPTerrainHexagon> distants = SPMap.Instance.GetDistantHexagons(unit.occupiedHex, unit.remainingMovesThisTurn);
 		List<SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
 		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(unit.occupiedHex, unit.remainingMovesThisTurn, unit.unitProperties.attackRange, unit.blockedTerrains, occupieds); ;
 
+		List<SPTerrainHexagon> unexploreds = new List<SPTerrainHexagon>();
 		List<SPTerrainHexagon> unexploredDistants = new List<SPTerrainHexagon>();
-		foreach(SPTerrainHexagon hex in reachables)
+
+		foreach(KeyValuePair<string, SPTerrainHexagon> kvp in SPMap.Instance.mapDictionary)
 		{
-			if (SPGameManager.Instance.PlayersToDiscoveredTerrains[TownCenter.PlayerID].Contains(hex) == false)
+			if (SPGameManager.Instance.PlayersToDiscoveredTerrains[TownCenter.PlayerID].Contains(kvp.Value) == false)
 			{
-				unexploredDistants.Add(hex);
+				unexploreds.Add(kvp.Value);
+				if (reachables.Contains(kvp.Value))
+				{
+					unexploredDistants.Add(kvp.Value);
+				}
 			}
 		}
 
+		List<SPTerrainHexagon> path = null;
+		//ulasabilecegim hexlerden kesfetmediklerim varsa oraya git
 		if(unexploredDistants.Count > 0)
 		{
 			to = unexploredDistants[Random.Range(0, unexploredDistants.Count)];
 		}
+		//yakinimda kesfetmedigim yoksa, en yakin kesfetmedigimi bul ona yaklas.
+		else if (unexploreds.Count > 0)
+		{
+			int minDist = int.MaxValue;
+			foreach(SPTerrainHexagon hex in unexploreds)
+			{
+				int currentDist = SPMap.Instance.GetDistanceBetweenTwoBlocks(unit.occupiedHex, hex);
+				if (currentDist < minDist)
+				{
+					path = SPMap.Instance.AStar(unit.occupiedHex, hex, unit.blockedTerrains);
+					if (path != null)
+					{
+						minDist = currentDist;
+						to = hex;
+					}
+				}
+			}
+			if(to != null)
+			{
+				//Debug.LogError(path.Count + " " + unit.remainingMovesThisTurn);
+				yield return StartCoroutine(unit.ValidateRequestToMove(path[unit.remainingMovesThisTurn], 0));
+			}
+			else
+			{
+				if (reachables.Count > 0)
+				{
+					do
+					{
+						to = reachables[Random.Range(0, reachables.Count)];
+					} while ((SPMap.Instance.AStar(unit.occupiedHex, to, unit.blockedTerrains) == null) || to == unit.occupiedHex);
+					yield return StartCoroutine(unit.ValidateRequestToMove(to, 0));
+				}
+			}
+		}
+		//kesfetmedigim yer yoksa yakinimdakilerden rastgele birine git
 		else if(reachables.Count > 0)
 		{
 			do

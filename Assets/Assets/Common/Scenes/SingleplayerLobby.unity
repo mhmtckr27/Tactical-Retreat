@@ -1654,7 +1654,7 @@ PrefabInstance:
     - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
         type: 3}
       propertyPath: enableMapVisibilityHack
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8232991092676305389, guid: b59eafb51c1f3d14d880259d87bc31f2,
         type: 3}

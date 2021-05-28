@@ -19,6 +19,9 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public int attackRange;
 	[SerializeField] public GameObject hitBloodParticle;
 	[SerializeField] public GameObject deathParticle;
+	[SerializeField] public AudioClip attackSound;
+	[SerializeField] public AudioClip hitSound;
+	[SerializeField] public AudioClip deathSound;
 	[Header("Movement")]
 	[SerializeField] public int moveRange;
 	[SerializeField] public int exploreRange = 2;
