@@ -19,7 +19,7 @@ public class SPTownCenterUI : MonoBehaviour
 
 	public void CreateUnitRequest(GameObject unitToCreate)
 	{
-		townCenter.CreateUnit(unitToCreate.name);
+		townCenter.CreateUnit(townCenter, unitToCreate.name);
 	}
 
 	public void OnClose()

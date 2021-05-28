@@ -92,14 +92,14 @@ public class SPTownCenterAI : SPTownCenter
 			if(isDiscovered == true)
 			{
 				//TODO: debugger
-				hex.aiDebuggerForExploredTerrains.SetActive(true);
+				//hex.aiDebuggerForExploredTerrains.SetActive(true);
 			}
 		}
 	}
 
-	public override void UpdateResourceCount(Resource resource)
+	public override void CollectResource(Resource resource)
 	{
-		base.UpdateResourceCount(resource);
+		base.CollectResource(resource);
 	}
 
 	public override void UpdateWoodCount(int count)
@@ -197,7 +197,7 @@ public class SPTownCenterAI : SPTownCenter
 		base.DeselectEverything();
 	}
 
-	public override bool CreateUnit(string unitName)
+	/*public override bool CreateUnit(string unitName)
 	{
 		if (!OccupiedHex.OccupierUnit)
 		{
@@ -211,12 +211,12 @@ public class SPTownCenterAI : SPTownCenter
 		}
 		//Debug.LogError("already occupied");
 		return false;
-	}
+	}*/
 
 	//TODO update
-	public override bool CreateUnit(SPBuildingBase owner, GameObject unit)
+	public override bool CreateUnit(SPBuildingBase owner, string unitName)
 	{
-		return base.CreateUnit(owner, unit);
+		return base.CreateUnit(owner, unitName);
 	}
 	#endregion
 }

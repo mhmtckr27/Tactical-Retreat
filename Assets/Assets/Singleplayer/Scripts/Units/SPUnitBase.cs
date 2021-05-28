@@ -8,7 +8,9 @@ public class SPUnitBase : MonoBehaviour
 	public int currentHealth;
 	public int currentArmor;
 	public bool HasAttacked { get; set; }
+	[SerializeField] public GameObject canvas;
 	[SerializeField] protected Image healthBar;
+	[SerializeField] protected Image armorBar;
 	[SerializeField] public UnitProperties unitProperties;
 
 	public bool IsMoving { get; set; }
@@ -193,24 +195,37 @@ public class SPUnitBase : MonoBehaviour
 		yield return null;
 	}
 
-	public void ValidateAttack(SPUnitBase target)
+	public IEnumerator ValidateAttack(SPUnitBase target)
 	{
-		if (IsMoving) { Debug.LogError("moving"); return; }
+		/*if (IsMoving) { Debug.LogError("moving"); return; }
 		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { Debug.LogError("yakin degil"); return; }
 		//TODO: visual feedback
 		if (unitProperties.moveCostToAttack > remainingMovesThisTurn) { return; }
-		
-		if (/*true*/!HasAttacked/* && targetIsInRange*/)
+		*/
+		if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 		{
-			StartCoroutine(AttackRoutines(target));
+
+			if (/*true*/!HasAttacked/* && targetIsInRange*/)
+			{
+				yield return StartCoroutine(AttackRoutines(target));
+				if(target != null)
+				{
+					target.GetReachables();
+					yield return StartCoroutine(target.ValidateAttack(this, true));
+					target.HasAttacked = false;
+					target.remainingMovesThisTurn = target.unitProperties.moveRange;
+					//SPGameManager.Instance
+				}
+				SPGameManager.Instance.GetPlayer(playerID).SelectUnit(this); 
+			}
 		}
 	}
 
-	public IEnumerator ValidateAttack(SPUnitBase target, int dummy)
+	public IEnumerator ValidateAttack(SPUnitBase target, bool isSelfDefense)
 	{
 		if(!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 		{
-			if (/*true*/!HasAttacked/* && targetIsInRange*/)
+			if (/*true*/!HasAttacked || isSelfDefense/* && targetIsInRange*/)
 			{
 				yield return StartCoroutine(AttackRoutines(target));
 			}
@@ -221,12 +236,13 @@ public class SPUnitBase : MonoBehaviour
 	IEnumerator AttackRoutines(SPUnitBase target)
 	{
 		yield return StartCoroutine(AttackValidated(target));
-		if(target != null)
+		/*if(target != null)
 		{
 			target.GetReachables();
 			yield return StartCoroutine(target.ValidateAttack(this, 0));
 			target.HasAttacked = false;
-		}
+			target.remainingMovesThisTurn = target.unitProperties.moveRange;
+		}*/
 	}
 
 	private IEnumerator AttackValidated(SPUnitBase target)
@@ -297,6 +313,7 @@ public class SPUnitBase : MonoBehaviour
 		bool isTargetDead = target.TakeDamage(unitProperties.damage);
 		if (isTargetDead)
 		{
+			target.DisableHexagonOutlines();
 			PlayDeathEffects(target.transform.position);
 			UpdateOutlines();
 		}
@@ -308,11 +325,11 @@ public class SPUnitBase : MonoBehaviour
 		Instantiate(unitProperties.deathParticle, pos, Quaternion.identity);
 	}
 
-	private void TakeDamage2(float fillAmount)
+	private void TakeDamage2(Image bar, float fillAmount)
 	{
 		//healthBar.fillAmount = fillAmount;
 		Instantiate(unitProperties.hitBloodParticle, healthBar.transform.position, Quaternion.identity);
-		StartCoroutine(TakeDamageRoutine(fillAmount));
+		StartCoroutine(TakeDamageRoutine(bar, fillAmount));
 	}
 
 	private void SeeAttacker(SPUnitBase attacker, bool see)
@@ -323,21 +340,25 @@ public class SPUnitBase : MonoBehaviour
 		}
 	}
 
-	IEnumerator TakeDamageRoutine(float fillAmount)
+	IEnumerator TakeDamageRoutine(Image bar, float fillAmount)
 	{
 		while (true)
 		{
-			healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, fillAmount, 0.05f);
-			if (healthBar.fillAmount < 0.25f)
+			bar.fillAmount = Mathf.Lerp(bar.fillAmount, fillAmount, 0.05f);
+			if (bar.fillAmount < 0.25f)
 			{
-				healthBar.color = Color.red;
+				bar.color = Color.red;
 			}
-			if (Mathf.Abs(healthBar.fillAmount - fillAmount) < 0.05f)
+			if (Mathf.Abs(bar.fillAmount - fillAmount) < 0.05f)
 			{
-				healthBar.fillAmount = fillAmount;
+				bar.fillAmount = fillAmount;
 				break;
 			}
 			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
+		}
+		if (bar.fillAmount == 0)
+		{
+			Destroy(bar.transform.parent.gameObject);
 		}
 	}
 
@@ -355,10 +376,14 @@ public class SPUnitBase : MonoBehaviour
 			damageToHealth = 0;
 			currentArmor -= damage;
 		}
+		if(armorBar != null)
+		{
+			TakeDamage2(armorBar, (float)currentArmor / unitProperties.armor);
+		}
 		if(damageToHealth > 0)
 		{
 			currentHealth = (currentHealth - damageToHealth) > 0 ? currentHealth - damageToHealth : 0;
-			TakeDamage2((float)currentHealth / unitProperties.health);
+			TakeDamage2(healthBar, (float)currentHealth / unitProperties.health);
 			if (currentHealth <= 0)
 			{
 				currentHealth = 0;

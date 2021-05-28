@@ -127,10 +127,8 @@ MonoBehaviour:
   canvasPrefab: {fileID: 8663531919945395808, guid: 6190ad72c8eb19240b8d23dc2c84bc6e,
     type: 3}
   buildingType: 0
-  occupiedHex: {fileID: 0}
-  playerID: 0
-  hasTurn: 0
-  isConquered: 0
-  woodCount: 0
-  meatCount: 0
+  woodCount: 50
+  meatCount: 50
+  currentPopulation: 0
+  maxPopulation: 0
   actionPoint: 0

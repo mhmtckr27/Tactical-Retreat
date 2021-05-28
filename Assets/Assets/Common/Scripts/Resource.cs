@@ -22,5 +22,6 @@ public enum ResourceType
 {
 	None,
 	Wood,
-	Meat
+	Meat,
+	ActionPoint
 }

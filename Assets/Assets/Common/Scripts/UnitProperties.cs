@@ -10,6 +10,7 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public UnitType unitType;
 	[SerializeField] public UnitCombatType unitCombatType;
 	[SerializeField] public int actionPointCostToCreate;
+	[SerializeField] public int meatCostToCreate;
 	[Header("Combat")]
 	[SerializeField] public int moveCostToAttack;
 	[SerializeField] public int health;

@@ -51,18 +51,18 @@ public class SPTownCenter : SPBuildingBase
 		{
 			ExploreTerrains(SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary["0_0_0"], SPMap.Instance.mapWidth), false);
 		}
-		//OnTerrainOccupiersChange(OccupiedHex.Key, 1);
+		OnTerrainOccupiersChange(OccupiedHex.Key, 1);
 		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
 	}
 
 	protected virtual void OnEnable()
 	{
-		//SPTerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
+		SPTerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
 	}
 
 	protected virtual void OnDisable()
 	{
-		//SPTerrainHexagon.OnTerrainOccupiersChange -= OnTerrainOccupiersChange;
+		SPTerrainHexagon.OnTerrainOccupiersChange -= OnTerrainOccupiersChange;
 	}
 
 	//invoker: 0 means unit, 1 means building
@@ -73,6 +73,7 @@ public class SPTownCenter : SPBuildingBase
 			if ((SPMap.Instance.mapDictionary.ContainsKey(key)) && (SPMap.Instance.mapDictionary[key].OccupierUnit.playerID != PlayerID) && (SPGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(PlayerID)))
 			{
 				ShowHideOccupier(SPMap.Instance.mapDictionary[key].OccupierUnit, SPGameManager.Instance.PlayersToDiscoveredTerrains[PlayerID].Contains(SPMap.Instance.mapDictionary[key]));
+				SPMap.Instance.mapDictionary[key].OccupierUnit.canvas.SetActive(SPGameManager.Instance.PlayersToDiscoveredTerrains[PlayerID].Contains(SPMap.Instance.mapDictionary[key]));
 			}
 		}
 		else
@@ -152,24 +153,32 @@ public class SPTownCenter : SPBuildingBase
 		return results.Count > 0;
 	}
 
-	public virtual void UpdateResourceCount(Resource resource)
+	public virtual void CollectResource(Resource resource)
 	{
-		if(resource == null) { return; }
-		if(resource.canBeCollected == false) { return; }
-		if(resource.costToCollect > actionPoint) { return; }
+		if (resource == null) { return; }
+		if (resource.canBeCollected == false) { return; }
+		if (resource.costToCollect > actionPoint) { return; }
 
-		switch (resource.resourceType)
+		UpdateResourceCount(resource.resourceType, resource.resourceCount);
+		UpdateActionPoint(-resource.costToCollect);
+	}
+
+	private void UpdateResourceCount(ResourceType resourceType, int resourceCount)
+	{
+		switch (resourceType)
 		{
 			case ResourceType.Wood:
-				UpdateWoodCount(resource.resourceCount);
+				UpdateWoodCount(resourceCount);
 				break;
 			case ResourceType.Meat:
-				UpdateMeatCount(resource.resourceCount);
+				UpdateMeatCount(resourceCount);
+				break;
+			case ResourceType.ActionPoint:
+				UpdateActionPoint(resourceCount);
 				break;
 			default:
 				break;
 		}
-		UpdateActionPoint(-resource.costToCollect);
 	}
 
 	public virtual void UpdateWoodCount(int count)
@@ -365,12 +374,12 @@ public class SPTownCenter : SPBuildingBase
 				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
 				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
 				{
-					SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit);
+					StartCoroutine(SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit));
 				}
 				//if selected terrain only has an enemy unit and not a building, attack to enemy unit
 				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit.playerID != PlayerID))
 				{
-					SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit);
+					StartCoroutine(SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit));
 				}
 				//if selected terrain only has an enemy building and not an unit, ValidateRequestToMove to building and can start occupation next turn
 				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
@@ -459,6 +468,11 @@ public class SPTownCenter : SPBuildingBase
 
 	protected virtual void DeselectEverything()
 	{
+		/*if (SPMap.Instance.UnitToMove != null && SPMap.Instance.UnitToMove.playerID == PlayerID)
+		{
+			SPMap.Instance.UnitToMove.DisableHexagonOutlines();
+		}*/
+		Debug.Log(SPMap.Instance.UnitToMove);
 		DeselectBuilding(this);
 		DeselectTerrain();
 		if (SPMap.Instance.UnitToMove != null) { DeselectUnit(SPMap.Instance.UnitToMove); }
@@ -472,36 +486,42 @@ public class SPTownCenter : SPBuildingBase
 		}
 	}
 
-	public virtual bool CreateUnit(string unitName)
+	/*public virtual bool CreateUnit(string unitName)
 	{
-		if (!OccupiedHex.OccupierUnit)
-		{
-			GameObject temp = SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName);
-			if(temp.GetComponent<SPUnitBase>().unitProperties.actionPointCostToCreate <= actionPoint)
-			{
-				return CreateUnit(this, temp);
-			}
-			else
-			{
-				//visual feedback that says sth like: you dont have enough action point,
-				//or just lock the create button.
-			}
-		}
+		return CreateUnit(this, temp);
 		return false;
+	}*/
+
+	public virtual bool ValidateCreateUnit(SPUnitBase unitScript)
+	{
+		return	(unitScript != null) &&
+				(OccupiedHex.OccupierUnit == null) &&
+				(unitScript.unitProperties.actionPointCostToCreate <= actionPoint) &&
+				(unitScript.unitProperties.meatCostToCreate <= meatCount);
 	}
 
 	//TODO update
-	public virtual bool CreateUnit(SPBuildingBase owner, GameObject unit)
+	public virtual bool CreateUnit(SPBuildingBase owner, string unitName)
 	{
+		GameObject unit = SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == unitName);
+		if(unit == null) { return false; }
+		SPUnitBase unitScript = unit.GetComponent<SPUnitBase>();
+		if (ValidateCreateUnit(unitScript) == false) { return false; }
+
 		GameObject unitObject = Instantiate(unit, transform.position + UnitProperties.positionOffsetOnHexagons, Quaternion.identity);
-		SPUnitBase unitScript = unitObject.GetComponent<SPUnitBase>();
+		
+		unitScript = unitObject.GetComponent<SPUnitBase>();
 		unitScript.PlayerColor = PlayerColor;
 		unitScript.occupiedHex = OccupiedHex;
-		SPGameManager.Instance.RegisterUnit(PlayerID, unitScript);
 		unitScript.playerID = PlayerID;
 		OccupiedHex.OccupierUnit = unitScript;
+
+		SPGameManager.Instance.RegisterUnit(PlayerID, unitScript);
 		ToggleBuildingMenu(false);
-		actionPoint -= unitScript.unitProperties.actionPointCostToCreate;
+
+		UpdateResourceCount(ResourceType.ActionPoint, -unitScript.unitProperties.actionPointCostToCreate);
+		UpdateResourceCount(ResourceType.Meat, -unitScript.unitProperties.meatCostToCreate);
+
 		return true;
 	}
 }

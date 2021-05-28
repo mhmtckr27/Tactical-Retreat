@@ -16,6 +16,7 @@ MonoBehaviour:
   unitType: 2
   unitCombatType: 1
   actionPointCostToCreate: 2
+  meatCostToCreate: 50
   moveCostToAttack: 1
   health: 10
   armor: 2

@@ -50,7 +50,7 @@ public class PluggableAI : MonoBehaviour
 				break;
 			case Priority.CreateUnit:
 				string unitName = SPGameManager.Instance.spawnablePrefabs[Random.Range(0, SPGameManager.Instance.spawnablePrefabs.Count)].name;
-				TownCenter.CreateUnit(unitName);
+				TownCenter.CreateUnit(TownCenter, unitName);
 				break;
 		}
 		yield return null;
@@ -98,7 +98,7 @@ public class PluggableAI : MonoBehaviour
 			if (explored.resource != null && explored.resource.resourceType == resourceType)
 			{
 				SPMap.Instance.selectedHexagon = explored;
-				TownCenter.UpdateResourceCount(explored.resource);
+				TownCenter.CollectResource(explored.resource);
 				return true;
 			}
 		}
@@ -114,9 +114,11 @@ public class PluggableAI : MonoBehaviour
 			areUnitsPlayed[units.IndexOf(townCenterDefender)] = true;
 		}
 
-		foreach(SPUnitBase unit in units)
+		for (int i = 0; i < units.Count; i++)
 		{
-			yield return StartCoroutine(PlayUnit(unit));
+			Debug.LogError(units.Count + " " + i);
+			yield return StartCoroutine(PlayUnit(units[i]));
+			Debug.LogError(units.Count + " " + i);
 		}
 		yield return null;
 	}
@@ -125,6 +127,7 @@ public class PluggableAI : MonoBehaviour
 	{
 		if (areUnitsPlayed[units.IndexOf(unit)] == false)
 		{
+			int unitIndex = units.IndexOf(unit);
 			TownCenter.SelectUnit(unit);
 			DeterminePriority(unit);
 			//Debug.LogWarning(currentPriority.ToString() + " | unit: " + unit.name); ;
@@ -137,13 +140,23 @@ public class PluggableAI : MonoBehaviour
 					yield return StartCoroutine(Occupy(GetClosestEnemyTownCenter(unit), unit));
 					break;
 				case Priority.AttackUnit:
-					yield return StartCoroutine(Attack(unit, GetClosestEnemy(unit)));
+					Debug.LogWarning("before attack");
+					SPUnitBase target = GetClosestEnemy(unit);
+					yield return StartCoroutine(Attack(unit, target));
+					if (target != null)
+					{
+						target.GetReachables();
+						yield return StartCoroutine(target.ValidateAttack(unit, true));
+						target.HasAttacked = false;
+						target.remainingMovesThisTurn = target.unitProperties.moveRange;
+					}
+					Debug.LogWarning("after attack");
 					break;
 				case Priority.ExploreMap:
 					yield return StartCoroutine(ExploreMap(unit));
 					break;
 			}
-			areUnitsPlayed[units.IndexOf(unit)] = true;
+			areUnitsPlayed[unitIndex] = true;
 		}
 		yield return null;
 	}
@@ -252,22 +265,27 @@ public class PluggableAI : MonoBehaviour
 	private void Patrol(SPUnitBase explorer, SPTerrainHexagon origin, int distance)
 	{
 		TownCenter.SelectUnit(explorer);
-		SPTerrainHexagon to;
+		SPTerrainHexagon to = null;
 		List<SPTerrainHexagon> distants = SPMap.Instance.GetDistantHexagons(TownCenter.OccupiedHex, distance);
-		
-		do
-		{
-			to = distants[Random.Range(0, distants.Count)];
+		List<SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
+		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(explorer.occupiedHex, explorer.remainingMovesThisTurn, explorer.unitProperties.attackRange, explorer.blockedTerrains, occupieds);
 
-		} while ((SPMap.Instance.AStar(explorer.occupiedHex, to, explorer.blockedTerrains) == null) || explorer.occupiedHex == to || TownCenter.OccupiedHex == to);
-		Debug.Log(to.Key);
-		if (!explorer.ValidateRequestToMove(to))
+		if(reachables.Count > 1)
 		{
-			Debug.Log("cant move");
-		}
-		else
-		{
-			Debug.Log("moved");
+			do
+			{
+				to = distants[Random.Range(0, distants.Count)];
+
+			} while ((SPMap.Instance.AStar(explorer.occupiedHex, to, explorer.blockedTerrains) == null) || explorer.occupiedHex == to || TownCenter.OccupiedHex == to);
+			Debug.Log(to.Key);
+			if (!explorer.ValidateRequestToMove(to))
+			{
+				Debug.Log("cant move");
+			}
+			else
+			{
+				Debug.Log("moved");
+			}
 		}
 	}
 
@@ -464,7 +482,7 @@ public class PluggableAI : MonoBehaviour
 	private IEnumerator Attack(SPUnitBase attacker, SPUnitBase target)
 	{
 		TownCenter.SelectUnit(attacker);
-		yield return StartCoroutine(attacker.ValidateAttack(target,0));
+		yield return StartCoroutine(attacker.ValidateAttack(target, false));
 	}
 
 	//TODO: ne kadar fazla dusman birlik varsa tehlike o kadar buyuktur ve
