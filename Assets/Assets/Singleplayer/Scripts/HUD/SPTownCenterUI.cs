@@ -4,8 +4,16 @@ using UnityEngine;
 
 public class SPTownCenterUI : MonoBehaviour
 {
+	[SerializeField] public SPUnitCreationPanel unitCreationMenu;
 	[SerializeField] private GameObject nextTurnButton;
 	public SPTownCenter townCenter;
+
+
+
+	private void Start()
+	{
+
+	}
 
 	private void OnEnable()
 	{
@@ -17,9 +25,11 @@ public class SPTownCenterUI : MonoBehaviour
 		nextTurnButton.SetActive(true);
 	}
 
-	public void CreateUnitRequest(GameObject unitToCreate)
+	public void CreateUnitRequest(UnitProperties unitToCreate)
 	{
-		townCenter.CreateUnit(townCenter, unitToCreate.name);
+		//townCenter.CreateUnit(townCenter, .name);
+		unitCreationMenu.Init(townCenter, unitToCreate);
+		unitCreationMenu.gameObject.SetActive(true);
 	}
 
 	public void OnClose()

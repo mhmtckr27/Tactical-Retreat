@@ -23,5 +23,7 @@ public enum ResourceType
 	None,
 	Wood,
 	Meat,
-	ActionPoint
+	ActionPoint,
+	CurrentPopulation,
+	MaxPopulation
 }

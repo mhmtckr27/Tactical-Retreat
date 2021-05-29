@@ -12,11 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1d5d8b5a4f38d428f9dcccd1578865, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
+  unitName: Warrior
+  unitIcon: {fileID: 21300000, guid: 7a02edf10629d3d4485e720be5658c2d, type: 3}
   initialRotation: {x: 0, y: -60, z: 0}
   unitType: 1
   unitCombatType: 0
-  actionPointCostToCreate: 2
+  woodCostToCreate: 50
   meatCostToCreate: 50
+  populationCostToCreate: 1
+  actionPointCostToCreate: 2
   moveCostToAttack: 1
   health: 10
   armor: 5

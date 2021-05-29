@@ -14,9 +14,9 @@ public class SPTownCenter : SPBuildingBase
 
 	[SerializeField] public int woodCount;
 	[SerializeField] public int meatCount;
-	public int currentPopulation;
-	public int maxPopulation;
-	public int actionPoint;
+	[SerializeField] public int currentPopulation;
+	[SerializeField] public int maxPopulation;
+	[SerializeField] public int actionPoint;
 
 	public event Action<int> OnWoodCountChange;
 	public event Action<int> OnMeatCountChange;
@@ -39,11 +39,16 @@ public class SPTownCenter : SPBuildingBase
 		GetComponent<Renderer>().materials[1].color = newColor;
 	}
 
+	private void Awake()
+	{
+
+	}
+
 	protected override void Start()
 	{
 		base.Start();
 		buildingMenuUI = uiManager.townCenterUI;
-		buildingMenuUI.townCenter = this; 
+		buildingMenuUI.townCenter = this;
 		inputManager = GetComponent<InputManager>();
 		OccupiedHex.OccupierBuilding = this;
 		SetAllCameraPositions(new Vector3(transform.position.x - 5, 0, transform.position.z + 0.75f));
@@ -53,6 +58,18 @@ public class SPTownCenter : SPBuildingBase
 			OnTerrainOccupiersChange(OccupiedHex.Key, 1);
 		}
 		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
+
+		StartCoroutine(InitResources());
+	}
+
+	private IEnumerator InitResources()
+	{
+		yield return new WaitForEndOfFrame();
+		UpdateResourceCount(ResourceType.Wood, 0);
+		UpdateResourceCount(ResourceType.Meat, 0);
+		UpdateResourceCount(ResourceType.CurrentPopulation, 0);
+		UpdateResourceCount(ResourceType.MaxPopulation, 0);
+		UpdateResourceCount(ResourceType.ActionPoint, 0);
 	}
 
 	protected virtual void OnEnable()
@@ -109,19 +126,26 @@ public class SPTownCenter : SPBuildingBase
 #if UNITY_EDITOR
 		if(SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
 		{
-			if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
+			if (Input.GetMouseButtonUp(0) )
 			{
-				if (ValidatePlayRequest())
+				//if(EventSystem.current.currentSelectedGameObject != null)
+				//Debug.LogError(EventSystem.current.currentSelectedGameObject.name);
+				if (!EventSystem.current.IsPointerOverGameObject())
 				{
-					Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+					if (ValidatePlayRequest())
+					{
+						Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+					}
 				}
 			}
 		}
 #elif UNITY_ANDROID
 		if(SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
 		{
-			if (inputManager.HasValidTap() && !IsPointerOverUIObject())
+			if (inputManager.HasValidTap() && !IsPointerOverUIObject() && EventSystem.current.currentSelectedGameObject == null)
 			{
+				if(EventSystem.current.currentSelectedGameObject != null)
+				Debug.LogError(EventSystem.current.currentSelectedGameObject.name);
 				if (ValidatePlayRequest())
 				{
 					Play(Camera.main.ScreenPointToRay(Input.mousePosition));
@@ -174,6 +198,12 @@ public class SPTownCenter : SPBuildingBase
 				break;
 			case ResourceType.Meat:
 				UpdateMeatCount(resourceCount);
+				break;
+			case ResourceType.CurrentPopulation:
+				UpdateCurrentPopulation(resourceCount);
+				break;
+			case ResourceType.MaxPopulation:
+				UpdateMaxPopulation(resourceCount);
 				break;
 			case ResourceType.ActionPoint:
 				UpdateActionPoint(resourceCount);

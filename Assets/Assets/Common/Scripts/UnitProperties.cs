@@ -5,12 +5,16 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Unit", menuName = "ScriptableObjects/Unit", order = 2)]
 public class UnitProperties : ScriptableObject
 {
+	[SerializeField] public string unitName;
+	[SerializeField] public Sprite unitIcon;
 	[SerializeField] public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
 	[SerializeField] public Vector3 initialRotation;
 	[SerializeField] public UnitType unitType;
 	[SerializeField] public UnitCombatType unitCombatType;
-	[SerializeField] public int actionPointCostToCreate;
+	[SerializeField] public int woodCostToCreate;
 	[SerializeField] public int meatCostToCreate;
+	[SerializeField] public int populationCostToCreate;
+	[SerializeField] public int actionPointCostToCreate;
 	[Header("Combat")]
 	[SerializeField] public int moveCostToAttack;
 	[SerializeField] public int health;

@@ -130,5 +130,5 @@ MonoBehaviour:
   woodCount: 50
   meatCount: 50
   currentPopulation: 0
-  maxPopulation: 0
+  maxPopulation: 2
   actionPoint: 0
