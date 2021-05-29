@@ -36,7 +36,6 @@ public class SPUnitBase : MonoBehaviour
 	public List<SPTerrainHexagon> occupiedNeighboursWithinRange;
 	public List<SPTerrainHexagon> path = new List<SPTerrainHexagon>();
 
-	public List<TerrainType> blockedTerrains;
 	public SPTerrainHexagon occupiedHex;
 	public int remainingMovesThisTurn;
 
@@ -225,14 +224,20 @@ public class SPUnitBase : MonoBehaviour
 
 	public IEnumerator ValidateAttack(SPUnitBase target, bool isSelfDefense)
 	{
-		if(!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+		Debug.LogWarning(!IsMoving);
+		Debug.LogWarning(occupiedNeighboursWithinRange.Contains(target.occupiedHex));
+		Debug.LogWarning(unitProperties.moveCostToAttack <= remainingMovesThisTurn);
+		if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 		{
 			if (/*true*/!HasAttacked || isSelfDefense/* && targetIsInRange*/)
 			{
 				yield return StartCoroutine(AttackRoutines(target));
 			}
 		}
-
+		else
+		{
+			yield return null;
+		}
 	}
 
 	IEnumerator AttackRoutines(SPUnitBase target)
@@ -365,7 +370,7 @@ public class SPUnitBase : MonoBehaviour
 			}
 			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
-		if (bar.fillAmount == 0)
+		if (bar.transform.parent != null && bar.fillAmount == 0)
 		{
 			Destroy(bar.transform.parent.gameObject);
 		}
@@ -409,8 +414,9 @@ public class SPUnitBase : MonoBehaviour
 
 	public void GetReachablesVisual(SPUnitBase targetUnit)
 	{
-		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
+		//occupiedNeighboursWithinRange.Clear();
+		//neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, occupiedNeighboursWithinRange);
+		GetReachables();
 		if (!SPGameManager.Instance.GetPlayer(targetUnit.playerID).IsAI)
 		{
 			EnableOutlines();
@@ -420,7 +426,7 @@ public class SPUnitBase : MonoBehaviour
 	public void GetReachables()
 	{
 		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, blockedTerrains, occupiedNeighboursWithinRange);
+		neighboursWithinRange = SPMap.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, occupiedNeighboursWithinRange);
 	}
 
 	public void DisableHexagonOutlines()
@@ -452,6 +458,7 @@ public class SPUnitBase : MonoBehaviour
 		}
 		foreach (SPTerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
 		{
+			//Debug.LogError((occupied_neighbour == null) + " " + (occupied_neighbour.OccupierUnit == null));
 			if (occupied_neighbour.OccupierUnit.playerID != playerID && remainingMovesThisTurn >= unitProperties.moveCostToAttack && !HasAttacked)
 			{
 				EnableHexagonOutline(occupied_neighbour, 1, true);
@@ -489,7 +496,7 @@ public class SPUnitBase : MonoBehaviour
 	public void GetPath(SPTerrainHexagon to)
 	{
 		path.Clear();
-		foreach (SPTerrainHexagon hex in SPMap.Instance.AStar(occupiedHex, to, blockedTerrains))
+		foreach (SPTerrainHexagon hex in SPMap.Instance.AStar(occupiedHex, to, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, null))
 		{
 			path.Add(hex);
 		}

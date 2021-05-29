@@ -109,8 +109,13 @@ public class PluggableAI : MonoBehaviour
 	{
 		units = SPGameManager.Instance.GetUnits(TownCenter.PlayerID);
 		areUnitsPlayed = new bool[units.Count];
-		if (PlayTownCenterDefender())
+		if (townCenterDefender == null && units.Count > 0)
 		{
+			townCenterDefender = units[Random.Range(0, units.Count)];
+		}
+		if(townCenterDefender != null)
+		{
+			yield return StartCoroutine(PlayTownCenterDefender());
 			areUnitsPlayed[units.IndexOf(townCenterDefender)] = true;
 		}
 
@@ -143,13 +148,6 @@ public class PluggableAI : MonoBehaviour
 					Debug.LogWarning("before attack");
 					SPUnitBase target = GetClosestEnemy(unit);
 					yield return StartCoroutine(Attack(unit, target));
-					if (target != null)
-					{
-						target.GetReachables();
-						yield return StartCoroutine(target.ValidateAttack(unit, true));
-						target.HasAttacked = false;
-						target.remainingMovesThisTurn = target.unitProperties.moveRange;
-					}
 					Debug.LogWarning("after attack");
 					break;
 				case Priority.ExploreMap:
@@ -165,10 +163,10 @@ public class PluggableAI : MonoBehaviour
 	{
 		TownCenter.SelectUnit(unit);
 		List <SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
-		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(unit.occupiedHex, unit.unitProperties.moveRange, unit.unitProperties.attackRange, unit.blockedTerrains, occupieds);
+		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(unit.occupiedHex, unit.unitProperties.moveRange, unit.unitProperties.attackRange, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds);
 		if (closestEnemyTown.OccupiedHex.OccupierUnit == null)
 		{
-			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, closestEnemyTown.OccupiedHex, unit.blockedTerrains);
+			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, closestEnemyTown.OccupiedHex, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds);
 			if (unit.neighboursWithinRange.Contains(closestEnemyTown.OccupiedHex))
 			{
 				yield return StartCoroutine(unit.ValidateRequestToMove(closestEnemyTown.OccupiedHex, 0));
@@ -236,39 +234,30 @@ public class PluggableAI : MonoBehaviour
 		yield return null;
 	}
 
-	private bool PlayTownCenterDefender()
+	private IEnumerator PlayTownCenterDefender()
 	{
-		if (townCenterDefender == null && units.Count > 0)
+		DeterminePriority();
+		switch (currentPriority)
 		{
-			townCenterDefender = units[Random.Range(0, units.Count)];
+			case Priority.RetakeTownCenter:
+				yield return StartCoroutine(RetakeTownCenter(townCenterDefender));
+				break;
+			case Priority.DefendTownCenter:
+				yield return StartCoroutine(DefendTownCenter(townCenterDefender));
+				break;
+			default:
+				yield return StartCoroutine(Patrol(townCenterDefender, TownCenter.OccupiedHex, townCenterDefender.unitProperties.attackRange));
+				break;
 		}
-		if(townCenterDefender != null)
-		{
-			DeterminePriority();
-			switch (currentPriority)
-			{
-				case Priority.RetakeTownCenter:
-					RetakeTownCenter(townCenterDefender);
-					break;
-				case Priority.DefendTownCenter:
-					DefendTownCenter(townCenterDefender);
-					break;
-				default:
-					Patrol(townCenterDefender, TownCenter.OccupiedHex, townCenterDefender.unitProperties.attackRange);
-					break;
-			}
-			return true;
-		}
-		return false;
 	}
 
-	private void Patrol(SPUnitBase explorer, SPTerrainHexagon origin, int distance)
+	private IEnumerator Patrol(SPUnitBase explorer, SPTerrainHexagon origin, int distance)
 	{
 		TownCenter.SelectUnit(explorer);
 		SPTerrainHexagon to = null;
 		List<SPTerrainHexagon> distants = SPMap.Instance.GetDistantHexagons(TownCenter.OccupiedHex, distance);
 		List<SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
-		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(explorer.occupiedHex, explorer.remainingMovesThisTurn, explorer.unitProperties.attackRange, explorer.blockedTerrains, occupieds);
+		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(explorer.occupiedHex, explorer.remainingMovesThisTurn, explorer.unitProperties.attackRange, explorer.unitProperties.blockedToMoveTerrains, explorer.unitProperties.blockedToAttackTerrains, occupieds);
 
 		if(reachables.Count > 1)
 		{
@@ -276,7 +265,7 @@ public class PluggableAI : MonoBehaviour
 			{
 				to = distants[Random.Range(0, distants.Count)];
 
-			} while ((SPMap.Instance.AStar(explorer.occupiedHex, to, explorer.blockedTerrains) == null) || explorer.occupiedHex == to || TownCenter.OccupiedHex == to);
+			} while ((SPMap.Instance.AStar(explorer.occupiedHex, to, explorer.unitProperties.blockedToMoveTerrains, explorer.unitProperties.blockedToAttackTerrains, occupieds) == null) || explorer.occupiedHex == to || TownCenter.OccupiedHex == to);
 			Debug.Log(to.Key);
 			if (!explorer.ValidateRequestToMove(to))
 			{
@@ -287,9 +276,10 @@ public class PluggableAI : MonoBehaviour
 				Debug.Log("moved");
 			}
 		}
+		yield return null;
 	}
 
-	private void RetakeTownCenter(SPUnitBase unit)
+	private IEnumerator RetakeTownCenter(SPUnitBase unit)
 	{
 		TownCenter.SelectUnit(unit);
 		if (TownCenter.OccupiedHex.OccupierUnit == null)
@@ -297,7 +287,7 @@ public class PluggableAI : MonoBehaviour
 			if (unit.ValidateRequestToMove(TownCenter.OccupiedHex))
 			{
 				//TODO: send request to SPGameMAnager and retake town
-				return;
+				yield break;
 			}
 		}
 		else if(TownCenter.OccupiedHex.OccupierUnit.playerID != TownCenter.PlayerID)
@@ -306,7 +296,7 @@ public class PluggableAI : MonoBehaviour
 			{
 				if(unit.remainingMovesThisTurn >= unit.unitProperties.moveCostToAttack && !unit.HasAttacked)
 				{
-					Attack(unit, TownCenter.OccupiedHex.OccupierUnit);
+					yield return StartCoroutine(Attack(unit, TownCenter.OccupiedHex.OccupierUnit));
 				}
 			}
 			else
@@ -317,28 +307,43 @@ public class PluggableAI : MonoBehaviour
 		//unit could not manage to retake
 	}
 
-	private void DefendTownCenter(SPUnitBase unit)
+	private IEnumerator DefendTownCenter(SPUnitBase unit)
 	{
+		Debug.Log("defending");
 		if (TownCenter.OccupiedHex.OccupierUnit == null)
 		{
+			Debug.Log("town center bos");
 			TownCenter.SelectUnit(unit);
-			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, TownCenter.OccupiedHex, unit.blockedTerrains);
+			List<SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
+			List<SPTerrainHexagon> path = SPMap.Instance.AStar(unit.occupiedHex, TownCenter.OccupiedHex, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds);
 			if (unit.neighboursWithinRange.Contains(TownCenter.OccupiedHex))
 			{
+				Debug.Log("town centera gidebilirim");
 				unit.ValidateRequestToMove(TownCenter.OccupiedHex);
 			}
 			else
 			{
+				Debug.LogError("path null: " + (path == null) + "| unit null: " + unit == null);
+				Debug.Log("town centera gidememmm");
 				unit.ValidateRequestToMove(path[unit.remainingMovesThisTurn]);
 			}
 		}
 		else if (TownCenter.OccupiedHex.OccupierUnit.playerID != TownCenter.PlayerID)
 		{
-			ValidateAttack(unit, TownCenter.OccupiedHex.OccupierUnit);
+			Debug.Log("town centerda dusman var");
+			yield return StartCoroutine(Attack(unit, TownCenter.OccupiedHex.OccupierUnit));
 		}
 		else
 		{
-			ValidateAttack(unit, closestEnemyToTownCenter);
+			Debug.Log("town centerda dost var");
+			yield return StartCoroutine(Attack(unit, closestEnemyToTownCenter));
+			/*if (closestEnemyToTownCenter != null)
+			{
+				closestEnemyToTownCenter.GetReachables();
+				yield return StartCoroutine(closestEnemyToTownCenter.ValidateAttack(unit, true));
+				closestEnemyToTownCenter.HasAttacked = false;
+				closestEnemyToTownCenter.remainingMovesThisTurn = closestEnemyToTownCenter.unitProperties.moveRange;
+			}*/
 		}
 	}
 
@@ -446,7 +451,7 @@ public class PluggableAI : MonoBehaviour
 		SPTerrainHexagon to = null;
 		//List<SPTerrainHexagon> distants = SPMap.Instance.GetDistantHexagons(unit.occupiedHex, unit.remainingMovesThisTurn);
 		List<SPTerrainHexagon> occupieds = new List<SPTerrainHexagon>();
-		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(unit.occupiedHex, unit.remainingMovesThisTurn, unit.unitProperties.attackRange, unit.blockedTerrains, occupieds); ;
+		List<SPTerrainHexagon> reachables = SPMap.Instance.GetReachableHexagons(unit.occupiedHex, unit.remainingMovesThisTurn, unit.unitProperties.attackRange, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds); ;
 
 		List<SPTerrainHexagon> unexploreds = new List<SPTerrainHexagon>();
 		List<SPTerrainHexagon> unexploredDistants = new List<SPTerrainHexagon>();
@@ -478,7 +483,7 @@ public class PluggableAI : MonoBehaviour
 				int currentDist = SPMap.Instance.GetDistanceBetweenTwoBlocks(unit.occupiedHex, hex);
 				if (currentDist < minDist)
 				{
-					path = SPMap.Instance.AStar(unit.occupiedHex, hex, unit.blockedTerrains);
+					path = SPMap.Instance.AStar(unit.occupiedHex, hex, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds);
 					if (path != null)
 					{
 						minDist = currentDist;
@@ -498,7 +503,7 @@ public class PluggableAI : MonoBehaviour
 					do
 					{
 						to = reachables[Random.Range(0, reachables.Count)];
-					} while ((SPMap.Instance.AStar(unit.occupiedHex, to, unit.blockedTerrains) == null) || to == unit.occupiedHex);
+					} while ((SPMap.Instance.AStar(unit.occupiedHex, to, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds) == null) || to == unit.occupiedHex);
 					yield return StartCoroutine(unit.ValidateRequestToMove(to, 0));
 				}
 			}
@@ -509,23 +514,36 @@ public class PluggableAI : MonoBehaviour
 			do
 			{
 				to = reachables[Random.Range(0, reachables.Count)];
-			} while ((SPMap.Instance.AStar(unit.occupiedHex, to, unit.blockedTerrains) == null) || to == unit.occupiedHex);
+			} while ((SPMap.Instance.AStar(unit.occupiedHex, to, unit.unitProperties.blockedToMoveTerrains, unit.unitProperties.blockedToAttackTerrains, occupieds) == null) || to == unit.occupiedHex);
 			yield return StartCoroutine(unit.ValidateRequestToMove(to, 0));
 		}
 	}
 
-	private void ValidateAttack(SPUnitBase attacker, SPUnitBase target)
+	/*private IEnumerator ValidateAttack(SPUnitBase attacker, SPUnitBase target)
 	{
 		//if(TownCenter.OccupiedHex.OccupierUnit != null && TownCenter.OccupiedHex.OccupierUnit.playerID != TownCenter.PlayerID)
 		{
-			Attack(attacker, target);
+			yield return StartCoroutine(Attack(attacker, target));
 		}
-	}
+	}*/
 
 	private IEnumerator Attack(SPUnitBase attacker, SPUnitBase target)
 	{
 		TownCenter.SelectUnit(attacker);
+		Debug.LogError("deniyorum ama olmuyor" + closestEnemyToTownCenter.occupiedHex.Key);
+		bool hasAttackedBefore = attacker.HasAttacked;
 		yield return StartCoroutine(attacker.ValidateAttack(target, false));
+		bool hasAttackedAfter = attacker.HasAttacked;
+		if(hasAttackedBefore == false && hasAttackedAfter == true)
+		{
+			if (target != null)
+			{
+				target.GetReachables();
+				yield return StartCoroutine(target.ValidateAttack(attacker, true));
+				target.HasAttacked = false;
+				target.remainingMovesThisTurn = target.unitProperties.moveRange;
+			}
+		}
 	}
 
 	//TODO: ne kadar fazla dusman birlik varsa tehlike o kadar buyuktur ve

@@ -22,6 +22,7 @@ MonoBehaviour:
   armor: 5
   damage: 3
   attackRange: 1
+  blockedToAttackTerrains: 01000000
   hitBloodParticle: {fileID: 1850033487435682, guid: 2c4b2397ab17cce4bae0e99c1004869d,
     type: 3}
   deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
@@ -35,3 +36,4 @@ MonoBehaviour:
   turnSpeed: 200
   snapToPositionThreshold: 0.1
   waitBetweenMovement: 0.02
+  blockedToMoveTerrains: 01000000

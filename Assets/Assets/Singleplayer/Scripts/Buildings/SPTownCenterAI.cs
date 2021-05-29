@@ -92,7 +92,7 @@ public class SPTownCenterAI : SPTownCenter
 			if(isDiscovered == true)
 			{
 				//TODO: debugger
-				hex.aiDebuggerForExploredTerrains.SetActive(true);
+				//hex.aiDebuggerForExploredTerrains.SetActive(true);
 			}
 		}
 	}

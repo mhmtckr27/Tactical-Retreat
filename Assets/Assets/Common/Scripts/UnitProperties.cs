@@ -17,6 +17,7 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public int armor;
 	[SerializeField] public int damage;
 	[SerializeField] public int attackRange;
+	[SerializeField] public List<TerrainType> blockedToAttackTerrains;
 	[SerializeField] public GameObject hitBloodParticle;
 	[SerializeField] public GameObject deathParticle;
 	[SerializeField] public AudioClip attackSound;
@@ -29,4 +30,5 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public float turnSpeed = 100f;
 	[SerializeField] public float snapToPositionThreshold = 0.1f;
 	[SerializeField] public float waitBetweenMovement = 0.02f;
+	[SerializeField] public List<TerrainType> blockedToMoveTerrains;
 }

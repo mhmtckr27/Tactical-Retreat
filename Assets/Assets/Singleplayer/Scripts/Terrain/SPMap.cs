@@ -324,7 +324,7 @@ public class SPMap : MonoBehaviour
 	}
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
-	public List<SPTerrainHexagon> GetReachableHexagons(SPTerrainHexagon start, int moveRange, int attackRange, List<TerrainType> blockedHexagonTypes, List<SPTerrainHexagon> occupiedNeighbours)
+	public List<SPTerrainHexagon> GetReachableHexagons(SPTerrainHexagon start, int moveRange, int attackRange, List<TerrainType> blockedToMoveHexagonTypes, List<TerrainType> blockedToAttackHexagonTypes, List<SPTerrainHexagon> occupiedNeighbours)
 	{
 		List<SPTerrainHexagon> reachableHexagons = new List<SPTerrainHexagon>();
 		List<List<SPTerrainHexagon>> visitedHexagons = new List<List<SPTerrainHexagon>>();
@@ -332,8 +332,7 @@ public class SPMap : MonoBehaviour
 		visitedHexagons.Add(new List<SPTerrainHexagon>());
 		visitedHexagons[0].Add(start);
 
-		int lastIndex = moveRange > attackRange ? moveRange : attackRange;
-		for (int i = 1; i < lastIndex + 1; i++)
+		for (int i = 1; i < moveRange + 1; i++)
 		{
 			visitedHexagons.Add(new List<SPTerrainHexagon>());
 			foreach (SPTerrainHexagon hex in visitedHexagons[i - 1])
@@ -342,27 +341,63 @@ public class SPMap : MonoBehaviour
 				{
 					SPTerrainHexagon neighbour = GetNeighbourInDirection(hex, direction);
 
-					if (neighbour != null && !blockedHexagonTypes.Contains(neighbour.terrainType))
+					if (neighbour != null)
 					{
+						//Debug.LogWarning("neighbour:" + neighbour.Key);
 						if ((neighbour.OccupierUnit == null))
 						{
-							if (!reachableHexagons.Contains(neighbour))
+							//Debug.LogWarning("nonoccupied neighbour:" + neighbour.Key);
+							if (!blockedToMoveHexagonTypes.Contains(neighbour.terrainType))
 							{
-								if (i < (moveRange + 1))
+								if (!reachableHexagons.Contains(neighbour))
 								{
-									reachableHexagons.Add(neighbour);
+									if (i < (moveRange + 1))
+									{
+										reachableHexagons.Add(neighbour);
+									}
+									visitedHexagons[i].Add(neighbour);
 								}
-								visitedHexagons[i].Add(neighbour);
 							}
 						}
-						else if ((neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)))
+						/*else if ((neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
 						{
+							Debug.LogWarning("occupied neighbour:" + neighbour.Key);
 							occupiedNeighbours.Add(neighbour);
-						}
+							visitedHexagons[i].Add(neighbour);
+						}*/
 					}
 				}
 			}
 		}
+
+		
+		//populating occupied neighbour array.
+		visitedHexagons = new List<List<SPTerrainHexagon>>();
+		visitedHexagons.Add(new List<SPTerrainHexagon>());
+		visitedHexagons[0].Add(start);
+
+		for (int i = 1; i < attackRange + 1; i++)
+		{
+			visitedHexagons.Add(new List<SPTerrainHexagon>());
+			foreach (SPTerrainHexagon hex in visitedHexagons[i - 1])
+			{
+				for (int direction = 0; direction < 6; direction++)
+				{
+					SPTerrainHexagon neighbour = GetNeighbourInDirection(hex, direction);
+
+					if (neighbour != null)
+					{
+						if ((neighbour.OccupierUnit != null) && (neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
+						{
+							//Debug.LogWarning("occupied neighbour:" + neighbour.Key);
+							occupiedNeighbours.Add(neighbour);
+						}
+						visitedHexagons[i].Add(neighbour);
+					}
+				}
+			}
+		}
+
 		return reachableHexagons;
 	}
 
@@ -380,7 +415,7 @@ public class SPMap : MonoBehaviour
 		return null;
 	}
 
-	public List<SPTerrainHexagon> AStar(SPTerrainHexagon from, SPTerrainHexagon to, List<TerrainType> blockedTerrains)
+	public List<SPTerrainHexagon> AStar(SPTerrainHexagon from, SPTerrainHexagon to, List<TerrainType> blockedToMoveHexagonTypes, List<TerrainType> blockedToAttackHexagonTypes, List<SPTerrainHexagon> occupiedNeighbours)
 	{
 		PriorityQueue<SPTerrainHexagon> frontier = new PriorityQueue<SPTerrainHexagon>(true);
 		frontier.Enqueue(0, from);
@@ -395,7 +430,7 @@ public class SPMap : MonoBehaviour
 			{
 				break;
 			}
-			foreach (SPTerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, 1, blockedTerrains, null))
+			foreach (SPTerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, 1, blockedToMoveHexagonTypes, blockedToAttackHexagonTypes, occupiedNeighbours))
 			{
 				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
 				int new_cost = currentCost[current_hexagon] + 1;
