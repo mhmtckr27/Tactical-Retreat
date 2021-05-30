@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1d5d8b5a4f38d428f9dcccd1578865, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
+  unitPrefab: {fileID: 7088238405828413640, guid: 1fa64896056a5cf449589094f59d5bc8,
+    type: 3}
   unitName: Warrior
   unitIcon: {fileID: 21300000, guid: 7a02edf10629d3d4485e720be5658c2d, type: 3}
   initialRotation: {x: 0, y: -60, z: 0}

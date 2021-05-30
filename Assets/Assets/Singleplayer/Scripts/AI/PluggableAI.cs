@@ -116,7 +116,10 @@ public class PluggableAI : MonoBehaviour
 		if(townCenterDefender != null)
 		{
 			yield return StartCoroutine(PlayTownCenterDefender());
-			areUnitsPlayed[units.IndexOf(townCenterDefender)] = true;
+			if(townCenterDefender != null && townCenterDefender.isPendingDead == false)
+			{
+				areUnitsPlayed[units.IndexOf(townCenterDefender)] = true;
+			}
 		}
 
 		for (int i = 0; i < units.Count; i++)
@@ -530,13 +533,13 @@ public class PluggableAI : MonoBehaviour
 	private IEnumerator Attack(SPUnitBase attacker, SPUnitBase target)
 	{
 		TownCenter.SelectUnit(attacker);
-		Debug.LogError("deniyorum ama olmuyor" + closestEnemyToTownCenter.occupiedHex.Key);
+		//Debug.LogError("deniyorum ama olmuyor" + closestEnemyToTownCenter.occupiedHex.Key);
 		bool hasAttackedBefore = attacker.HasAttacked;
 		yield return StartCoroutine(attacker.ValidateAttack(target, false));
 		bool hasAttackedAfter = attacker.HasAttacked;
 		if(hasAttackedBefore == false && hasAttackedAfter == true)
 		{
-			if (target != null)
+			if (target != null && target.isPendingDead == false)
 			{
 				target.GetReachables();
 				yield return StartCoroutine(target.ValidateAttack(attacker, true));

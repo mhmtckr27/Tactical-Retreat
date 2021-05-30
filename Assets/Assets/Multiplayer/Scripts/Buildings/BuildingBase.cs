@@ -70,7 +70,8 @@ public class BuildingBase : NetworkBehaviour
 public enum BuildingType
 {
 	TownCenter,
-	WoodcutterCottage
+	WoodcutterCottage,
+	House
 }
 
 /*

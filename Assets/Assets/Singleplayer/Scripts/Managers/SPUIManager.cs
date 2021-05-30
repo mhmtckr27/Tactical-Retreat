@@ -20,7 +20,8 @@ public class SPUIManager : MonoBehaviour
 	[SerializeField] private InputField aiPlayerCount;
 	public SPTownCenterUI townCenterUI;
 	public SPTerrainHexagonUI terrainHexagonUI;
-
+	public SPUnitCreationPanel unitCreationUI;
+	public SPBuildingCreationPanel buildingCreationUI;
 	private void OnEnable()
 	{
 		if (terrainHexagonUI)

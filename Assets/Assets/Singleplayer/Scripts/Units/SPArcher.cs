@@ -51,9 +51,10 @@ public class SPArcher : SPUnitBase
 	{
 		Destroy(arrow);
 		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
+		target.isPendingDead = isTargetDead;
 		if (isTargetDead)
 		{
-			PlayDeathEffects(target.transform.position);
+			//StartCoroutine(target.PlayDeathEffectsWrapper(target.transform.position));
 			UpdateOutlines();
 		}
 	}

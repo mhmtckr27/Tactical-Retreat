@@ -2,21 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Unit", menuName = "ScriptableObjects/Unit", order = 2)]
-public class UnitProperties : ScriptableObject
+[CreateAssetMenu(fileName = "New Building", menuName = "ScriptableObjects/Building", order = 3)]
+public class BuildingProperties : ScriptableObject
 {
-	[SerializeField] public GameObject unitPrefab;
-	[SerializeField] public string unitName;
-	[SerializeField] public Sprite unitIcon;
+	[SerializeField] public GameObject buildingPrefab;
+	[SerializeField] public string buildingName;
+	[SerializeField] public string buildingDescription;
+	[SerializeField] public Sprite buildingIcon;
 	[SerializeField] public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
 	[SerializeField] public Vector3 initialRotation;
-	[SerializeField] public UnitType unitType;
-	[SerializeField] public UnitCombatType unitCombatType;
+	[SerializeField] public BuildingType buildingType;
 	[SerializeField] public int woodCostToCreate;
 	[SerializeField] public int meatCostToCreate;
 	[SerializeField] public int populationCostToCreate;
 	[SerializeField] public int actionPointCostToCreate;
-	[Header("Combat")]
+	[SerializeField] public List<TerrainType> blockedTerrainsToBuild;
+
+	/*[Header("Combat")]
 	[SerializeField] public int moveCostToAttack;
 	[SerializeField] public int health;
 	[SerializeField] public int armor;
@@ -36,4 +38,5 @@ public class UnitProperties : ScriptableObject
 	[SerializeField] public float snapToPositionThreshold = 0.1f;
 	[SerializeField] public float waitBetweenMovement = 0.02f;
 	[SerializeField] public List<TerrainType> blockedToMoveTerrains;
+	*/
 }

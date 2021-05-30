@@ -12,6 +12,7 @@ public class SPTownCenter : SPBuildingBase
 	public SPTownCenter currentConqueror;*/
 	private InputManager inputManager;
 
+	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField] public int woodCount;
 	[SerializeField] public int meatCount;
 	[SerializeField] public int currentPopulation;
@@ -23,25 +24,34 @@ public class SPTownCenter : SPBuildingBase
 	public event Action<int> OnActionPointChange;
 	public event Action<int, int> OnCurrentToMaxPopulationChange;
 
-	private Color playerColor;
-	public Color PlayerColor
+
+
+	public PluggableAI PluggableAI { get; set; }
+	public bool IsAI { get; set; }
+	private GameObject canvas;
+
+	protected virtual void Awake()
 	{
-		get => playerColor;
-		set
-		{
-			OnPlayerColorSet(playerColor, value);
-			playerColor = value;
-		}
+		canvas = Instantiate(canvasPrefab);
+		uiManager = canvas.GetComponent<SPUIManager>();
 	}
 
-	public void OnPlayerColorSet(Color oldColor, Color newColor)
+	public virtual void OnCloseTownCenterUI()
 	{
-		GetComponent<Renderer>().materials[1].color = newColor;
+		DeselectBuilding(this);
 	}
 
-	private void Awake()
+	public virtual void SelectBuilding(SPBuildingBase building)
 	{
+		menu_visible = true;
+		ToggleBuildingMenu(menu_visible);
+	}
 
+
+	public virtual void DeselectBuilding(SPBuildingBase building)
+	{
+		menu_visible = false;
+		ToggleBuildingMenu(menu_visible);
 	}
 
 	protected override void Start()
@@ -144,8 +154,8 @@ public class SPTownCenter : SPBuildingBase
 		{
 			if (inputManager.HasValidTap() && !IsPointerOverUIObject() && EventSystem.current.currentSelectedGameObject == null)
 			{
-				if(EventSystem.current.currentSelectedGameObject != null)
-				Debug.LogError(EventSystem.current.currentSelectedGameObject.name);
+				/*if(EventSystem.current.currentSelectedGameObject != null)
+				Debug.LogError(EventSystem.current.currentSelectedGameObject.name);*/
 				if (ValidatePlayRequest())
 				{
 					Play(Camera.main.ScreenPointToRay(Input.mousePosition));
@@ -189,7 +199,7 @@ public class SPTownCenter : SPBuildingBase
 		UpdateActionPoint(-resource.costToCollect);
 	}
 
-	private void UpdateResourceCount(ResourceType resourceType, int resourceCount)
+	public void UpdateResourceCount(ResourceType resourceType, int resourceCount)
 	{
 		switch (resourceType)
 		{
@@ -498,7 +508,7 @@ public class SPTownCenter : SPBuildingBase
 		SPGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
-	protected virtual void DeselectEverything()
+	public virtual void DeselectEverything()
 	{
 		/*if (SPMap.Instance.UnitToMove != null && SPMap.Instance.UnitToMove.playerID == PlayerID)
 		{
@@ -507,7 +517,25 @@ public class SPTownCenter : SPBuildingBase
 		//Debug.Log(SPMap.Instance.UnitToMove);
 		DeselectBuilding(this);
 		DeselectTerrain();
+		DeselectUnitCreationPanel();
+		DeselectBuildingCreationPanel();
 		if (SPMap.Instance.UnitToMove != null) { DeselectUnit(SPMap.Instance.UnitToMove); }
+	}
+
+	private void DeselectUnitCreationPanel()
+	{
+		if (uiManager != null)
+		{
+			uiManager.unitCreationUI.gameObject.SetActive(false);
+		}
+	}	
+	
+	private void DeselectBuildingCreationPanel()
+	{
+		if (uiManager != null)
+		{
+			uiManager.buildingCreationUI.gameObject.SetActive(false);
+		}
 	}
 
 	protected virtual void SetAllCameraPositions(Vector3 position)
@@ -551,9 +579,62 @@ public class SPTownCenter : SPBuildingBase
 		SPGameManager.Instance.RegisterUnit(PlayerID, unitScript);
 		ToggleBuildingMenu(false);
 
-		UpdateResourceCount(ResourceType.ActionPoint, -unitScript.unitProperties.actionPointCostToCreate);
+		UpdateResourceCount(ResourceType.Wood, -unitScript.unitProperties.woodCostToCreate);
 		UpdateResourceCount(ResourceType.Meat, -unitScript.unitProperties.meatCostToCreate);
+		UpdateResourceCount(ResourceType.CurrentPopulation, unitScript.unitProperties.populationCostToCreate);
+		UpdateResourceCount(ResourceType.ActionPoint, -unitScript.unitProperties.actionPointCostToCreate);
 
+		return true;
+	}
+
+	public virtual bool CreateBuilding(SPBuildingBase owner, string buildingName)
+	{
+		GameObject building = SPGameManager.Instance.spawnablePrefabs.Find(prefab => prefab.name == buildingName);
+
+		if (building == null) { return false; }
+
+		SPBuildingBase buildingScript = building.GetComponent<SPBuildingBase>();
+
+		if (ValidateCreateBuilding(buildingScript) == false) { return false; }
+
+		GameObject buildingObject = Instantiate(building, transform.position + BuildingProperties.positionOffsetOnHexagons, Quaternion.identity);
+
+		buildingScript = buildingObject.GetComponent<SPBuildingBase>();
+		buildingScript.PlayerColor = PlayerColor;
+		buildingScript.OccupiedHex = OccupiedHex;
+		buildingScript.PlayerID = PlayerID;
+		if(buildingScript.buildingProperties.buildingType != BuildingType.House)
+		{
+			OccupiedHex.OccupierBuilding = buildingScript;
+		}
+		else
+		{
+			UpdateResourceCount(ResourceType.MaxPopulation, 2);
+		}
+		SPGameManager.Instance.RegisterBuilding(PlayerID, buildingScript);
+		ToggleBuildingMenu(false);
+		UpdateResourceCount(ResourceType.Wood, -buildingScript.buildingProperties.woodCostToCreate);
+		UpdateResourceCount(ResourceType.Meat, -buildingScript.buildingProperties.meatCostToCreate);
+		UpdateResourceCount(ResourceType.CurrentPopulation, -buildingScript.buildingProperties.populationCostToCreate);
+		UpdateResourceCount(ResourceType.ActionPoint, -buildingScript.buildingProperties.actionPointCostToCreate);
+		
+		return true;
+	}
+
+	public virtual bool ValidateCreateBuilding(/*SPTerrainHexagon buildOnTerrain, */SPBuildingBase buildingScript)
+	{/*
+		if(buildingScript.buildingProperties.buildingType != BuildingType.House)
+		{
+			return (buildingScript != null) &&
+					(buildOnTerrain.OccupierUnit == null) &&
+					(buildingScript.buildingProperties.actionPointCostToCreate <= actionPoint) &&
+					(unitScript.unitProperties.meatCostToCreate <= meatCount);
+		}
+		else
+		{
+
+		}
+		*/
 		return true;
 	}
 }

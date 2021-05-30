@@ -30,6 +30,7 @@ public class SPGameManager : MonoBehaviour
     private List<SPTownCenter> playerList = new List<SPTownCenter>();
     private Dictionary<uint, SPTownCenter> players = new Dictionary<uint, SPTownCenter>();
     private Dictionary<uint, List<SPUnitBase>> units = new Dictionary<uint, List<SPUnitBase>>();
+    private Dictionary<uint, List<SPBuildingBase>> buildings = new Dictionary<uint, List<SPBuildingBase>>();
 
     private bool canGiveTurnToNextPlayer = true;
     private int hasTurnIndex;
@@ -155,6 +156,7 @@ public class SPGameManager : MonoBehaviour
         {
             players.Add(player.PlayerID, player);
             units.Add(player.PlayerID, new List<SPUnitBase>());
+            buildings.Add(player.PlayerID, new List<SPBuildingBase>());
             playerList.Add(player);
             Debug.Log("Player-" + player.PlayerID + " has joined the game");
         }
@@ -166,6 +168,7 @@ public class SPGameManager : MonoBehaviour
         {
             players.Remove(player.PlayerID);
             units.Remove(player.PlayerID);
+            buildings.Remove(player.PlayerID);
             if (playerList.Contains(player))
             {
                 if (hasTurnIndex == playerList.IndexOf(player))
@@ -194,7 +197,16 @@ public class SPGameManager : MonoBehaviour
             }
         }
     }
-
+    public void RegisterBuilding(uint playerID, SPBuildingBase building)
+    {
+        if (buildings.ContainsKey(playerID))
+        {
+            if (!buildings[playerID].Contains(building))
+            {
+                buildings[playerID].Add(building);
+            }
+        }
+    }
     public void UnregisterUnit(uint playerID, SPUnitBase unit)
     {
         if (units.ContainsKey(playerID))
@@ -202,6 +214,7 @@ public class SPGameManager : MonoBehaviour
             if (units[playerID].Contains(unit))
             {
                 units[playerID].Remove(unit);
+                players[playerID].UpdateResourceCount(ResourceType.CurrentPopulation, -1);
                 if ((units[playerID].Count == 0)/* && players[playerID].isConquered*/)
                 {
                    /*//players[playerID].transform.localScale = Vector3.zero;
@@ -213,6 +226,32 @@ public class SPGameManager : MonoBehaviour
             else
             {
                 Debug.LogWarning("no unit found");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("no player found: " + playerID);
+        }
+    }
+
+    public void UnregisterBuilding(uint playerID, SPBuildingBase building)
+    {
+        if (buildings.ContainsKey(playerID))
+        {
+            if (buildings[playerID].Contains(building))
+            {
+                buildings[playerID].Remove(building);
+                if ((buildings[playerID].Count == 0)/* && players[playerID].isConquered*/)
+                {
+                    /*//players[playerID].transform.localScale = Vector3.zero;
+                     GameObject player = players[playerID].gameObject;
+                     UnregisterPlayer(players[playerID]);
+                     Destroy(player.gameObject);*/
+                }
+            }
+            else
+            {
+                Debug.LogWarning("no building found");
             }
         }
         else
@@ -248,6 +287,15 @@ public class SPGameManager : MonoBehaviour
 		if (units.ContainsKey(playerID))
 		{
             return units[playerID];
+		}
+        return null;
+	}
+
+    public List<SPBuildingBase> GetBuildings(uint playerID)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+            return buildings[playerID];
 		}
         return null;
 	}

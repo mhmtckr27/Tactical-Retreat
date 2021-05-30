@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class SPUnitBase : MonoBehaviour
 {
+	[HideInInspector] public bool isPendingDead;
 	public int currentHealth;
 	public int currentArmor;
 	public bool HasAttacked { get; set; }
@@ -224,9 +225,9 @@ public class SPUnitBase : MonoBehaviour
 
 	public IEnumerator ValidateAttack(SPUnitBase target, bool isSelfDefense)
 	{
-		Debug.LogWarning(!IsMoving);
+		/*Debug.LogWarning(!IsMoving);
 		Debug.LogWarning(occupiedNeighboursWithinRange.Contains(target.occupiedHex));
-		Debug.LogWarning(unitProperties.moveCostToAttack <= remainingMovesThisTurn);
+		Debug.LogWarning(unitProperties.moveCostToAttack <= remainingMovesThisTurn);*/
 		if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 		{
 			if (/*true*/!HasAttacked || isSelfDefense/* && targetIsInRange*/)
@@ -320,18 +321,34 @@ public class SPUnitBase : MonoBehaviour
 		audioSource.clip = unitProperties.attackSound;
 		audioSource.Play();
 		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
+		target.isPendingDead = isTargetDead;
 		if (isTargetDead)
 		{
 			target.DisableHexagonOutlines();
-			PlayDeathEffects(target.transform.position);
 			UpdateOutlines();
 		}
 		yield return null;
 	}
 
-	protected void PlayDeathEffects(Vector3 pos)
+	public IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
 	{
-		Instantiate(unitProperties.deathParticle, pos, Quaternion.identity);
+		yield return StartCoroutine(PlayDeathEffects(pos));
+	}
+
+	protected IEnumerator PlayDeathEffects(Vector3 pos)
+	{
+		audioSource.clip = unitProperties.deathSound;
+		audioSource.Play();
+		while (audioSource.isPlaying)
+		{
+			yield return new WaitForSeconds(0.05f);
+		}
+		ParticleSystem particle = Instantiate(unitProperties.deathParticle, pos, Quaternion.identity, null).GetComponent<ParticleSystem>();
+		/*while (particle.isPlaying)
+		{
+			yield return new WaitForSeconds(0.05f);
+		}*/
+		Destroy(gameObject);
 	}
 
 	private void TakeDamage2(SPUnitBase attacker, Image bar, float fillAmount)
@@ -403,9 +420,7 @@ public class SPUnitBase : MonoBehaviour
 				currentHealth = 0;
 				occupiedHex.OccupierUnit = null;
 				SPGameManager.Instance.UnregisterUnit(playerID, this);
-				audioSource.clip = unitProperties.deathSound;
-				audioSource.Play();
-				Destroy(gameObject);
+				StartCoroutine(PlayDeathEffects(transform.position));
 				return true;
 			}
 		}

@@ -6,6 +6,12 @@ public class SPTownCenterAI : SPTownCenter
 {
 	public List<SPTownCenter> exploredEnemyTowns;
 	#region Empty Overrides
+
+	protected override void Awake()
+	{
+		
+	}
+
 	public override void SelectBuilding(SPBuildingBase building)
 	{
 	}
@@ -192,7 +198,7 @@ public class SPTownCenterAI : SPTownCenter
 		base.FinishTurn();
 	}
 
-	protected override void DeselectEverything()
+	public override void DeselectEverything()
 	{
 		base.DeselectEverything();
 	}

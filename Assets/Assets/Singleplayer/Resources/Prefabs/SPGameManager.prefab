@@ -55,6 +55,7 @@ MonoBehaviour:
   spawnablePrefabs:
   - {fileID: 7088238405828413640, guid: 1fa64896056a5cf449589094f59d5bc8, type: 3}
   - {fileID: 3761040840066398345, guid: 712a0ca875b24d74482564c115a28a41, type: 3}
+  - {fileID: 1147478722433893387, guid: f70d7311b0952c24eadbc0fd71da4c6f, type: 3}
   playerColors:
   - {r: 0, g: 1, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}

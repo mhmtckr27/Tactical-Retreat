@@ -124,9 +124,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2760195c7d790c43bdcff8f719c7736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buildingProperties: {fileID: 11400000, guid: 974784e22a6a03740afbbfdba30d95f9, type: 2}
   canvasPrefab: {fileID: 8663531919945395808, guid: 6190ad72c8eb19240b8d23dc2c84bc6e,
     type: 3}
-  buildingType: 0
   woodCount: 50
   meatCount: 50
   currentPopulation: 0

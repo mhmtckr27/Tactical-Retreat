@@ -7,6 +7,7 @@ public class SPUnitCreationPanel : MonoBehaviour
 {
 	[SerializeField] private Image unitIcon;
 	[SerializeField] private Text unitName;
+	[SerializeField] private GameObject unitPrefab;
 
 	[SerializeField] private Text healthText;
 	[SerializeField] private Text armorText;
@@ -37,6 +38,7 @@ public class SPUnitCreationPanel : MonoBehaviour
 	public void Init(SPTownCenter ownerPlayer, UnitProperties unitProperties)
 	{
 		this.OwnerPlayer = ownerPlayer;
+		this.unitPrefab = unitProperties.unitPrefab;
 		this.UnitProperties = unitProperties;
 		UpdateUI();
 	}
@@ -70,9 +72,9 @@ public class SPUnitCreationPanel : MonoBehaviour
 									notEnoughResourceColor : enoughResourceColor;
 
 
-			canCreate = (OwnerPlayer.woodCount < UnitProperties.woodCostToCreate &&
-						OwnerPlayer.meatCount < UnitProperties.meatCostToCreate &&
-						(OwnerPlayer.maxPopulation - OwnerPlayer.currentPopulation) < UnitProperties.populationCostToCreate &&
+			canCreate = (OwnerPlayer.woodCount < UnitProperties.woodCostToCreate ||
+						OwnerPlayer.meatCount < UnitProperties.meatCostToCreate ||
+						(OwnerPlayer.maxPopulation - OwnerPlayer.currentPopulation) < UnitProperties.populationCostToCreate ||
 						OwnerPlayer.actionPoint < UnitProperties.actionPointCostToCreate)
 						== false;
 
@@ -93,13 +95,14 @@ public class SPUnitCreationPanel : MonoBehaviour
 
 	public void OnCreateButton()
 	{
-		OwnerPlayer.CreateUnit(OwnerPlayer, unitName.text);
+		OwnerPlayer.CreateUnit(OwnerPlayer, unitPrefab.name);
 		gameObject.SetActive(false);
 	}
 
 	public void OnBackButton()
 	{
 		gameObject.SetActive(false);
+		OwnerPlayer.SelectBuilding(OwnerPlayer);
 	}
 
 	private void Update()

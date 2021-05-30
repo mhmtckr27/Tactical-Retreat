@@ -50,7 +50,7 @@ MonoBehaviour:
     creationProbability: 0.8
   - blockPrefab: {fileID: 5810350800546516640, guid: 23b5dd4009e17f441a43212cad43edcc,
       type: 3}
-    creationProbability: 0.92
+    creationProbability: 0.82
   - blockPrefab: {fileID: 4642739875115892624, guid: 891cfb15cb3ac18488167127dec66c5d,
       type: 3}
     creationProbability: 0.92

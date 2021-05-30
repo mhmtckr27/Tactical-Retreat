@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1d5d8b5a4f38d428f9dcccd1578865, type: 3}
   m_Name: Archer
   m_EditorClassIdentifier: 
+  unitPrefab: {fileID: 3761040840066398345, guid: 712a0ca875b24d74482564c115a28a41,
+    type: 3}
   unitName: Archer
   unitIcon: {fileID: 21300000, guid: 92ff494a743b97042ae28bcd0bd7b10e, type: 3}
   initialRotation: {x: 0, y: -60, z: 0}
