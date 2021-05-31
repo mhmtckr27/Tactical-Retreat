@@ -2283,6 +2283,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 547837147048962585, guid: a9f4f14dc042cfc41a38d8a4deaa1e25,
         type: 3}
+      propertyPath: uiManager
+      value: 
+      objectReference: {fileID: 403935308633176136}
+    - target: {fileID: 547837147048962585, guid: a9f4f14dc042cfc41a38d8a4deaa1e25,
+        type: 3}
       propertyPath: nextTurnButton
       value: 
       objectReference: {fileID: 2620604530357143458}

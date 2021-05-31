@@ -14,8 +14,12 @@ public class SPTerrainHexagonUI : MonoBehaviour
     [SerializeField] private Text resourceCount;
     [SerializeField] private Image costIcon;
     [SerializeField] private Text costCount;
+    [SerializeField] private Button collectButton;
     [SerializeField] private Text collectButtonText;
     [SerializeField] private GameObject nextTurnButton;
+    [SerializeField] private GameObject bottomBar; //disable it for terrains that does not contain any collectibles.
+    [SerializeField] private Color enoughAPToCollectColor;
+    [SerializeField] private Color notEnoughAPToCollectColor;
     public SPUIManager uiManager;
     private void OnEnable()
     {
@@ -31,10 +35,15 @@ public class SPTerrainHexagonUI : MonoBehaviour
             resourceCount.text = currentResource.resourceCount.ToString();
             costIcon.sprite = currentResource.costIcon;
             costCount.text = currentResource.costToCollect.ToString();
+            costCount.color = currentResource.costToCollect <= uiManager.townCenterUI.townCenter.actionPoint ?
+                                enoughAPToCollectColor :
+                                notEnoughAPToCollectColor;
             collectButtonText.text = currentResource.collectText;
+            collectButton.interactable = currentResource.costToCollect <= uiManager.townCenterUI.townCenter.actionPoint;
         }
-        resourceIcon.transform.parent.gameObject.SetActive(currentResource.canBeCollected);
+        bottomBar.SetActive(currentResource.canBeCollected);
         nextTurnButton.SetActive(false);
+
     }
 
     private void OnDisable()
