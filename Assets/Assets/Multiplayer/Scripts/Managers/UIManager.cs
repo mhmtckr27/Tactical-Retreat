@@ -13,13 +13,15 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text actionPointText;
 	[SerializeField] private Text currentToMaxPopulationText;
 	[SerializeField] private GameObject settingsMenu;
-	[SerializeField] [Scene] private string singleplayerScene;
+
 	[SerializeField] [Scene] private string multiplayerScene;
 	[SerializeField] private InputField networkAddress;
 	[SerializeField] private InputField mapWidth;
-	[SerializeField] private InputField aiPlayerCount;
+
 	public TownCenterUI townCenterUI;
 	public TerrainHexagonUI terrainHexagonUI;
+	public UnitCreationPanel unitCreationUI;
+	public BuildingCreationPanel buildingCreationUI;
 
 	private void OnEnable()
 	{
@@ -82,34 +84,6 @@ public class UIManager : MonoBehaviour
 	public void OnQuitButton()
 	{
 		Application.Quit();
-	}
-
-	public void OnSingleplayerButton()
-	{
-		SceneManager.LoadScene(singleplayerScene);
-	}
-
-	public void OnSPStartButton()
-	{
-		if(aiPlayerCount.text == "")
-		{
-			SPGameManager.Instance.aiPlayerCount = 1;
-		}
-		else
-		{
-			SPGameManager.Instance.aiPlayerCount = int.Parse(aiPlayerCount.text);
-		}
-
-		if (mapWidth.text == "")
-		{
-			SPGameManager.Instance.mapWidth = 6;
-		}
-		else
-		{
-			SPGameManager.Instance.mapWidth = int.Parse(mapWidth.text);
-		}
-
-		OnLoadScene("Singleplayer");
 	}
 
 	public void OnLoadScene(string sceneToLoad)

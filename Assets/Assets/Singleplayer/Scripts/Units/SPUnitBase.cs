@@ -199,18 +199,12 @@ public class SPUnitBase : MonoBehaviour
 
 	public IEnumerator ValidateAttack(SPUnitBase target)
 	{
-		/*if (IsMoving) { Debug.LogError("moving"); return; }
-		if (!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { Debug.LogError("yakin degil"); return; }
-		//TODO: visual feedback
-		if (unitProperties.moveCostToAttack > remainingMovesThisTurn) { return; }
-		*/
-		if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+		if (!HasAttacked)
 		{
-
-			if (/*true*/!HasAttacked/* && targetIsInRange*/)
+			if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 			{
 				yield return StartCoroutine(AttackRoutines(target));
-				if(target != null)
+				if (target != null)
 				{
 					target.GetReachables();
 					yield return StartCoroutine(target.ValidateAttack(this, true));
@@ -218,7 +212,7 @@ public class SPUnitBase : MonoBehaviour
 					target.remainingMovesThisTurn = target.unitProperties.moveRange;
 					//SPGameManager.Instance
 				}
-				SPGameManager.Instance.GetPlayer(playerID).SelectUnit(this); 
+				SPGameManager.Instance.GetPlayer(playerID).SelectUnit(this);
 			}
 		}
 	}
@@ -264,7 +258,7 @@ public class SPUnitBase : MonoBehaviour
 			float x = (transform.position.x - target.transform.position.x) / 2 + target.transform.position.x - 5;
 			float y = 0;
 			float z = (transform.position.z - target.transform.position.z) / 2 + target.transform.position.z + 0.75f;
-			target.StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
+			yield return target.StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
 		}
 		yield return StartCoroutine(AttackRoutine(target));
 	}
@@ -310,7 +304,7 @@ public class SPUnitBase : MonoBehaviour
 	{
 		HasAttacked = true;
 		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
-		if(remainingMovesThisTurn <= 0)
+		if (remainingMovesThisTurn <= 0)
 		{
 			SetIsInMoveMode(false);
 		}
@@ -318,8 +312,7 @@ public class SPUnitBase : MonoBehaviour
 		{
 			GetReachablesVisual(null);
 		}
-		audioSource.clip = unitProperties.attackSound;
-		audioSource.Play();
+		PlayAttackEffects();
 		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
 		target.isPendingDead = isTargetDead;
 		if (isTargetDead)
@@ -330,9 +323,15 @@ public class SPUnitBase : MonoBehaviour
 		yield return null;
 	}
 
+	private void PlayAttackEffects()
+	{
+		audioSource.clip = unitProperties.attackSound;
+		audioSource.Play();
+	}
+
 	public IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
 	{
-		yield return StartCoroutine(PlayDeathEffects(pos));
+		yield return StartCoroutine(PlayDeathEffectsWrapper(pos));
 	}
 
 	protected IEnumerator PlayDeathEffects(Vector3 pos)
@@ -351,6 +350,40 @@ public class SPUnitBase : MonoBehaviour
 		Destroy(gameObject);
 	}
 
+	//TODO update
+	public bool TakeDamage(SPUnitBase attacker, int damage)
+	{
+		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
+		if (damage > currentArmor)
+		{
+			damageToHealth = damage - currentArmor;
+			currentArmor = 0;
+		}
+		else
+		{
+			damageToHealth = 0;
+			currentArmor -= damage;
+		}
+		if (armorBar != null)
+		{
+			TakeDamage2(attacker, armorBar, (float)currentArmor / unitProperties.armor);
+		}
+		if (damageToHealth > 0)
+		{
+			currentHealth = (currentHealth - damageToHealth) > 0 ? currentHealth - damageToHealth : 0;
+			TakeDamage2(attacker, healthBar, (float)currentHealth / unitProperties.health);
+			if (currentHealth <= 0)
+			{
+				currentHealth = 0;
+				occupiedHex.OccupierUnit = null;
+				SPGameManager.Instance.UnregisterUnit(playerID, this);
+				StartCoroutine(PlayDeathEffectsWrapper(transform.position));
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private void TakeDamage2(SPUnitBase attacker, Image bar, float fillAmount)
 	{
 		//healthBar.fillAmount = fillAmount;
@@ -361,14 +394,6 @@ public class SPUnitBase : MonoBehaviour
 			audioSource.Play();
 		}
 		StartCoroutine(TakeDamageRoutine(bar, fillAmount));
-	}
-
-	private void SeeAttacker(SPUnitBase attacker, bool see)
-	{
-		if (!SPGameManager.Instance.GetPlayer(attacker.playerID).IsAI)
-		{
-			attacker.gameObject.SetActive(see);
-		}
 	}
 
 	IEnumerator TakeDamageRoutine(Image bar, float fillAmount)
@@ -393,38 +418,12 @@ public class SPUnitBase : MonoBehaviour
 		}
 	}
 
-	//TODO update
-	public bool TakeDamage(SPUnitBase attacker, int damage)
+	private void SeeAttacker(SPUnitBase attacker, bool see)
 	{
-		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
-		if(damage > currentArmor)
+		if (!SPGameManager.Instance.GetPlayer(attacker.playerID).IsAI)
 		{
-			damageToHealth = damage - currentArmor;
-			currentArmor = 0;
+			attacker.gameObject.SetActive(see);
 		}
-		else
-		{
-			damageToHealth = 0;
-			currentArmor -= damage;
-		}
-		if(armorBar != null)
-		{
-			TakeDamage2(attacker, armorBar, (float)currentArmor / unitProperties.armor);
-		}
-		if(damageToHealth > 0)
-		{
-			currentHealth = (currentHealth - damageToHealth) > 0 ? currentHealth - damageToHealth : 0;
-			TakeDamage2(attacker, healthBar, (float)currentHealth / unitProperties.health);
-			if (currentHealth <= 0)
-			{
-				currentHealth = 0;
-				occupiedHex.OccupierUnit = null;
-				SPGameManager.Instance.UnregisterUnit(playerID, this);
-				StartCoroutine(PlayDeathEffects(transform.position));
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public void GetReachablesVisual(SPUnitBase targetUnit)

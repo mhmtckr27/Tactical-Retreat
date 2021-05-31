@@ -10,33 +10,36 @@ public class TownCenter : BuildingBase
 	[SyncVar] public bool isConquered = false;
 	private InputManager inputManager;
 
-	[SerializeField] private int woodCount;
-	[SerializeField] private int meatCount;
-	private int currentPopulation;
-	private int maxPopulation;
+	[SerializeField] private GameObject canvasPrefab;
+	[SerializeField] public int woodCount;
+	[SerializeField] public int meatCount;
+	[SerializeField] public int currentPopulation;
+	[SerializeField] public int maxPopulation;
 	[SyncVar] public int actionPoint;
-
-	public bool isHost = false;
 
 	public event Action<int> OnWoodCountChange;
 	public event Action<int> OnMeatCountChange;
 	public event Action<int> OnActionPointChange;
 	public event Action<int, int> OnCurrentToMaxPopulationChange;
 
-	[SyncVar(hook = nameof(OnPlayerColorSet))] public Color playerColor;
-	//SyncList<string> discoveredTerrains = new SyncList<string>();
-	public void OnPlayerColorSet(Color oldColor, Color newColor)
-	{
-		GetComponent<Renderer>().materials[1].color = newColor;
-	}
+
+	public bool isHost = false;
+	private GameObject canvas;
 
 	public override void OnStartServer()
 	{
 		base.OnStartServer();
 		playerID = netId;
 		TerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
-		occupiedHex.OccupierBuilding = this;
-		OnTerrainOccupiersChange(occupiedHex.Key, 1);
+		OccupiedHex.OccupierBuilding = this;
+		OnTerrainOccupiersChange(OccupiedHex.Key, 1);
+	}
+
+	private void Awake()
+	{
+		if (!isLocalPlayer) { return; }
+		canvas = Instantiate(canvasPrefab);
+		uiManager = canvas.GetComponent<UIManager>();
 	}
 
 	protected override void Start()
@@ -56,14 +59,14 @@ public class TownCenter : BuildingBase
 		{
 			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].OccupierUnit.playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
 			{
-				ShowHideOccupier(Map.Instance.mapDictionary[key].OccupierUnit, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(key));
+				ShowHideOccupier(Map.Instance.mapDictionary[key].OccupierUnit, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]));
 			}
 		}
 		else
 		{
 			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].OccupierBuilding.playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
 			{
-				ShowHideOccupier(Map.Instance.mapDictionary[key].OccupierBuilding, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(key));
+				ShowHideOccupier(Map.Instance.mapDictionary[key].OccupierBuilding, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]));
 			}
 		}
 	}
@@ -81,7 +84,7 @@ public class TownCenter : BuildingBase
 		//transform.eulerAngles = new Vector3(0, -60, 0);
 
 		ExploreTerrainsRpc(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary["0_0_0"], Map.Instance.mapWidth), false);
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, 1);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, OccupiedHex.Key, 1);
 	}
 
 
@@ -99,17 +102,26 @@ public class TownCenter : BuildingBase
 		if (!hasAuthority) { return; }
 
 #if UNITY_EDITOR
-		if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
+		if(Map.Instance.UnitToMove == null || !Map.Instance.UnitToMove.IsMoving)//suspicious
 		{
-			ValidatePlayRequestCmd();
+			if (Input.GetMouseButtonUp(0))
+			{
+				if (!EventSystem.current.IsPointerOverGameObject())
+				{
+					ValidatePlayRequestCmd();
+				}
+			}
 		}
 #elif UNITY_ANDROID
-		if (inputManager.HasValidTap() && !IsPointerOverUIObject())
+		if(Map.Instance.UnitToMove == null || !Map.Instance.UnitToMove.IsMoving)
 		{
-			ValidatePlayRequestCmd();
+			if (inputManager.HasValidTap() && !IsPointerOverUIObject() &&  && EventSystem.current.currentSelectedGameObject == null)
+			{
+				ValidatePlayRequestCmd();
+			}
 		}
 #endif
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+		/*if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
 			UpdateWoodCount(1);
 		}
@@ -124,7 +136,7 @@ public class TownCenter : BuildingBase
 		else if (Input.GetKeyDown(KeyCode.Alpha4))
 		{
 			UpdateMaxPopulation(1);
-		}
+		}*/
 	}
 	private bool IsPointerOverUIObject()
 	{
@@ -136,9 +148,19 @@ public class TownCenter : BuildingBase
 	}
 
 	[Command]
-	public void UpdateResourceCountCmd(ResourceType resourceType, int count, int cost)
+	public virtual void CollectResource(Resource resource)
 	{
-		if(cost > actionPoint) { return; }
+		if (resource == null) { return; }
+		if (resource.canBeCollected == false) { return; }
+		if (resource.costToCollect > actionPoint) { return; }
+
+		UpdateResourceCount(resource.resourceType, resource.resourceCount);
+		UpdateResourceCount(ResourceType.ActionPoint, -resource.costToCollect);
+	}
+
+	[Server]
+	public void UpdateResourceCount(ResourceType resourceType, int count)
+	{
 		switch (resourceType)
 		{
 			case ResourceType.Wood:
@@ -147,10 +169,18 @@ public class TownCenter : BuildingBase
 			case ResourceType.Meat:
 				UpdateMeatCount(count);
 				break;
+			case ResourceType.CurrentPopulation:
+				UpdateCurrentPopulation(count);
+				break;
+			case ResourceType.MaxPopulation:
+				UpdateMaxPopulation(count);
+				break;
+			case ResourceType.ActionPoint:
+				UpdateActionPoint(count);
+				break;
 			default:
 				break;
 		}
-		UpdateActionPoint(-cost);
 	}
 
 	[Server]
@@ -260,7 +290,7 @@ public class TownCenter : BuildingBase
 		if (Physics.Raycast(ray, out hit))
 		{
 			TerrainHexagon selectedHexagon = hit.collider.GetComponent<TerrainHexagon>();
-			if(OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID) && !OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(selectedHexagon.Key)) 
+			if(OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID) && !OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(selectedHexagon)) 
 			{
 				DeselectEverything();
 				return; 
@@ -438,6 +468,35 @@ public class TownCenter : BuildingBase
 		ToggleSelectTerrainRpc(-1, false);
 	}
 
+	[Command]
+	public void SelectBuildingCmd(BuildingBase building)
+	{
+		SelectBuilding(building);
+	}
+
+	[Server]
+	public void SelectBuilding(BuildingBase building)
+	{
+		NetworkIdentity target = building.netIdentity;
+		menu_visible = true;
+		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
+	}
+
+	[Server]
+	public void DeselectBuilding(BuildingBase building)
+	{
+		NetworkIdentity target = building.netIdentity;
+		menu_visible = false;
+		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
+	}
+
+	[Command]
+	public void OnCloseTownCenterUI()
+	{
+		DeselectBuilding(this);
+	}
+
+
 	[TargetRpc]
 	public void ToggleSelectTerrainRpc(int terrainType, bool enable)
 	{
@@ -454,6 +513,11 @@ public class TownCenter : BuildingBase
 	public void SetHasTurn(bool newHasTurn)
 	{
 		hasTurn = newHasTurn;
+		foreach(UnitBase unit in OnlineGameManager.Instance.GetUnits(playerID))
+		{
+			unit.remainingMovesThisTurn = unit.unitProperties.moveRange;
+			unit.HasAttacked = false;
+		}
 		EnableNextTurnButton(newHasTurn);
 		if (hasTurn)
 		{
@@ -488,12 +552,38 @@ public class TownCenter : BuildingBase
 		OnlineGameManager.Instance.PlayerFinishedTurn(this);
 	}
 
+	[Command]
+	public void DeselectEverythingCmd()
+	{
+		DeselectEverything();
+	}
+
 	[Server]
 	private void DeselectEverything()
 	{
 		DeselectBuilding(this);
 		DeselectTerrain();
+		DeselectUnitCreationPanelRpc();
+		DeselectBuildingCreationPanelRpc();
 		if (Map.Instance.UnitToMove != null) { DeselectUnit(Map.Instance.UnitToMove); }
+	}
+
+	[TargetRpc]
+	private void DeselectUnitCreationPanelRpc()
+	{
+		if(uiManager != null)
+		{
+			uiManager.unitCreationUI.gameObject.SetActive(false);
+		}
+	}
+
+	[TargetRpc]
+	private void DeselectBuildingCreationPanelRpc()
+	{
+		if (uiManager != null)
+		{
+			uiManager.buildingCreationUI.gameObject.SetActive(false);
+		}
 	}
 
 	public override void OnStartClient()
@@ -518,26 +608,110 @@ public class TownCenter : BuildingBase
 		OnlineGameManager.Instance.RegisterPlayer(this, isHost);
 	}
 
+	[Server]
+	public bool ValidateCreateUnit(UnitBase unitScript)
+	{
+		return  (unitScript != null) &&
+				(OccupiedHex.OccupierUnit == null) &&
+				(unitScript.unitProperties.woodCostToCreate <= woodCount) &&
+				(unitScript.unitProperties.meatCostToCreate <= meatCount) &&
+				(unitScript.unitProperties.populationCostToCreate <= maxPopulation - currentPopulation) &&
+				(unitScript.unitProperties.actionPointCostToCreate <= actionPoint);
+
+	}
+
 	[Command]
 	public void CreateUnitCmd(string unitName)
 	{
-		if (!occupiedHex.OccupierUnit)
-		{
-			CreateUnit(this, unitName);
-		}
+		CreateUnit(this, unitName);
 	}
 
 	[Server]
-	public void CreateUnit(BuildingBase owner, string unitName)
+	public bool CreateUnit(BuildingBase owner, string unitName)
 	{
-		GameObject temp = Instantiate(NetworkRoomManagerWOT.singleton.spawnPrefabs.Find(prefab => prefab.name == unitName), transform.position + UnitBase.positionOffsetOnHexagons, Quaternion.identity);
-		temp.GetComponent<UnitBase>().playerColor = playerColor;
-		NetworkServer.Spawn(temp, gameObject);
-		temp.GetComponent<UnitBase>().occupiedHex = occupiedHex;
-		OnlineGameManager.Instance.RegisterUnit(netId, temp.GetComponent<UnitBase>());
-		temp.GetComponent<UnitBase>().playerID = netId;
-		occupiedHex.OccupierUnit = temp.GetComponent<UnitBase>();
+		GameObject unit = NetworkRoomManagerWOT.singleton.spawnPrefabs.Find(prefab => prefab.name == unitName);
+		if(unit == null) { return false; }
+		UnitBase unitScript = unit.GetComponent<UnitBase>();
+		if(ValidateCreateUnit(unitScript) == false) { return false; }
+
+		GameObject unitObject = Instantiate(unit, transform.position + UnitProperties.positionOffsetOnHexagons, Quaternion.identity);
+
+		unitScript = unitObject.GetComponent<UnitBase>();
+		unitScript.playerColor = playerColor;
+		unitScript.occupiedHex = OccupiedHex;
+		unitScript.playerID = netId;
+		OccupiedHex.OccupierUnit = unitScript;
+		NetworkServer.Spawn(unit, gameObject);
+		OnlineGameManager.Instance.RegisterUnit(netId, unitScript);
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
+
+		UpdateResourceCount(ResourceType.Wood, -unitScript.unitProperties.woodCostToCreate);
+		UpdateResourceCount(ResourceType.Meat, -unitScript.unitProperties.meatCostToCreate);
+		UpdateResourceCount(ResourceType.CurrentPopulation, unitScript.unitProperties.populationCostToCreate);
+		UpdateResourceCount(ResourceType.ActionPoint, -unitScript.unitProperties.actionPointCostToCreate);
+
+		return true;
+	}
+
+	[Command]
+	public void CreateBuildingCmd(string buildingName)
+	{
+		CreateBuilding(this, buildingName);
+	}
+
+	[Server]
+	public virtual bool CreateBuilding(BuildingBase owner, string buildingName)
+	{
+		GameObject building = NetworkRoomManagerWOT.singleton.spawnPrefabs.Find(prefab => prefab.name == buildingName);
+
+		if (building == null) { return false; }
+
+		BuildingBase buildingScript = building.GetComponent<BuildingBase>();
+
+		if (ValidateCreateBuilding(buildingScript) == false) { return false; }
+
+		GameObject buildingObject = Instantiate(building, transform.position + BuildingProperties.positionOffsetOnHexagons, Quaternion.identity);
+
+		buildingScript = buildingObject.GetComponent<BuildingBase>();
+		buildingScript.playerColor = playerColor;
+		buildingScript.OccupiedHex = OccupiedHex;
+		buildingScript.playerID = playerID;
+		NetworkServer.Spawn(building, gameObject);
+		if(buildingScript.buildingProperties.buildingType != BuildingType.House)
+		{
+			OccupiedHex.OccupierBuilding = buildingScript;
+		}
+		else
+		{
+			UpdateResourceCount(ResourceType.MaxPopulation, 2);
+		}
+		OnlineGameManager.Instance.RegisterBuilding(netId, buildingScript);
+		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
+
+		UpdateResourceCount(ResourceType.Wood, -buildingScript.buildingProperties.woodCostToCreate);
+		UpdateResourceCount(ResourceType.Meat, -buildingScript.buildingProperties.meatCostToCreate);
+		UpdateResourceCount(ResourceType.CurrentPopulation, -buildingScript.buildingProperties.populationCostToCreate);
+		UpdateResourceCount(ResourceType.ActionPoint, -buildingScript.buildingProperties.actionPointCostToCreate);
+
+		return true;
+	}
+
+	[Server]
+	public virtual bool ValidateCreateBuilding(/*SPTerrainHexagon buildOnTerrain, */BuildingBase buildingScript)
+	{/*
+		if(buildingScript.buildingProperties.buildingType != BuildingType.House)
+		{
+			return (buildingScript != null) &&
+					(buildOnTerrain.OccupierUnit == null) &&
+					(buildingScript.buildingProperties.actionPointCostToCreate <= actionPoint) &&
+					(unitScript.unitProperties.meatCostToCreate <= meatCount);
+		}
+		else
+		{
+
+		}
+		*/
+		return true;
 	}
 }
 /*

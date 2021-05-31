@@ -1082,7 +1082,8 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -26
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7428263951778639056, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
 --- !u!224 &1480855383018032497 stripped
 RectTransform:
@@ -1405,7 +1406,8 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 156
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7428263951778639056, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
 --- !u!224 &1684930438087078429 stripped
 RectTransform:
@@ -1535,7 +1537,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Warrior
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7428263951778639056, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 64141b5dadc70db4eb56a75cc1373ebd, type: 3}
 --- !u!224 &1873022285426025427 stripped
 RectTransform:

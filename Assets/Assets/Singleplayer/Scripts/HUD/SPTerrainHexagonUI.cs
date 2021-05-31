@@ -25,7 +25,6 @@ public class SPTerrainHexagonUI : MonoBehaviour
     {
         if (currentResource == null) { return; }
         terrainIcon.sprite = currentResource.obtainedFromTerrainIcon;
-        //terrainName.text = currentResource.obtainedFromTerrainType.ToString();
         terrainName.text = currentResource.obtainedFromTerrainName;
         description.text = currentResource.description;
 
@@ -43,7 +42,6 @@ public class SPTerrainHexagonUI : MonoBehaviour
         }
         bottomBar.SetActive(currentResource.canBeCollected);
         nextTurnButton.SetActive(false);
-
     }
 
     private void OnDisable()

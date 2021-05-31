@@ -1,6 +1,4 @@
-using Mirror;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -15,9 +13,11 @@ public class SPUIManager : MonoBehaviour
 	[SerializeField] private Text actionPointText;
 	[SerializeField] private Text currentToMaxPopulationText;
 	[SerializeField] private GameObject settingsMenu;
-	[SerializeField] [Scene] private string singleplayerScene;
+
+	[SerializeField] private string singleplayerScene;
 	[SerializeField] private InputField mapWidth;
 	[SerializeField] private InputField aiPlayerCount;
+
 	public SPTownCenterUI townCenterUI;
 	public SPTerrainHexagonUI terrainHexagonUI;
 	public SPUnitCreationPanel unitCreationUI;

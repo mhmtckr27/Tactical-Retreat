@@ -76,6 +76,7 @@ MonoBehaviour:
   - {fileID: 8663531919945395808, guid: 27c7a1b2770a75c4f886e825a70b990c, type: 3}
   - {fileID: 8817684899006194439, guid: 8a2f449168da25c4ab93ead9c0278732, type: 3}
   - {fileID: 6323004867853748578, guid: 42899c97e227b2a42b1616d844849b56, type: 3}
+  - {fileID: 1147478722433893387, guid: 19ee5f3d984f19247be2ac66e4b3d578, type: 3}
   showRoomGUI: 0
   minPlayers: 1
   roomPlayerPrefab: {fileID: 132530222994975048, guid: 30114c0b7b0ee6b4a880a930a1ff5098,

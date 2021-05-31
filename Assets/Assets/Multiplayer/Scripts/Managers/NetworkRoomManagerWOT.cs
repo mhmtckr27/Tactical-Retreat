@@ -5,14 +5,6 @@ using Mirror;
 
 public class NetworkRoomManagerWOT : NetworkRoomManager
 {
-	/*private static NetworkRoomManagerWOT instance;
-	public static NetworkRoomManagerWOT Instance
-	{
-		get
-		{
-			return instance;
-		}
-	}*/
 	[SerializeField] private GameObject MapPrefab;
 	[SerializeField] private GameObject onlineGameManagerPrefab;
 	[SerializeField] private List<Color> playerColors;
@@ -21,14 +13,6 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	public override void Awake()
 	{
 		base.Awake();
-		/*if(instance == null)
-		{
-			instance = this;
-		}
-		else if(instance != this)
-		{
-			Destroy(gameObject);
-		}*/
 		colorsUsed = new bool[playerColors.Count];
 	}
 	
@@ -57,7 +41,7 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			colorIndex = Random.Range(0, playerColors.Count);
 		} while (colorsUsed[colorIndex] == true);
 		TownCenter tempPlayer = player.GetComponent<TownCenter>();
-		tempPlayer.occupiedHex = Map.Instance.mapDictionary[hexKey];
+		tempPlayer.OccupiedHex = Map.Instance.mapDictionary[hexKey];
 		tempPlayer.playerColor = playerColors[colorIndex];
 		colorsUsed[colorIndex] = true;
 		return player;

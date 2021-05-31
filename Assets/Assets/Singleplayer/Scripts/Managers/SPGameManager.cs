@@ -79,7 +79,29 @@ public class SPGameManager : MonoBehaviour
         SpawnPlayers();
 	}
 
-	private void SpawnPlayers()
+    public void AddDiscoveredTerrains(uint playerID, string key, int distance)
+    {
+        bool shouldDiscover = false;
+        List<SPTerrainHexagon> distantNeighbours = SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary[key], distance);
+        if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
+        {
+            PlayersToDiscoveredTerrains.Add(playerID, new List<SPTerrainHexagon>());
+        }
+        foreach (SPTerrainHexagon hex in distantNeighbours)
+        {
+            if (!PlayersToDiscoveredTerrains[playerID].Contains(hex))
+            {
+                PlayersToDiscoveredTerrains[playerID].Add(hex);
+                shouldDiscover = true;
+            }
+        }
+        if (shouldDiscover)
+        {
+            players[playerID].ExploreTerrains(distantNeighbours, true);
+        }
+    }
+
+    private void SpawnPlayers()
 	{
         Vector3 startPos = Vector3.zero;
         bool isValidPosToSpawn = false;
@@ -257,28 +279,6 @@ public class SPGameManager : MonoBehaviour
         else
         {
             Debug.LogWarning("no player found: " + playerID);
-        }
-    }
-
-    public void AddDiscoveredTerrains(uint playerID, string key, int distance)
-    {
-        bool shouldDiscover = false;
-        List<SPTerrainHexagon> distantNeighbours = SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary[key], distance);
-        if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
-        {
-            PlayersToDiscoveredTerrains.Add(playerID, new List<SPTerrainHexagon>());
-        }
-        foreach (SPTerrainHexagon hex in distantNeighbours)
-        {
-            if (!PlayersToDiscoveredTerrains[playerID].Contains(hex))
-            {
-                PlayersToDiscoveredTerrains[playerID].Add(hex);
-                shouldDiscover = true;
-            }
-        }
-        if (shouldDiscover)
-        {
-            players[playerID].ExploreTerrains(distantNeighbours, true);
         }
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SPUnitCreationPanel : MonoBehaviour
+public class UnitCreationPanel : MonoBehaviour
 {
 	[SerializeField] private Image unitIcon;
 	[SerializeField] private Text unitName;
@@ -31,11 +31,11 @@ public class SPUnitCreationPanel : MonoBehaviour
 	[SerializeField] private Color enoughResourceColor;
 	[SerializeField] private Color notEnoughResourceColor;
 
-	public SPTownCenter OwnerPlayer { get; set; }
+	public TownCenter OwnerPlayer { get; set; }
 	public UnitProperties UnitProperties { get; set; }
 	private bool canCreate;
 
-	public void Init(SPTownCenter ownerPlayer, UnitProperties unitProperties)
+	public void Init(TownCenter ownerPlayer, UnitProperties unitProperties)
 	{
 		this.OwnerPlayer = ownerPlayer;
 		this.unitPrefab = unitProperties.unitPrefab;
@@ -95,23 +95,13 @@ public class SPUnitCreationPanel : MonoBehaviour
 
 	public void OnCreateButton()
 	{
-		OwnerPlayer.CreateUnit(OwnerPlayer, unitPrefab.name);
+		OwnerPlayer.CreateUnitCmd(unitPrefab.name);
 		gameObject.SetActive(false);
 	}
 
 	public void OnBackButton()
 	{
 		gameObject.SetActive(false);
-		OwnerPlayer.SelectBuilding(OwnerPlayer);
-	}
-
-	private void Update()
-	{
-		/*//TODO: coroutine kullan.
-		if (Input.GetMouseButton(0) && gameObject.activeSelf &&
-			!RectTransformUtility.RectangleContainsScreenPoint(gameObject.GetComponent<RectTransform>(), Input.mousePosition,null))
-		{
-			gameObject.SetActive(false);
-		}*/
+		OwnerPlayer.SelectBuildingCmd(OwnerPlayer);
 	}
 }

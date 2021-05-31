@@ -7,9 +7,11 @@ using Mirror;
 public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
-	[SerializeField] private GameObject resource;
+	[SerializeField] private GameObject resourceGameObject;
+	[SerializeField] public Resource resource;
 
-	[SyncVar] public GameObject unexploredBlock;
+	//TODO: attention pls! eger problem yaratirsa syncvar yap, sebebini bilmiyorum :d
+	/*[SyncVar] */public GameObject unexploredBlock;
 
 	private bool isExplored;
 	public bool IsExplored
@@ -131,14 +133,15 @@ public class TerrainHexagon : NetworkBehaviour
 	{
 		if(newVal)
 		{
-			Destroy(resource);
+			NetworkServer.Destroy(resourceGameObject);
+			Destroy(resourceGameObject);
 		}
 	}
 
 	[Server]
 	public void UpdateTerrainType()
 	{
-		Destroy(resource);
+		Destroy(resourceGameObject);
 		terrainType = TerrainType.Plain;
 	}
 

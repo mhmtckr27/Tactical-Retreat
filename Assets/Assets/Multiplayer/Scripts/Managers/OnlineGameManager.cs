@@ -5,10 +5,10 @@ using Mirror;
 
 public class OnlineGameManager : NetworkBehaviour
 {
-	[SerializeField] private int totalPlayerCount;
 	private static OnlineGameManager instance;
 	public static OnlineGameManager Instance { get => instance; }
-	public SyncDictionary<uint, List<string>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
+
+	[SerializeField] private int totalPlayerCount;
 
 	[Server]
 	private void Awake()
@@ -22,11 +22,13 @@ public class OnlineGameManager : NetworkBehaviour
 			Destroy(gameObject);
 		}
 	}
-
+	//if sth goes wrong, make it syncdictionary :D
+	private Dictionary<uint, List<TerrainHexagon>> playersToDiscoveredTerrains = new Dictionary<uint, List<TerrainHexagon>>();
+	public Dictionary<uint, List<TerrainHexagon>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
 	private List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
-	private SyncDictionary<uint, List<string>> playersToDiscoveredTerrains = new SyncDictionary<uint, List<string>>();
+	private Dictionary<uint, List<BuildingBase>> buildings = new Dictionary<uint, List<BuildingBase>>();
 
 	private bool canGiveTurnToNextPlayer = true;
 	private int hasTurnIndex = 0;
@@ -50,13 +52,13 @@ public class OnlineGameManager : NetworkBehaviour
 		List<TerrainHexagon> distantNeighbours = Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary[key], distance);
 		if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
 		{
-			PlayersToDiscoveredTerrains.Add(playerID, new List<string>());
+			PlayersToDiscoveredTerrains.Add(playerID, new List<TerrainHexagon>());
 		}
 		foreach (TerrainHexagon hex in distantNeighbours)
 		{
-			if (!PlayersToDiscoveredTerrains[playerID].Contains(hex.Key))
+			if (!PlayersToDiscoveredTerrains[playerID].Contains(hex))
 			{
-				PlayersToDiscoveredTerrains[playerID].Add(hex.Key);
+				PlayersToDiscoveredTerrains[playerID].Add(hex);
 				shouldDiscover = true;
 			}
 		}
@@ -73,6 +75,7 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			players.Add(player.netId, player);
 			units.Add(player.netId, new List<UnitBase>());
+			buildings.Add(player.playerID, new List<BuildingBase>());
 			playerList.Add(player);
 			players[player.netId].isHost = isHost;
 			Debug.Log("Player-" + player.netId + " has joined the game");
@@ -86,6 +89,7 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			players.Remove(player.netId);
 			units.Remove(player.netId);
+			buildings.Remove(player.netId);
 			if (playerList.Contains(player))
 			{
 				if(hasTurnIndex == playerList.IndexOf(player))
@@ -93,6 +97,8 @@ public class OnlineGameManager : NetworkBehaviour
 					hasTurnIndex++;
 				}
 				playerList.Remove(player);
+				NetworkServer.Destroy(player.gameObject);
+				Destroy(player.gameObject);
 			}
 			Debug.Log("Player-" + player.netId + " has left the game");
 		}
@@ -111,6 +117,18 @@ public class OnlineGameManager : NetworkBehaviour
 	}
 
 	[Server]
+	public void RegisterBuilding(uint playerID, BuildingBase building)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			if (!buildings[playerID].Contains(building))
+			{
+				buildings[playerID].Add(building);
+			}
+		}
+	}
+
+	[Server]
 	public void UnregisterUnit(uint playerID, UnitBase unit)
 	{
 		if (units.ContainsKey(playerID))
@@ -121,12 +139,12 @@ public class OnlineGameManager : NetworkBehaviour
 				if ((units[playerID].Count == 0)/* && players[playerID].isConquered*/)
 				{
 					//players[playerID].transform.localScale = Vector3.zero;
-					if (!players[playerID].isHost)
+					/*if (!players[playerID].isHost)
 					{
 						GameObject player = players[playerID].gameObject;
 						UnregisterPlayer(players[playerID]);
 						NetworkServer.Destroy(player);
-					}
+					}*/
 				}
 			}
 			else
@@ -138,6 +156,62 @@ public class OnlineGameManager : NetworkBehaviour
 		{
 			Debug.LogWarning("no player found: " + playerID);
 		}
+	}
+
+	[Server]
+	public void UnregisterBuilding(uint playerID, BuildingBase building)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			if (buildings[playerID].Contains(building))
+			{
+				buildings[playerID].Remove(building);
+				if ((buildings[playerID].Count == 0)/* && players[playerID].isConquered*/)
+				{
+					/*//players[playerID].transform.localScale = Vector3.zero;
+                     GameObject player = players[playerID].gameObject;
+                     UnregisterPlayer(players[playerID]);
+                     Destroy(player.gameObject);*/
+				}
+			}
+			else
+			{
+				Debug.LogWarning("no building found");
+			}
+		}
+		else
+		{
+			Debug.LogWarning("no player found: " + playerID);
+		}
+	}
+
+	[Server]
+	public List<UnitBase> GetUnits(uint playerID)
+	{
+		if (units.ContainsKey(playerID))
+		{
+			return units[playerID];
+		}
+		return null;
+	}
+
+	[Server]
+	public List<BuildingBase> GetBuildings(uint playerID)
+	{
+		if (buildings.ContainsKey(playerID))
+		{
+			return buildings[playerID];
+		}
+		return null;
+	}
+
+	public TownCenter GetPlayer(uint playerID)
+	{
+		if (units.ContainsKey(playerID))
+		{
+			return players[playerID];
+		}
+		return null;
 	}
 
 	[Server]

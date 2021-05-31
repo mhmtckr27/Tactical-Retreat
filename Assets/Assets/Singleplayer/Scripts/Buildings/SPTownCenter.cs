@@ -24,8 +24,6 @@ public class SPTownCenter : SPBuildingBase
 	public event Action<int> OnActionPointChange;
 	public event Action<int, int> OnCurrentToMaxPopulationChange;
 
-
-
 	public PluggableAI PluggableAI { get; set; }
 	public bool IsAI { get; set; }
 	private GameObject canvas;
@@ -34,24 +32,6 @@ public class SPTownCenter : SPBuildingBase
 	{
 		canvas = Instantiate(canvasPrefab);
 		uiManager = canvas.GetComponent<SPUIManager>();
-	}
-
-	public virtual void OnCloseTownCenterUI()
-	{
-		DeselectBuilding(this);
-	}
-
-	public virtual void SelectBuilding(SPBuildingBase building)
-	{
-		menu_visible = true;
-		ToggleBuildingMenu(menu_visible);
-	}
-
-
-	public virtual void DeselectBuilding(SPBuildingBase building)
-	{
-		menu_visible = false;
-		ToggleBuildingMenu(menu_visible);
 	}
 
 	protected override void Start()
@@ -463,6 +443,18 @@ public class SPTownCenter : SPBuildingBase
 		ToggleSelectTerrain(-1, false);
 	}
 
+	public virtual void SelectBuilding(SPBuildingBase building)
+	{
+		menu_visible = true;
+		ToggleBuildingMenu(menu_visible);
+	}
+
+	public virtual void DeselectBuilding(SPBuildingBase building)
+	{
+		menu_visible = false;
+		ToggleBuildingMenu(menu_visible);
+	}
+
 	public virtual void ToggleSelectTerrain(int terrainType, bool enable)
 	{
 		uiManager.terrainHexagonUI.SetEnable(terrainType, enable);
@@ -472,6 +464,12 @@ public class SPTownCenter : SPBuildingBase
 	{
 		SPMap.Instance.selectedHexagon = null;
 	}
+
+	public virtual void OnCloseTownCenterUI()
+	{
+		DeselectBuilding(this);
+	}
+
 
 	public virtual void SetHasTurn(bool newHasTurn)
 	{
@@ -556,8 +554,10 @@ public class SPTownCenter : SPBuildingBase
 	{
 		return	(unitScript != null) &&
 				(OccupiedHex.OccupierUnit == null) &&
-				(unitScript.unitProperties.actionPointCostToCreate <= actionPoint) &&
-				(unitScript.unitProperties.meatCostToCreate <= meatCount);
+				(unitScript.unitProperties.woodCostToCreate <= woodCount) &&
+				(unitScript.unitProperties.meatCostToCreate <= meatCount) &&
+				(unitScript.unitProperties.populationCostToCreate <= maxPopulation - currentPopulation) &&
+				(unitScript.unitProperties.actionPointCostToCreate <= actionPoint);
 	}
 
 	//TODO update

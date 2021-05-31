@@ -6,22 +6,28 @@ using Mirror;
 
 public class BuildingBase : NetworkBehaviour
 {
-	[SerializeField] private GameObject canvasPrefab;
-	[SerializeField] public BuildingType buildingType;
+	[SerializeField] public BuildingProperties buildingProperties;
+	//[SerializeField] public BuildingType buildingType;
 	
-	/*[SyncVar]*/ public TerrainHexagon occupiedHex;
-	[SyncVar] public uint playerID;
+	/*[SyncVar]*/ public TerrainHexagon OccupiedHex { get; set; }
+	[HideInInspector][SyncVar] public uint playerID;
 	
-	protected TownCenterUI buildingMenuUI;
+	protected BuildingUI buildingMenuUI;
 	protected UIManager uiManager;
 	protected bool menu_visible = false;
-	private GameObject canvas;
+
+	[HideInInspector][SyncVar(hook = nameof(OnPlayerColorSet))] public Color playerColor;
+	//SyncList<string> discoveredTerrains = new SyncList<string>();
+	public void OnPlayerColorSet(Color oldColor, Color newColor)
+	{
+		if(buildingProperties != null && buildingProperties.buildingType != BuildingType.House)
+		{
+			GetComponent<Renderer>().materials[1].color = newColor;
+		}
+	}
 
 	protected virtual void Start()
 	{
-		if (!isLocalPlayer) { return; }
-		canvas = Instantiate(canvasPrefab);
-		uiManager = canvas.GetComponent<UIManager>();
 	}
 
 	[Command]
@@ -35,27 +41,7 @@ public class BuildingBase : NetworkBehaviour
 		}*/
 	}
 
-	[Server]
-	public void SelectBuilding(BuildingBase building)
-	{
-		NetworkIdentity target = building.netIdentity;
-		menu_visible = true;
-		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
-	}
 
-	[Command]
-	public void OnCloseTownCenterUI()
-	{
-		DeselectBuilding(this);
-	} 
-
-	[Server]
-	public void DeselectBuilding(BuildingBase building)
-	{
-		NetworkIdentity target = building.netIdentity;
-		menu_visible = false;
-		ToggleBuildingMenuRpc(target.connectionToClient, menu_visible);
-	}
 
 	[TargetRpc]
 	public void ToggleBuildingMenuRpc(NetworkConnection target, bool enable)

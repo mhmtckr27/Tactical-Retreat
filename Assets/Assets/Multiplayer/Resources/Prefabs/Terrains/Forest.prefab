@@ -118,9 +118,12 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   terrainType: 2
-  resource: {fileID: 8062767962725621943}
+  resourceGameObject: {fileID: 8062767962725621943}
+  resource: {fileID: 11400000, guid: 39ab0f90d9c20d44aac31786345a0edc, type: 2}
+  unexploredBlock: {fileID: 2535368626507396376, guid: 99e8140b561b34b4f84ad86a5e8f894c,
+    type: 3}
+  isResourceCollected: 0
   buildablesOnThisTerrain: 
-  occupierUnit: {fileID: 0}
 --- !u!114 &7455576006764090492
 MonoBehaviour:
   m_ObjectHideFlags: 0

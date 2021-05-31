@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
-using System;
 
 public class Map : NetworkBehaviour
 {
@@ -65,245 +63,6 @@ public class Map : NetworkBehaviour
 		}
 	}
 
-	#region Singleplayer
-
-	public void SPGenerateMap()
-	{
-		string coordinate_key = 0 + "_" + 0 + "_" + 0;
-		mapDictionary.Add(coordinate_key, Instantiate(SPGetRandomBlock(), Vector3.zero, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-		mapDictionary["0_0_0"].SetCoordinates(0, 0, 0);
-		TerrainHexagon initialHex = mapDictionary["0_0_0"];
-		TerrainHexagon currentHex = initialHex;
-
-		SPCreateUndiscoveredBlocks(currentHex);
-
-		int k = 0;
-		while (k < mapWidth - 1)
-		{
-			//north neighbour
-			if (!mapDictionary.ContainsKey(currentHex.Neighbour_N))
-			{
-				mapDictionary.Add(currentHex.Neighbour_N, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-				mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
-				currentHex = mapDictionary[currentHex.Neighbour_N];
-
-				SPCreateUndiscoveredBlocks(currentHex);
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//south-east neighbour		
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_SE))
-				{
-					mapDictionary.Add(currentHex.Neighbour_SE, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_SE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SE[0], currentHex.Coordinates[1] + neighbourOffset_SE[1], currentHex.Coordinates[2] + neighbourOffset_SE[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_SE];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//south neighbour
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_S))
-				{
-					mapDictionary.Add(currentHex.Neighbour_S, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_S].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_S[0], currentHex.Coordinates[1] + neighbourOffset_S[1], currentHex.Coordinates[2] + neighbourOffset_S[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_S];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//south-west neighbour
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_SW))
-				{
-					mapDictionary.Add(currentHex.Neighbour_SW, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(-blockHeight / 2, 0, blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_SW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_SW[0], currentHex.Coordinates[1] + neighbourOffset_SW[1], currentHex.Coordinates[2] + neighbourOffset_SW[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_SW];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//north-west neighbour
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_NW))
-				{
-					mapDictionary.Add(currentHex.Neighbour_NW, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_NW].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NW[0], currentHex.Coordinates[1] + neighbourOffset_NW[1], currentHex.Coordinates[2] + neighbourOffset_NW[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_NW];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//north neighbour
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_N))
-				{
-					mapDictionary.Add(currentHex.Neighbour_N, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight, 0, 0), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_N].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_N[0], currentHex.Coordinates[1] + neighbourOffset_N[1], currentHex.Coordinates[2] + neighbourOffset_N[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_N];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-			}
-			for (int j = 0; j < k + 1; j++)
-			{
-				//north-east neighbour
-				if (!mapDictionary.ContainsKey(currentHex.Neighbour_NE))
-				{
-					mapDictionary.Add(currentHex.Neighbour_NE, Instantiate(SPGetRandomBlock(), currentHex.transform.position + new Vector3(blockHeight / 2, 0, -blockOffsetZ), Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-					mapDictionary[currentHex.Neighbour_NE].SetCoordinates(currentHex.Coordinates[0] + neighbourOffset_NE[0], currentHex.Coordinates[1] + neighbourOffset_NE[1], currentHex.Coordinates[2] + neighbourOffset_NE[2]);
-					currentHex = mapDictionary[currentHex.Neighbour_NE];
-
-					SPCreateUndiscoveredBlocks(currentHex);
-				}
-				else
-				{
-					currentHex = mapDictionary[currentHex.Neighbour_NE];
-				}
-			}
-			k++;
-		}
-	}
-
-	public void SPDilateMap()
-	{
-		List<string> dilateWaterBlocks = new List<string>();
-		List<string> dilateGroundBlocks = new List<string>();
-		foreach (KeyValuePair<string, TerrainHexagon> keyValuePair in mapDictionary)
-		{
-			bool mustDilate = true;
-			if (keyValuePair.Value.terrainType == TerrainType.Water)
-			{
-				for (int j = 0; j < 6; j++)
-				{
-					if (mapDictionary.ContainsKey(keyValuePair.Value.NeighbourKeys[j]))
-					{
-						if (mapDictionary[keyValuePair.Value.NeighbourKeys[j]].terrainType == TerrainType.Water)
-						{
-							mustDilate = false;
-						}
-					}
-					if (!mustDilate)
-					{
-						break;
-					}
-				}
-				if (!mustDilate)
-				{
-					continue;
-				}
-				else
-				{
-					dilateWaterBlocks.Add(keyValuePair.Key);
-				}
-			}
-			else
-			{
-				for (int j = 0; j < 6; j++)
-				{
-					if (mapDictionary.ContainsKey(keyValuePair.Value.NeighbourKeys[j]))
-					{
-						if (mapDictionary[keyValuePair.Value.NeighbourKeys[j]].terrainType != TerrainType.Water)
-						{
-							mustDilate = false;
-						}
-					}
-					if (!mustDilate)
-					{
-						break;
-					}
-				}
-				if (!mustDilate)
-				{
-					continue;
-				}
-				else
-				{
-					dilateGroundBlocks.Add(keyValuePair.Key);
-				}
-			}
-		}
-
-		for (int i = 0; i < dilateWaterBlocks.Count; i++)
-		{
-			TerrainHexagon temp = mapDictionary[dilateWaterBlocks[i]];
-			mapDictionary.Remove(dilateWaterBlocks[i]);
-			mapDictionary.Add(dilateWaterBlocks[i], Instantiate(SPGetRandomBlockExceptWater(), temp.transform.position, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-			mapDictionary[dilateWaterBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
-			Destroy(temp.gameObject);
-		}
-
-		for (int i = 0; i < dilateGroundBlocks.Count; i++)
-		{
-			TerrainHexagon temp = mapDictionary[dilateGroundBlocks[i]];
-			mapDictionary.Remove(dilateGroundBlocks[i]);
-			mapDictionary.Add(dilateGroundBlocks[i], Instantiate(SPGetWaterBlock(), temp.transform.position, Quaternion.identity/*, transform*/).GetComponent<TerrainHexagon>());
-			mapDictionary[dilateGroundBlocks[i]].SetCoordinates(temp.Coordinates[0], temp.Coordinates[1], temp.Coordinates[2]);
-			Destroy(temp.gameObject);
-		}
-	}
-
-	private void SPCreateUndiscoveredBlocks(TerrainHexagon currentHex)
-	{
-		GameObject tempUndiscovered = Instantiate(undiscoveredBlock, currentHex.transform.position, Quaternion.identity);
-		currentHex.unexploredBlock = tempUndiscovered;
-	}
-
-	private GameObject SPGetRandomBlock()
-	{
-		float result = UnityEngine.Random.Range((float)0, 1);
-		int index = 0;
-		for (int i = 0; i < terrainPrefabs.Length; i++)
-		{
-			if (result < terrainPrefabs[i].creationProbability)
-			{
-				index = i;
-				break;
-			}
-		}
-		return terrainPrefabs[index].blockPrefab;
-	}
-
-	private GameObject SPGetRandomBlockExceptWater()
-	{
-		GameObject temp;
-		do
-		{
-			temp = SPGetRandomBlock();
-		} while (temp.GetComponent<TerrainHexagon>().terrainType == TerrainType.Water);
-		return temp;
-	}
-
-	private GameObject SPGetWaterBlock()
-	{
-		return terrainPrefabs[1].blockPrefab;
-	}
-	#endregion
-
-
-	#region Multiplayer
-	#endregion
-
-	#region Common
-	#endregion
-
-
-
-	public void Explore(string key)
-	{
-		mapDictionary[key].gameObject.SetActive(false);
-	}
-
-	public void RequestCreateUnit(GameObject unit)
-	{
-		NetworkServer.Spawn(unit);
-	}
-
 	[Server]
 	public void GenerateMap()
 	{
@@ -314,7 +73,7 @@ public class Map : NetworkBehaviour
 		TerrainHexagon currentHex = initialHex;
 		NetworkServer.Spawn(initialHex.gameObject);
 
-		CreateUndiscoveredBlocks(currentHex);
+		//CreateUndiscoveredBlocks(currentHex);
 
 		int k = 0;
 		while (k < mapWidth - 1)
@@ -327,7 +86,7 @@ public class Map : NetworkBehaviour
 				NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 				currentHex = mapDictionary[currentHex.Neighbour_N];
 
-				CreateUndiscoveredBlocks(currentHex);
+				//CreateUndiscoveredBlocks(currentHex);
 			}
 			for (int j = 0; j < k + 1; j++)
 			{
@@ -339,7 +98,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SE];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -352,7 +111,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_S].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_S];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 
 			}
@@ -366,7 +125,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_SW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_SW];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -379,7 +138,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NW].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NW];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -392,7 +151,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_N].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_N];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 			}
 			for (int j = 0; j < k + 1; j++)
@@ -405,7 +164,7 @@ public class Map : NetworkBehaviour
 					NetworkServer.Spawn(mapDictionary[currentHex.Neighbour_NE].gameObject);
 					currentHex = mapDictionary[currentHex.Neighbour_NE];
 
-					CreateUndiscoveredBlocks(currentHex);
+					//CreateUndiscoveredBlocks(currentHex);
 				}
 				else
 				{
@@ -417,17 +176,14 @@ public class Map : NetworkBehaviour
 	}
 
 	[Server]
-	private void CreateUndiscoveredBlocks(TerrainHexagon currentHex)
+	private void CreateUndiscoveredBlocks()
 	{
-		GameObject tempUndiscovered = Instantiate(undiscoveredBlock, currentHex.transform.position, Quaternion.identity);
-		NetworkServer.Spawn(tempUndiscovered);
-		currentHex.unexploredBlock = tempUndiscovered;
-	}
-
-	[Command]
-	public void ClearSelectedHexagon()
-	{
-		Map.Instance.selectedHexagon = null;
+		foreach(KeyValuePair<string, TerrainHexagon> kvp in mapDictionary)
+		{
+			GameObject tempUndiscovered = Instantiate(undiscoveredBlock, kvp.Value.transform.position, Quaternion.identity);
+			NetworkServer.Spawn(tempUndiscovered);
+			kvp.Value.unexploredBlock = tempUndiscovered;
+		}
 	}
 
 	//replace water blocks that are single (don't have any water neighbour) with random ground block.
@@ -571,7 +327,7 @@ public class Map : NetworkBehaviour
 
 	//this function gets only reachable neighbours within certain distance, considering if the unit calling this function can move to that hexagon.
 	[Server]
-	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start, int moveRange, int attackRange, List<TerrainType> blockedHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
+	public List<TerrainHexagon> GetReachableHexagons(TerrainHexagon start, int moveRange, int attackRange, List<TerrainType> blockedToMoveHexagonTypes, List<TerrainType> blockedToAttackHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
 	{
 		List<TerrainHexagon> reachableHexagons = new List<TerrainHexagon>();
 		List<List<TerrainHexagon>> visitedHexagons = new List<List<TerrainHexagon>>();
@@ -589,27 +345,54 @@ public class Map : NetworkBehaviour
 				{
 					TerrainHexagon neighbour =  GetNeighbourInDirection(hex, direction);
 
-					if (neighbour != null && !blockedHexagonTypes.Contains(neighbour.terrainType))
+					if (neighbour != null)
 					{
 						if ((neighbour.OccupierUnit == null))
 						{
-							if (!reachableHexagons.Contains(neighbour))
+							if (!blockedToMoveHexagonTypes.Contains(neighbour.terrainType))
 							{
-								if (i < (moveRange + 1))
+								if (!reachableHexagons.Contains(neighbour))
 								{
-									reachableHexagons.Add(neighbour);
+									if (i < (moveRange + 1))
+									{
+										reachableHexagons.Add(neighbour);
+									}
+									visitedHexagons[i].Add(neighbour);
 								}
-								visitedHexagons[i].Add(neighbour);
 							}
-						}
-						else if ((neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)))
-						{
-							occupiedNeighbours.Add(neighbour);
 						}
 					}
 				}
 			}
 		}
+
+		//populating occupied neighbour array.
+		visitedHexagons = new List<List<TerrainHexagon>>();
+		visitedHexagons.Add(new List<TerrainHexagon>());
+		visitedHexagons[0].Add(start);
+
+		for (int i = 1; i < attackRange + 1; i++)
+		{
+			visitedHexagons.Add(new List<TerrainHexagon>());
+			foreach (TerrainHexagon hex in visitedHexagons[i - 1])
+			{
+				for (int direction = 0; direction < 6; direction++)
+				{
+					TerrainHexagon neighbour = GetNeighbourInDirection(hex, direction);
+
+					if (neighbour != null)
+					{
+						if ((neighbour.OccupierUnit != null) && (neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
+						{
+							//Debug.LogWarning("occupied neighbour:" + neighbour.Key);
+							occupiedNeighbours.Add(neighbour);
+						}
+						visitedHexagons[i].Add(neighbour);
+					}
+				}
+			}
+		}
+
 		return reachableHexagons;
 	}
 
@@ -630,7 +413,7 @@ public class Map : NetworkBehaviour
 	}
 
 	[Server]
-	public List<TerrainHexagon> AStar(TerrainHexagon from, TerrainHexagon to, List<TerrainType> blockedTerrains)
+	public List<TerrainHexagon> AStar(TerrainHexagon from, TerrainHexagon to, List<TerrainType> blockedToMoveHexagonTypes, List<TerrainType> blockedToAttackHexagonTypes, List<TerrainHexagon> occupiedNeighbours)
 	{
 		PriorityQueue<TerrainHexagon> frontier = new PriorityQueue<TerrainHexagon>(true);
 		frontier.Enqueue(0, from);
@@ -645,7 +428,7 @@ public class Map : NetworkBehaviour
 			{
 				break;
 			}
-			foreach(TerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, 1, blockedTerrains, null))
+			foreach(TerrainHexagon next_hexagon in GetReachableHexagons(current_hexagon, 1, 1, blockedToMoveHexagonTypes, blockedToAttackHexagonTypes, occupiedNeighbours))
 			{
 				//I can change constant value of 1 to a variable in the future depending on the movement cost (they may be affected by terrain conditions)
 				int new_cost = currentCost[current_hexagon] + 1;
@@ -674,19 +457,6 @@ public class Map : NetworkBehaviour
 		path.Insert(0, from);
 		return path;
 	}
-
-	/*[Server]
-	public void SetTerrainHexagonOccupier(TerrainHexagon hexagon, UnitBase occupierUnit)
-	{
-		if (mapDictionary.ContainsValue(hexagon))
-		{
-			mapDictionary[hexagon.Key].occupierUnit = occupierUnit;
-		}
-		if(occupierUnit != null)
-		{
-			occupierUnit.occupiedHexagon = hexagon;
-		}
-	}*/
 }
 
 public enum State

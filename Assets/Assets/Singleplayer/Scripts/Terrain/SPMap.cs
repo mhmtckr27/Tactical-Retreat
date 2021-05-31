@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SPMap : MonoBehaviour
 {
-
 	private const float blockHeight = 1.73f;
 	private const float blockWidth = 2f;
 	private const float blockOffsetZ = 0.75f * blockWidth;
@@ -287,16 +286,6 @@ public class SPMap : MonoBehaviour
 	}
 	#endregion
 
-	public void Explore(string key)
-	{
-		mapDictionary[key].gameObject.SetActive(false);
-	}
-
-	public void ClearSelectedHexagon()
-	{
-		SPMap.Instance.selectedHexagon = null;
-	}
-
 	/// <summary>
 	/// Gets all neighbours within certain distance, no matter if blocked or water block etc.
 	/// </summary>
@@ -343,10 +332,8 @@ public class SPMap : MonoBehaviour
 
 					if (neighbour != null)
 					{
-						//Debug.LogWarning("neighbour:" + neighbour.Key);
 						if ((neighbour.OccupierUnit == null))
 						{
-							//Debug.LogWarning("nonoccupied neighbour:" + neighbour.Key);
 							if (!blockedToMoveHexagonTypes.Contains(neighbour.terrainType))
 							{
 								if (!reachableHexagons.Contains(neighbour))
@@ -359,12 +346,6 @@ public class SPMap : MonoBehaviour
 								}
 							}
 						}
-						/*else if ((neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
-						{
-							Debug.LogWarning("occupied neighbour:" + neighbour.Key);
-							occupiedNeighbours.Add(neighbour);
-							visitedHexagons[i].Add(neighbour);
-						}*/
 					}
 				}
 			}

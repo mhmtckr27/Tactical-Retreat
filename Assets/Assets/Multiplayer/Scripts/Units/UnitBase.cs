@@ -7,29 +7,19 @@ using UnityEngine.UI;
 
 public class UnitBase : NetworkBehaviour
 {
-	public static Vector3 positionOffsetOnHexagons = new Vector3(-0.365f, 0, 0);
-	[SerializeField] protected UnitType unitType;
-	[SerializeField] protected UnitCombatType unitCombatType;
-	[SerializeField] protected Vector3 initialRotation;
-	[Header("Combat")]
-	protected int currentHealth;
-	[SerializeField] protected int maxHealth;
-	[SerializeField] protected int armor;
-	[SerializeField] protected int damage;
-	[SerializeField] protected int moveRange;
-	[SerializeField] protected int attackRange;
-	protected bool hasAttacked = false;
-	[SerializeField] protected Image healthBar;
-	[SerializeField] protected GameObject hitBloodParticle;	
-	[SerializeField] protected GameObject deathParticle;
-	[Header("Movement")]
-	[SerializeField] protected int explorationDistance = 2;
-	[SerializeField] protected float lerpSpeed = 0.2f;
-	[SerializeField] protected float turnSpeed = 100f;
-	[SerializeField] protected float snapToPositionThreshold = 0.1f;
-	[SerializeField] protected float waitBetweenMovement = 0.02f;
+	public bool isPendingDead;
+	public int currentHealth;
+	public int currentArmor;
+	public bool HasAttacked { get; set; }
 
-	protected bool isMoving;
+	[SerializeField] public GameObject canvas;
+	[SerializeField] protected Image healthBar;
+	[SerializeField] protected Image armorBar;
+	[SerializeField] public UnitProperties unitProperties;
+
+	protected AudioSource audioSource;
+
+	public bool IsMoving { get; set; }
 
 	[SyncVar(hook = nameof(OnPlayerColorChange))] public Color playerColor;
 	
@@ -44,9 +34,9 @@ public class UnitBase : NetworkBehaviour
 	protected List<TerrainHexagon> occupiedNeighboursWithinRange;
 	public SyncList<TerrainHexagon> path = new SyncList<TerrainHexagon>();
 
-	public List<TerrainType> blockedTerrains;
 	public TerrainHexagon occupiedHex;
 	[SyncVar] public int remainingMovesThisTurn;
+
 	[Server]
 	public bool CanMoveCmd() 
 	{
@@ -71,15 +61,19 @@ public class UnitBase : NetworkBehaviour
 	public override void OnStartServer()
 	{
 		base.OnStartServer();
-		currentHealth = maxHealth;
+		currentHealth = unitProperties.health;
 	}
 	#region Client
 	private void Awake()
 	{
 		neighboursWithinRange = new List<TerrainHexagon>();
 		occupiedNeighboursWithinRange = new List<TerrainHexagon>();
-		remainingMovesThisTurn = moveRange;
-		transform.eulerAngles = initialRotation;
+		remainingMovesThisTurn = unitProperties.moveRange;
+		transform.eulerAngles = unitProperties.initialRotation;
+		HasAttacked = true;
+		currentArmor = unitProperties.armor;
+		currentHealth = unitProperties.health;
+		audioSource = GetComponent<AudioSource>();
 	}
 	private void Start()
 	{
@@ -90,7 +84,7 @@ public class UnitBase : NetworkBehaviour
 	[Command]
 	public void InitCmd()
 	{
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, explorationDistance);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
 	}
 
 	/*public bool TryMoveTo(TerrainHexagon to)
@@ -108,31 +102,33 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
+
+	//TODO: Ienumarator yap ve yield return yap
 	[TargetRpc]
 	public void RpcMove(Vector3 to)
 	{
 		TerrainHexagon[] tempPath = new TerrainHexagon[path.Count];
 		path.CopyTo(tempPath,0);
-		StartCoroutine(MoveRoutine(to + positionOffsetOnHexagons));
+		StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons));
 	}	
 	
 	[Command]
 	public void SetIsMovingCmd(bool isMoving)
 	{
-		this.isMoving = isMoving;
+		this.IsMoving = isMoving;
 	}
 
 	protected IEnumerator RotateRoutine(Quaternion lookAt)
 	{
 		while (true)
 		{
-			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * turnSpeed);
+			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * unitProperties.turnSpeed);
 			if(Quaternion.Angle(transform.rotation, lookAt) < 5f)
 			{
 				transform.rotation = lookAt;
 				break;
 			}
-			yield return new WaitForSeconds(waitBetweenMovement);
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
 	}
 
@@ -145,13 +141,13 @@ public class UnitBase : NetworkBehaviour
 		while (true)
 		{
 			Vector3 oldPos = transform.position;
-			transform.position = Vector3.Lerp(oldPos, moveToPosition, lerpSpeed);
-			if(Vector3.Distance(transform.position, moveToPosition) < snapToPositionThreshold)
+			transform.position = Vector3.Lerp(oldPos, moveToPosition, unitProperties.lerpSpeed);
+			if(Vector3.Distance(transform.position, moveToPosition) < unitProperties.snapToPositionThreshold)
 			{
 				transform.position = moveToPosition;
 				break;
 			}	
-			yield return new WaitForSeconds(waitBetweenMovement);
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
 		ExploreTerrains();
 		yield return StartCoroutine(RotateRoutine(oldRot));
@@ -161,7 +157,7 @@ public class UnitBase : NetworkBehaviour
 	[Command]
 	public void ExploreTerrains()
 	{
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, explorationDistance);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
 	}
 
 	[TargetRpc]
@@ -188,23 +184,79 @@ public class UnitBase : NetworkBehaviour
 	}
 
 	[Server]
-	public void ValidateAttack(UnitBase target)
+	public IEnumerator ValidateAttack(UnitBase target)
 	{
-		if(isMoving) { return; }
-		if(!occupiedNeighboursWithinRange.Contains(target.occupiedHex)) { return; }
-		
-		if (/*!hasAttacked && targetIsInRange*/ true)
+		if (!HasAttacked)
 		{
-			if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex.Key))
+			if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 			{
-				target.SeeAttacker(this, true);
+				if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
+				{
+					target.SeeAttacker(this, true);
+				}
+				target.StartCoroutine(SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f)));
+				AttackRpc(target);
+
+				if (target != null)
+				{
+					target.GetReachables(target);
+					yield return StartCoroutine(target.ValidateAttack(this, true));
+					target.HasAttacked = false;
+					target.remainingMovesThisTurn = target.unitProperties.moveRange;
+					//SPGameManager.Instance
+				}
+				OnlineGameManager.Instance.GetPlayer(playerID).SelectUnit(this);
 			}
-			target.StartCoroutine(SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f)));
-			AttackRpc(target);
 		}
 	}
 
+	[Server]
+	public IEnumerator ValidateAttack(UnitBase target, bool isSelfDefense)
+	{
+		/*Debug.LogWarning(!IsMoving);
+		Debug.LogWarning(occupiedNeighboursWithinRange.Contains(target.occupiedHex));
+		Debug.LogWarning(unitProperties.moveCostToAttack <= remainingMovesThisTurn);*/
+		if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+		{
+			if (/*true*/!HasAttacked || isSelfDefense/* && targetIsInRange*/)
+			{
+				yield return StartCoroutine(AttackRoutines(target));
+			}
+		}
+		else
+		{
+			yield return null;
+		}
+	}
 
+	[Server]
+	IEnumerator AttackRoutines(UnitBase target)
+	{
+		yield return StartCoroutine(AttackValidated(target));
+		/*if(target != null)
+		{
+			target.GetReachables();
+			yield return StartCoroutine(target.ValidateAttack(this, 0));
+			target.HasAttacked = false;
+			target.remainingMovesThisTurn = target.unitProperties.moveRange;
+		}*/
+	}
+
+	[Server]
+	private IEnumerator AttackValidated(UnitBase target)
+	{
+		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
+		{
+			target.SeeAttacker(this, true);
+		}
+		float x = (transform.position.x - target.transform.position.x) / 2 + target.transform.position.x - 5;
+		float y = 0;
+		float z = (transform.position.z - target.transform.position.z) / 2 + target.transform.position.z + 0.75f;
+		yield return target.StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
+		yield return StartCoroutine(AttackRoutine(target));
+	}
+
+	//TODO: Ienumarator yap ve yield return yap
 	[TargetRpc]
 	public void AttackRpc(UnitBase target)
 	{
@@ -213,9 +265,10 @@ public class UnitBase : NetworkBehaviour
 
 	IEnumerator AttackRoutine(UnitBase target)
 	{
+		SetIsMovingCmd(true);
 		yield return new WaitForSeconds(.25f);
 		Vector3 oldPos = transform.position;
-		if(unitCombatType != UnitCombatType.RangedCombat)
+		if(unitProperties.unitCombatType != UnitCombatType.RangedCombat)
 		{
 			yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f));
 			AttackCmd(target);
@@ -230,51 +283,172 @@ public class UnitBase : NetworkBehaviour
 			yield return StartCoroutine(RotateRoutine(oldRot));
 		}
 		SeeAttackerCmd(target);
+		SetIsMovingCmd(false);
 	}
+
 
 	[Command]
 	public void SeeAttackerCmd(UnitBase target)
 	{
 		if(target == null) { return; }
-		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex.Key))
+		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
 		{
 			target.SeeAttacker(this, false);
 		}
 	}
 
 
+	//TODO: Ienumarator yap ve yield return yap
 	[Command]
 	public void AttackCmd(UnitBase target)
 	{
-		Attack(target);
+		StartCoroutine(Attack(target));
 	}
 
 	[Server]
-	public virtual void Attack(UnitBase target)
+	public virtual IEnumerator Attack(UnitBase target)
 	{
-		hasAttacked = true;
-		bool isTargetDead = target.TakeDamage(damage);
+		HasAttacked = true;
+		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
+		if(remainingMovesThisTurn <= 0)
+		{
+			SetIsInMoveMode(false);
+		}
+		else
+		{
+			GetReachables(null);
+		}
+
+		PlayAttackEffectsRpc();
+		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
+		target.isPendingDead = isTargetDead;
 		if(isTargetDead)
 		{
-			PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
-			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);
+			target.DisableHexagonOutlines();
 			UpdateOutlinesServer();
+			/*PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
+			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);*/
 		}
+		yield return null;
 	}
 
 	[TargetRpc]
-	protected void PlayDeathEffectsRpc(NetworkConnection target, Vector3 pos)
+	public void PlayAttackEffectsRpc()
 	{
-		Instantiate(deathParticle, pos, Quaternion.identity);
+		audioSource.clip = unitProperties.attackSound;
+		audioSource.Play();
+	}
+
+	[Server]
+	public void PlayDeathEffectsWrapperRpc(Vector3 pos)
+	{
+		PlayDeathEffectsRpc(pos);
 	}
 
 	[ClientRpc]
-	private void TakeDamageRpc(float fillAmount)
+	protected void PlayDeathEffectsRpc(Vector3 pos)
 	{
-		//healthBar.fillAmount = fillAmount;
-		Instantiate(hitBloodParticle, healthBar.transform.position, Quaternion.identity);
-		StartCoroutine(TakeDamageRoutine(fillAmount));
+		StartCoroutine(PlayDeathEffects(pos));
 	}
+
+	protected IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
+	{
+		yield return StartCoroutine(PlayDeathEffects(pos));
+	}
+
+	protected IEnumerator PlayDeathEffects(Vector3 pos)
+	{
+		audioSource.clip = unitProperties.deathSound;
+		audioSource.Play();
+		while (audioSource.isPlaying)
+		{
+			yield return new WaitForSeconds(0.05f);
+		}
+		ParticleSystem particle = Instantiate(unitProperties.deathParticle, pos, Quaternion.identity, null).GetComponent<ParticleSystem>();
+
+		NetworkServer.Destroy(gameObject);
+		Destroy(gameObject);
+	}
+
+	[Server]
+	public bool TakeDamage(UnitBase attacker, int damage)
+	{
+		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
+		if(damage > currentArmor)
+		{
+			damageToHealth = damage - currentArmor;
+			currentArmor = 0;
+		}
+		else
+		{
+			damageToHealth = 0;
+			currentArmor -= damage;
+		}
+
+		if(armorBar != null)
+		{
+			TakeDamageRpc(attacker, UnitBarType.ArmorBar, (float)currentArmor / unitProperties.armor);
+			TakeDamageRpc2(attacker);
+		}
+
+		if (damageToHealth > 0)
+		{
+			currentHealth = (currentHealth - damageToHealth) > 0 ? (currentHealth - damageToHealth) : 0;
+			TakeDamageRpc(attacker, UnitBarType.HealthBar, (float)currentHealth / unitProperties.health);
+			TakeDamageRpc2(attacker);
+			if (currentHealth <= 0)
+			{
+				currentHealth = 0;
+				occupiedHex.OccupierUnit = null;
+				OnlineGameManager.Instance.UnregisterUnit(playerID, this);
+				PlayDeathEffectsWrapperRpc(transform.position);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	[ClientRpc]
+	private void TakeDamageRpc(UnitBase attacker, UnitBarType barType, float fillAmount)
+	{
+		Instantiate(unitProperties.hitBloodParticle, healthBar.transform.position, Quaternion.identity);
+		StartCoroutine(TakeDamageRoutine(barType == UnitBarType.ArmorBar ? armorBar : healthBar, fillAmount));
+	}
+
+	[TargetRpc]
+	private void TakeDamageRpc2(UnitBase attacker)
+	{
+		audioSource.clip = attacker.unitProperties.hitSound;
+		if (audioSource.clip != null)
+		{
+			audioSource.Play();
+		}
+	}
+
+	protected IEnumerator TakeDamageRoutine(Image bar, float fillAmount)
+	{
+		while (true)
+		{
+			bar.fillAmount = Mathf.Lerp(bar.fillAmount, fillAmount, 0.05f);
+			if (bar.fillAmount < 0.25f)
+			{
+				bar.color = Color.red;
+			}
+			if (Mathf.Abs(bar.fillAmount - fillAmount) < 0.05f)
+			{
+				bar.fillAmount = fillAmount;
+				break;
+			}
+			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
+		}
+		if(bar.transform.parent != null && bar.fillAmount == 0)
+		{
+			NetworkServer.Destroy(bar.transform.parent.gameObject);
+			Destroy(bar.transform.parent.gameObject);
+		}
+	}
+
+
 
 	[TargetRpc]
 	private void SeeAttacker(UnitBase attacker, bool see)
@@ -282,40 +456,6 @@ public class UnitBase : NetworkBehaviour
 		attacker.gameObject.SetActive(see);
 	}
 
-	IEnumerator TakeDamageRoutine(float fillAmount)
-	{
-		while (true)
-		{
-			healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, fillAmount, 0.05f);
-			if(healthBar.fillAmount < 0.25f)
-			{
-				healthBar.color = Color.red;
-			}
-			if(Mathf.Abs(healthBar.fillAmount - fillAmount) < 0.05f)
-			{
-				healthBar.fillAmount = fillAmount;
-				break;
-			}
-			yield return new WaitForSeconds(waitBetweenMovement);
-		}
-	}
-
-	[Server]
-	public bool TakeDamage(int damage)
-	{
-		int damageToApply = (damage - armor) > 0 ? (damage - armor) : 0;
-		currentHealth = (currentHealth - damageToApply) > 0 ? currentHealth - damageToApply : 0;
-		TakeDamageRpc((float)currentHealth / maxHealth);
-		if (currentHealth <= 0)
-		{
-			currentHealth = 0;
-			occupiedHex.OccupierUnit = null;
-			OnlineGameManager.Instance.UnregisterUnit(playerID, this);
-			NetworkServer.Destroy(gameObject);
-			return true;
-		}
-		return false;
-	}
 
 	#endregion
 
@@ -330,7 +470,7 @@ public class UnitBase : NetworkBehaviour
 	public void GetReachables(UnitBase targetUnit)
 	{
 		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, attackRange, blockedTerrains, occupiedNeighboursWithinRange);
+		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, occupiedNeighboursWithinRange);
 		EnableOutlines();
 	}
 
@@ -375,11 +515,12 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	public bool ValidateRequestToMove(TerrainHexagon to)
 	{
-		if (isMoving) { return false; }
+		if (IsMoving) { return false; }
 		if (!neighboursWithinRange.Contains(to)) { return false; }
 		else
 		{
 			GetPath(to);
+			if(remainingMovesThisTurn < path.Count - 1) { return false; }
 			Move(to, path.Count - 1);
 			return true;
 		}
@@ -389,7 +530,7 @@ public class UnitBase : NetworkBehaviour
 	public void GetPath(TerrainHexagon to)
 	{
 		path.Clear();
-		foreach(TerrainHexagon hex in Map.Instance.AStar(occupiedHex, to, blockedTerrains))
+		foreach(TerrainHexagon hex in Map.Instance.AStar(occupiedHex, to, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, null))
 		{
 			path.Add(hex);
 		}
@@ -405,7 +546,8 @@ public class UnitBase : NetworkBehaviour
 		RpcMove(to.transform.position);
 		if (remainingMovesThisTurn == 0)
 		{
-			isInMoveMode = false;
+			//isInMoveMode = false;
+			SetIsInMoveMode(false);
 		}
 		else
 		{
@@ -478,6 +620,11 @@ public enum UnitCombatType
 	RangedCombat
 }
 
+public enum UnitBarType
+{
+	ArmorBar,
+	HealthBar
+}
 /*
 
 public static class CustomReadWriteFunctions3

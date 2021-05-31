@@ -15,14 +15,19 @@ public class TerrainHexagonUI : MonoBehaviour
     [SerializeField] private Text resourceCount;
     [SerializeField] private Image costIcon;
     [SerializeField] private Text costCount;
+    [SerializeField] private Button collectButton;
     [SerializeField] private Text collectButtonText;
     [SerializeField] private GameObject nextTurnButton;
+    [SerializeField] private GameObject bottomBar; //disable it for terrains that does not contain any collectibles.
+    [SerializeField] private Color enoughAPToCollectColor;
+    [SerializeField] private Color notEnoughAPToCollectColor;
     public UIManager uiManager;
+
 	private void OnEnable()
 	{
         if(currentResource == null) { return; }
         terrainIcon.sprite = currentResource.obtainedFromTerrainIcon;
-        terrainName.text = currentResource.obtainedFromTerrainType.ToString();
+        terrainName.text = currentResource.obtainedFromTerrainName;
         description.text = currentResource.description;
 
 		if (currentResource.canBeCollected)
@@ -31,9 +36,13 @@ public class TerrainHexagonUI : MonoBehaviour
             resourceCount.text = currentResource.resourceCount.ToString();
             costIcon.sprite = currentResource.costIcon;
             costCount.text = currentResource.costToCollect.ToString();
+            costCount.color = currentResource.costToCollect <= uiManager.townCenterUI.townCenter.actionPoint ?
+                    enoughAPToCollectColor :
+                    notEnoughAPToCollectColor;
             collectButtonText.text = currentResource.collectText;
-		}
-        resourceIcon.transform.parent.gameObject.SetActive(currentResource.canBeCollected);
+            collectButton.interactable = currentResource.costToCollect <= uiManager.townCenterUI.townCenter.actionPoint;
+        }
+        bottomBar.SetActive(currentResource.canBeCollected);
         nextTurnButton.SetActive(false);
     }
 
@@ -50,7 +59,8 @@ public class TerrainHexagonUI : MonoBehaviour
 
     public void OnCollectButton()
 	{
-        uiManager.townCenterUI.townCenter.UpdateResourceCountCmd(currentResource.resourceType, currentResource.resourceCount, currentResource.costToCollect);
+        //uiManager.townCenterUI.townCenter.UpdateResourceCountCmd(currentResource.resourceType, currentResource.resourceCount, currentResource.costToCollect);
+        uiManager.townCenterUI.townCenter.CollectResource(currentResource);
         OnCloseButton();
 	}
 

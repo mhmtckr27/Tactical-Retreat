@@ -8,16 +8,31 @@ public class Archer : UnitBase
 	[Header("Combat")]
 	[SerializeField] private Transform arrowSpawnPoint;
 	[SerializeField] private GameObject arrowProjectile;
+
 	[Server]
-	public override void Attack(UnitBase target)
+	public override IEnumerator Attack(UnitBase target)
 	{
-		hasAttacked = true;
+		HasAttacked = true;
+		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
+
+		if(remainingMovesThisTurn <= 0)
+		{
+			SetIsInMoveMode(false);
+		}
+		else
+		{
+			UpdateOutlinesServer();
+		}
+
+		PlayAttackEffectsRpc();
+
 		Vector3 lookRotBegin = target.transform.position;
 		Vector3 lookRotEnd = new Vector3(arrowSpawnPoint.position.x, target.transform.position.y, arrowSpawnPoint.position.z);
 		Quaternion lookRot = Quaternion.LookRotation(lookRotBegin - lookRotEnd);
+		yield return new WaitForSeconds(0.2f);
 		GameObject arrow = Instantiate(arrowProjectile, arrowSpawnPoint.transform.position, lookRot);
 		NetworkServer.Spawn(arrow);
-		StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
+		yield return StartCoroutine(ArrowThrowedRoutine(target, arrow.transform));
 	}
 
 	[Server]
@@ -40,11 +55,11 @@ public class Archer : UnitBase
 	public void OnArrowHit(UnitBase target, GameObject arrow)
 	{
 		NetworkServer.Destroy(arrow);
-		bool isTargetDead = target.TakeDamage(damage);
+		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
 		if (isTargetDead)
 		{
-			PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
-			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);
+			/*PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
+			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);*/
 			UpdateOutlinesServer();
 		}
 	}
