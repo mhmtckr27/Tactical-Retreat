@@ -26,10 +26,6 @@ public class BuildingBase : NetworkBehaviour
 		}
 	}
 
-	protected virtual void Start()
-	{
-	}
-
 	[Command]
 	public virtual void InitCmd()
 	{

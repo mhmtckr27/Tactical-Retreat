@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text currentToMaxPopulationText;
 	[SerializeField] private GameObject settingsMenu;
 
+	[SerializeField] [Scene] private string singleplayerScene;
 	[SerializeField] [Scene] private string multiplayerScene;
 	[SerializeField] private InputField networkAddress;
 	[SerializeField] private InputField mapWidth;
@@ -89,6 +90,11 @@ public class UIManager : MonoBehaviour
 	public void OnLoadScene(string sceneToLoad)
 	{
 		SceneManager.LoadScene(sceneToLoad);
+	}
+
+	public void OnSingleplayerScene()
+	{
+		SceneManager.LoadScene(singleplayerScene);
 	}
 
 	public void OnMultiplayerButton()

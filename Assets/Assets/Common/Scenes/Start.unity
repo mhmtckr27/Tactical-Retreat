@@ -838,13 +838,14 @@ MonoBehaviour:
   actionPointText: {fileID: 0}
   currentToMaxPopulationText: {fileID: 0}
   settingsMenu: {fileID: 0}
-  singleplayerScene: Assets/Assets/Common/Scenes/SingleplayerLobby.unity
+  singleplayerScene: 
   multiplayerScene: Assets/Assets/Common/Scenes/Offline.unity
   networkAddress: {fileID: 0}
   mapWidth: {fileID: 0}
-  aiPlayerCount: {fileID: 0}
   townCenterUI: {fileID: 0}
   terrainHexagonUI: {fileID: 0}
+  unitCreationUI: {fileID: 0}
+  buildingCreationUI: {fileID: 0}
 --- !u!1 &1399091291
 GameObject:
   m_ObjectHideFlags: 0
@@ -1118,14 +1119,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1006275315}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: OnSingleplayerButton
-        m_Mode: 1
+        m_MethodName: OnLoadScene
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: SingleplayerLobby
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1706700438

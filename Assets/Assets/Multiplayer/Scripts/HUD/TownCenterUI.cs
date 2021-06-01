@@ -22,14 +22,27 @@ public class TownCenterUI : BuildingUI
 	{
 		townCenter.DeselectEverythingCmd();
 		unitCreationMenu.Init(townCenter, unitProperties);
+		Invoke(nameof(ShowUnitCreationMenu), 0.05f);
+	}
+
+	public void ShowUnitCreationMenu()
+	{
 		unitCreationMenu.gameObject.SetActive(true);
 	}
+
+
 	public void CreateBuildingRequest(BuildingProperties buildingProperties)
 	{
 		townCenter.DeselectEverythingCmd();
 		buildingCreationMenu.Init(townCenter, buildingProperties);
+		Invoke(nameof(ShowBuildingCreationMenu), 0.05f);
+	}
+
+	public void ShowBuildingCreationMenu()
+	{
 		buildingCreationMenu.gameObject.SetActive(true);
 	}
+
 	public void OnClose()
 	{
 		townCenter.OnCloseTownCenterUI();

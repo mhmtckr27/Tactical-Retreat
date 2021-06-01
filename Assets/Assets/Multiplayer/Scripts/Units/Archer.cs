@@ -56,10 +56,12 @@ public class Archer : UnitBase
 	{
 		NetworkServer.Destroy(arrow);
 		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
+		target.isPendingDead = isTargetDead;
 		if (isTargetDead)
 		{
 			/*PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
 			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);*/
+			target.DisableHexagonOutlines();
 			UpdateOutlinesServer();
 		}
 	}

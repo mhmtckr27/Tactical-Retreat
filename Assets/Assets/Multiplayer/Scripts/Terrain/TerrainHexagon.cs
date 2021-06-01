@@ -8,10 +8,10 @@ public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
 	[SerializeField] private GameObject resourceGameObject;
-	[SerializeField] public Resource resource;
+	//[SerializeField] public Resource resource;
 
 	//TODO: attention pls! eger problem yaratirsa syncvar yap, sebebini bilmiyorum :d
-	/*[SyncVar] */public GameObject unexploredBlock;
+	[SyncVar] public GameObject unexploredBlock;
 
 	private bool isExplored;
 	public bool IsExplored
@@ -133,7 +133,7 @@ public class TerrainHexagon : NetworkBehaviour
 	{
 		if(newVal)
 		{
-			NetworkServer.Destroy(resourceGameObject);
+			//NetworkServer.Destroy(resourceGameObject);
 			Destroy(resourceGameObject);
 		}
 	}

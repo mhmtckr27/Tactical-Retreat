@@ -36,7 +36,7 @@ public class OnlineGameManager : NetworkBehaviour
 	[Server]
 	private void Start()
 	{
-		Invoke(nameof(NextTurn), .25f);
+		Invoke(nameof(StartGame), .25f);
 	}
 
 	[Server]
@@ -212,6 +212,16 @@ public class OnlineGameManager : NetworkBehaviour
 			return players[playerID];
 		}
 		return null;
+	}
+
+	[Server]
+	public void StartGame()
+	{
+		foreach (TownCenter player in playerList)
+		{
+			player.EnableNextTurnButton(false);
+		}
+		NextTurn();
 	}
 
 	[Server]

@@ -54,6 +54,7 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			GameObject map = Instantiate(MapPrefab);
 			NetworkServer.Spawn(map);
 			Map.Instance.GenerateMap();
+			Map.Instance.CreateUndiscoveredBlocks();
 			//Map.Instance.DilateMap();
 			Instantiate(onlineGameManagerPrefab);
 		}

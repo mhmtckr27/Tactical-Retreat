@@ -60,7 +60,7 @@ public class TerrainHexagonUI : MonoBehaviour
     public void OnCollectButton()
 	{
         //uiManager.townCenterUI.townCenter.UpdateResourceCountCmd(currentResource.resourceType, currentResource.resourceCount, currentResource.costToCollect);
-        uiManager.townCenterUI.townCenter.CollectResource(currentResource);
+        uiManager.townCenterUI.townCenter.CollectResource(currentResource.canBeCollected, currentResource.costToCollect, currentResource.resourceType, currentResource.resourceCount);
         OnCloseButton();
 	}
 

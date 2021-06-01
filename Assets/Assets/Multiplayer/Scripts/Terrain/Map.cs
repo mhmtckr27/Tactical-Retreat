@@ -176,7 +176,7 @@ public class Map : NetworkBehaviour
 	}
 
 	[Server]
-	private void CreateUndiscoveredBlocks()
+	public void CreateUndiscoveredBlocks()
 	{
 		foreach(KeyValuePair<string, TerrainHexagon> kvp in mapDictionary)
 		{
