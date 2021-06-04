@@ -435,12 +435,12 @@ public class TownCenter : BuildingBase
 				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
 				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != netId) && (selectedHexagon.OccupierBuilding.playerID != netId))
 				{
-					StartCoroutine(Map.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit));
+					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.OccupierUnit, false));
 				}
 				//if selected terrain only has an enemy unit and not a building, attack to enemy unit
 				else if((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit.playerID != netId))
 				{
-					StartCoroutine(Map.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit));
+					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.OccupierUnit, false));
 				}
 				//if selected terrain only has an enemy building and not an unit, ValidateRequestToMove to building and can start occupation next turn
 				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding.playerID != netId))
@@ -733,7 +733,7 @@ public class TownCenter : BuildingBase
 		return true;
 	}
 }
-/*
+
 public static class CustomReadWriteFunctions2
 {
 	public static void WriteTownCenter(this NetworkWriter writer, TownCenter value)
@@ -781,4 +781,3 @@ public static class CustomReadWriteFunctions2
 		return townCenter;
 	}
 }
-*/

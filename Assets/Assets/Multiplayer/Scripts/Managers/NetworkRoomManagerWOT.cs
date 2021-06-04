@@ -33,7 +33,12 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 				startPos = Map.Instance.mapDictionary[hexKey].transform.position;
 			}
 		} while (!isValidPosToSpawn);
-
+		/*
+		if(Map.Instance.mapDictionary["5_-5_0"].OccupierBuilding == null)
+			startPos = Map.Instance.mapDictionary["5_-5_0"].transform.position;
+		else
+			startPos = Map.Instance.mapDictionary["-5_5_0"].transform.position;
+		*/
 		GameObject player = Instantiate(playerPrefab, startPos, Quaternion.Euler(0, -60, 0));
 		int colorIndex;
 		do
