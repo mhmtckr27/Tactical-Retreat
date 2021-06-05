@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9572e00b3b32d53468407e0fb43268bf, type: 3}
   m_Name: House
   m_EditorClassIdentifier: 
-  buildingPrefab: {fileID: 1147478722433893387, guid: f70d7311b0952c24eadbc0fd71da4c6f,
+  buildingPrefab: {fileID: 1147478722433893387, guid: 19ee5f3d984f19247be2ac66e4b3d578,
     type: 3}
   buildingName: House
   buildingDescription: Increases maximum population by 2.

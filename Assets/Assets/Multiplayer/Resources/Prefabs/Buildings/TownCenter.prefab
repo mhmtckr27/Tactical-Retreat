@@ -135,8 +135,8 @@ MonoBehaviour:
   isConquered: 0
   canvasPrefab: {fileID: 8663531919945395808, guid: 27c7a1b2770a75c4f886e825a70b990c,
     type: 3}
-  woodCount: 50
-  meatCount: 50
+  woodCount: 500
+  meatCount: 500
   currentPopulation: 0
   maxPopulation: 2
   actionPoint: 0

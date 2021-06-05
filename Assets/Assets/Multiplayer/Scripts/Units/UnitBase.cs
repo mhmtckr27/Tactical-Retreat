@@ -32,9 +32,9 @@ public class UnitBase : NetworkBehaviour
 
 	protected List<TerrainHexagon> neighboursWithinRange;
 	protected List<TerrainHexagon> occupiedNeighboursWithinRange;
-	public SyncList<TerrainHexagon> path = new SyncList<TerrainHexagon>();
+	public SyncList<string> path = new SyncList<string>();
 
-	public TerrainHexagon occupiedHex;
+	//public TerrainHexagon occupiedHex;
 	[SyncVar] public int remainingMovesThisTurn;
 
 	[Server]
@@ -84,7 +84,7 @@ public class UnitBase : NetworkBehaviour
 	[Command]
 	public void InitCmd()
 	{
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, OnlineGameManager.Instance.unitsToOccupiedTerrains[this].Key, unitProperties.exploreRange);
 	}
 
 	/*public bool TryMoveTo(TerrainHexagon to)
@@ -107,9 +107,9 @@ public class UnitBase : NetworkBehaviour
 	[TargetRpc]
 	public void RpcMove(Vector3 to)
 	{
-		TerrainHexagon[] tempPath = new TerrainHexagon[path.Count];
-		path.CopyTo(tempPath, 0);
-		StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons));
+		//TerrainHexagon[] tempPath = new TerrainHexagon[path.Count];
+		//path.CopyTo(tempPath, 0);
+		StartCoroutine(MoveRoutine(to + UnitProperties.positionOffsetOnHexagons, false));
 	}
 
 
@@ -125,7 +125,7 @@ public class UnitBase : NetworkBehaviour
 		this.IsMoving = isMoving;
 	}
 
-	[TargetRpc]
+	//[TargetRpc]
 	protected void RotateRoutineWrapper(Quaternion lookAt)
 	{
 		StartCoroutine(RotateRoutine(lookAt));
@@ -140,7 +140,7 @@ public class UnitBase : NetworkBehaviour
 		while (true)
 		{
 			transform.rotation = Quaternion.Lerp(transform.rotation, lookAt, Time.smoothDeltaTime * unitProperties.turnSpeed);
-			if (Quaternion.Angle(transform.rotation, lookAt) < 5f)
+			if (Quaternion.Angle(transform.rotation, lookAt) < 20)
 			{
 				transform.rotation = lookAt;
 				break;
@@ -149,7 +149,7 @@ public class UnitBase : NetworkBehaviour
 		}
 	}
 
-	protected IEnumerator MoveRoutine(Vector3 moveToPosition)
+	protected IEnumerator MoveRoutine(Vector3 moveToPosition, bool isAttacking)
 	{
 		SetIsMovingCmd(true);
 		Quaternion oldRot = transform.rotation;
@@ -167,7 +167,10 @@ public class UnitBase : NetworkBehaviour
 			}
 			yield return new WaitForSeconds(unitProperties.waitBetweenMovement);
 		}
-		ExploreTerrains();
+		if (!isAttacking)
+		{
+			ExploreTerrains();
+		}
 		//yield return StartCoroutine(RotateRoutine(oldRot));
 		yield return StartCoroutine(RotateRoutine(oldRot));
 		SetIsMovingCmd(false);
@@ -176,7 +179,7 @@ public class UnitBase : NetworkBehaviour
 	[Command]
 	public void ExploreTerrains()
 	{
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, occupiedHex.Key, unitProperties.exploreRange);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, OnlineGameManager.Instance.unitsToOccupiedTerrains[this].Key, unitProperties.exploreRange);
 	}
 
 	[TargetRpc]
@@ -185,23 +188,35 @@ public class UnitBase : NetworkBehaviour
 		hexagon.ToggleOutlineVisibility(outlineIndex, enable);
 	}
 
-	[TargetRpc]
-	private void SetAllCameraPositions(Vector3 position)
+	[Server]
+	private IEnumerator SetAllCameraPositions(Vector3 position)
 	{
-		StartCoroutine(SetAllCameraPositions_Inner(position));
+		SetAllCameraPositions_Inner(position);
+		yield return null;
 	}
 
-	private IEnumerator SetAllCameraPositions_Inner(Vector3 position)
+	[TargetRpc]
+	private void SetAllCameraPositions_Inner(Vector3 position)
+	{
+		StartCoroutine(SetAllCameraPositions_Inner_Inner(position));
+	}
+
+	private IEnumerator SetAllCameraPositions_Inner_Inner(Vector3 position)
+	{
+		yield return StartCoroutine(SetAllCameraPositions_Inner_Inner_Inner(position));
+	}
+
+	private IEnumerator SetAllCameraPositions_Inner_Inner_Inner(Vector3 position)
 	{
 		Camera[] cams = Camera.allCameras;
 		while (true)
 		{
 			foreach (Camera cam in cams)
 			{
-				cam.transform.position = Vector3.Lerp(cam.transform.position, new Vector3(position.x, cam.transform.position.y, position.z), 0.1f);
+				cam.transform.position = Vector3.Lerp(cam.transform.position, new Vector3(position.x, cam.transform.position.y, position.z), 0.2f);
 			}
 			yield return new WaitForSeconds(0.01f);
-			if (Vector3.Distance(cams[0].transform.position, new Vector3(position.x, cams[0].transform.position.y, position.z)) < 0.2f)
+			if (Vector3.Distance(cams[0].transform.position, new Vector3(position.x, cams[0].transform.position.y, position.z)) < 0.3f)
 			{
 				break;
 			}
@@ -213,9 +228,12 @@ public class UnitBase : NetworkBehaviour
 	public void ValidateAttackWrapperCmd(UnitBase target, bool isSelfDefense)
 	{
 		GetReachables();
-		StartCoroutine(AttackValidated(target, isSelfDefense));
-		HasAttacked = false;
-		remainingMovesThisTurn = unitProperties.moveRange;
+		if (!IsMoving && occupiedNeighboursWithinRange.Contains(OnlineGameManager.Instance.unitsToOccupiedTerrains[target]) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+		{
+			StartCoroutine(AttackValidated(target, isSelfDefense));
+			HasAttacked = false;
+			remainingMovesThisTurn = unitProperties.moveRange;
+		}
 	}
 
 	[Server]
@@ -223,9 +241,13 @@ public class UnitBase : NetworkBehaviour
 	{
 		if (!HasAttacked)
 		{
-			if (!IsMoving && occupiedNeighboursWithinRange.Contains(target.occupiedHex) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
+			if (!IsMoving && occupiedNeighboursWithinRange.Contains(OnlineGameManager.Instance.unitsToOccupiedTerrains[target]) && unitProperties.moveCostToAttack <= remainingMovesThisTurn)
 			{
-				target.SetAllCameraPositions(new Vector3(target.transform.position.x - 5, 0, target.transform.position.z + 0.75f));
+				float x = (transform.position.x - target.transform.position.x) / 2 + target.transform.position.x - 5;
+				float y = 0;
+				float z = (transform.position.z - target.transform.position.z) / 2 + target.transform.position.z + 0.75f;
+				yield return StartCoroutine(target.SetAllCameraPositions(new Vector3(x, y, z)));
+				yield return StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
 				yield return StartCoroutine(AttackValidated(target, isSelfDefense));
 
 				/*if (target != null)
@@ -243,14 +265,15 @@ public class UnitBase : NetworkBehaviour
 	[Server]
 	private IEnumerator AttackValidated(UnitBase target, bool isSelfDefense)
 	{
-		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
+		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(OnlineGameManager.Instance.unitsToOccupiedTerrains[this]))
 		{
 			target.SeeAttacker(this, true);
 		}
 		float x = (transform.position.x - target.transform.position.x) / 2 + target.transform.position.x - 5;
 		float y = 0;
 		float z = (transform.position.z - target.transform.position.z) / 2 + target.transform.position.z + 0.75f;
-		target.SetAllCameraPositions(new Vector3(x, y, z));
+		yield return StartCoroutine(target.SetAllCameraPositions(new Vector3(x, y, z)));
+		yield return StartCoroutine(SetAllCameraPositions(new Vector3(x, y, z)));
 		//AttackRpc(target);
 		yield return StartCoroutine(AttackRoutine(target, isSelfDefense));
 		//yield return null;
@@ -275,9 +298,9 @@ public class UnitBase : NetworkBehaviour
 		Vector3 oldPos = transform.position;
 		if (unitProperties.unitCombatType != UnitCombatType.RangedCombat)
 		{
-			yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f));
+			yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position).normalized * .5f, true));
 			AttackCmd(target);
-			yield return StartCoroutine(MoveRoutine(oldPos));
+			yield return StartCoroutine(MoveRoutine(oldPos, true));
 		}
 		else
 		{
@@ -286,7 +309,7 @@ public class UnitBase : NetworkBehaviour
 			//yield return StartCoroutine(RotateRoutine(lookAt));
 			//yield return StartCoroutine(MoveRoutine(target.transform.position - (target.transform.position - transform.position) * .999f));
 			RotateRoutineWrapper(lookAt);
-			//yield return new WaitForSeconds(1f);
+			yield return new WaitForSeconds(0.2f);
 			AttackCmd(target);
 			//yield return StartCoroutine(MoveRoutine(oldPos));
 			//yield return StartCoroutine(RotateRoutine(oldRot));
@@ -295,7 +318,7 @@ public class UnitBase : NetworkBehaviour
 		SeeAttackerCmd(target);
 		SetIsMovingCmd(false);
 
-		if (target != null && !isSelfDefense)
+		if (target != null && !target.isPendingDead && !isSelfDefense)
 		{
 			target.ValidateAttackWrapperCmd(this, true);
 		}
@@ -304,8 +327,8 @@ public class UnitBase : NetworkBehaviour
 	[Command(requiresAuthority = false)]
 	public void SeeAttackerCmd(UnitBase target)
 	{
-		if(target == null) { return; }
-		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(occupiedHex))
+		if(target == null || target.isPendingDead) { return; }
+		if (!OnlineGameManager.Instance.PlayersToDiscoveredTerrains[target.playerID].Contains(OnlineGameManager.Instance.unitsToOccupiedTerrains[this]))
 		{
 			target.SeeAttacker(this, false);
 		}
@@ -324,6 +347,7 @@ public class UnitBase : NetworkBehaviour
 	{
 		HasAttacked = true;
 		remainingMovesThisTurn -= unitProperties.moveCostToAttack;
+
 		if(remainingMovesThisTurn <= 0)
 		{
 			SetIsInMoveMode(false);
@@ -334,9 +358,10 @@ public class UnitBase : NetworkBehaviour
 		}
 
 		PlayAttackEffectsRpc();
-		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
-		target.isPendingDead = isTargetDead;
-		if(isTargetDead)
+
+		yield return StartCoroutine(target.TakeDamage(this, unitProperties.damage));
+
+		if(target.isPendingDead)
 		{
 			target.DisableHexagonOutlines();
 			UpdateOutlinesServer();
@@ -346,7 +371,7 @@ public class UnitBase : NetworkBehaviour
 		yield return null;
 	}
 
-	[TargetRpc]
+	[ClientRpc]
 	public void PlayAttackEffectsRpc()
 	{
 		audioSource.clip = unitProperties.attackSound;
@@ -354,23 +379,34 @@ public class UnitBase : NetworkBehaviour
 	}
 
 	[Server]
-	public void PlayDeathEffectsWrapperRpc(Vector3 pos)
+	public IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
+	{
+		//PlayDeathEffectsRpc(pos);
+		yield return StartCoroutine(PlayDeathEffects(pos));
+		yield return new WaitForSeconds(0.5f);
+		OnlineGameManager.Instance.UnregisterUnit(playerID, this);
+		yield return null;
+	}
+
+	[Server]
+	public IEnumerator PlayDeathEffects(Vector3 pos)
 	{
 		PlayDeathEffectsRpc(pos);
+		yield return null;
 	}
 
 	[ClientRpc]
 	protected void PlayDeathEffectsRpc(Vector3 pos)
 	{
-		StartCoroutine(PlayDeathEffects(pos));
+		StartCoroutine(PlayDeathEffects_Inner(pos));
 	}
 
-	protected IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
+	protected IEnumerator PlayDeathEffects_Inner(Vector3 pos)
 	{
-		yield return StartCoroutine(PlayDeathEffects(pos));
+		yield return StartCoroutine(PlayDeathEffects_Inner_Inner(pos));
 	}
 
-	protected IEnumerator PlayDeathEffects(Vector3 pos)
+	protected IEnumerator PlayDeathEffects_Inner_Inner(Vector3 pos)
 	{
 		audioSource.clip = unitProperties.deathSound;
 		audioSource.Play();
@@ -379,13 +415,10 @@ public class UnitBase : NetworkBehaviour
 			yield return new WaitForSeconds(0.05f);
 		}
 		ParticleSystem particle = Instantiate(unitProperties.deathParticle, pos, Quaternion.identity, null).GetComponent<ParticleSystem>();
-
-		NetworkServer.Destroy(gameObject);
-		Destroy(gameObject);
 	}
 
 	[Server]
-	public bool TakeDamage(UnitBase attacker, int damage)
+	public IEnumerator TakeDamage(UnitBase attacker, int damage)
 	{
 		int damageToHealth = (damage - unitProperties.armor) > 0 ? (damage - unitProperties.armor) : 0;
 		if(damage > currentArmor)
@@ -413,13 +446,13 @@ public class UnitBase : NetworkBehaviour
 			if (currentHealth <= 0)
 			{
 				currentHealth = 0;
-				occupiedHex.OccupierUnit = null;
-				OnlineGameManager.Instance.UnregisterUnit(playerID, this);
-				PlayDeathEffectsWrapperRpc(transform.position);
-				return true;
+				isPendingDead = true;
+				//occupiedHex.OccupierUnit = null;
+				yield return StartCoroutine(PlayDeathEffectsWrapper(transform.position));
+				//return true;
 			}
 		}
-		return false;
+		//return false;
 	}
 
 	[ClientRpc]
@@ -491,7 +524,7 @@ public class UnitBase : NetworkBehaviour
 	public void GetReachables()
 	{
 		occupiedNeighboursWithinRange.Clear();
-		neighboursWithinRange = Map.Instance.GetReachableHexagons(occupiedHex, remainingMovesThisTurn, unitProperties.attackRange, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, occupiedNeighboursWithinRange);
+		neighboursWithinRange = Map.Instance.GetReachableHexagons(OnlineGameManager.Instance.unitsToOccupiedTerrains[this], remainingMovesThisTurn, unitProperties.attackRange, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, occupiedNeighboursWithinRange);
 	}
 
 	[Server]
@@ -514,7 +547,7 @@ public class UnitBase : NetworkBehaviour
 	{
 		foreach (TerrainHexagon neighbour in neighboursWithinRange)
 		{
-			if ((neighbour.OccupierBuilding != null) && (neighbour.OccupierBuilding.playerID != playerID))
+			if ((neighbour.GetOccupierBuilding() != null) && (neighbour.GetOccupierBuilding().playerID != playerID))
 			{
 				RpcEnableHexagonOutline(neighbour, 1, true);
 			}
@@ -525,7 +558,7 @@ public class UnitBase : NetworkBehaviour
 		}
 		foreach (TerrainHexagon occupied_neighbour in occupiedNeighboursWithinRange)
 		{
-			if (occupied_neighbour.OccupierUnit.playerID != playerID && remainingMovesThisTurn >= unitProperties.moveCostToAttack && !HasAttacked)
+			if (occupied_neighbour.GetOccupierUnit().playerID != playerID && remainingMovesThisTurn >= unitProperties.moveCostToAttack && !HasAttacked)
 			{
 				RpcEnableHexagonOutline(occupied_neighbour, 1, true);
 			}
@@ -550,18 +583,21 @@ public class UnitBase : NetworkBehaviour
 	public void GetPath(TerrainHexagon to)
 	{
 		path.Clear();
-		foreach(TerrainHexagon hex in Map.Instance.AStar(occupiedHex, to, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, null))
+		foreach(TerrainHexagon hex in Map.Instance.AStar(OnlineGameManager.Instance.unitsToOccupiedTerrains[this], to, unitProperties.blockedToMoveTerrains, unitProperties.blockedToAttackTerrains, null))
 		{
-			path.Add(hex);
+			path.Add(hex.Key);
 		}
 	}
 
 	[Server]
 	public void Move(TerrainHexagon to, int cost)
 	{
-		occupiedHex.OccupierUnit = null;
-		occupiedHex = to;
-		occupiedHex.OccupierUnit = this;
+		//occupiedHex.OccupierUnit = null;
+		//occupiedHex = to;
+		//occupiedHex.OccupierUnit = this;
+
+		OnlineGameManager.Instance.UpdateUnitsOccupiedTerrain(this, to);
+
 		remainingMovesThisTurn -= cost;
 		RpcMove(to.transform.position);
 		if (remainingMovesThisTurn == 0)

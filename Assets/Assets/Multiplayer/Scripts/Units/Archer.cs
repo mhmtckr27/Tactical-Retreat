@@ -45,24 +45,24 @@ public class Archer : UnitBase
 			yield return new WaitForSeconds(0.05f);
 			targetPos = target.transform.position;
 			arrowPos = arrowTransform.position;
-			Debug.LogWarning(Vector3.Distance(new Vector3(targetPos.x, 0, targetPos.z), new Vector3(arrowPos.x, 0, arrowPos.z)));
 		}
 		while (Vector3.Distance(new Vector3(targetPos.x, 0, targetPos.z), new Vector3(arrowPos.x, 0, arrowPos.z)) > .5f);
-		OnArrowHit(target, arrowTransform.gameObject);
+		yield return StartCoroutine(OnArrowHit(target, arrowTransform.gameObject));
 		yield return null;
 	}
 
 	[Server]
-	public void OnArrowHit(UnitBase target, GameObject arrow)
+	public IEnumerator OnArrowHit(UnitBase target, GameObject arrow)
 	{
 		NetworkServer.Destroy(arrow);
-		bool isTargetDead = target.TakeDamage(this, unitProperties.damage);
-		target.isPendingDead = isTargetDead;
-		if (isTargetDead)
+		yield return StartCoroutine(target.TakeDamage(this, unitProperties.damage));
+
+		if (target.isPendingDead)
 		{
 			/*PlayDeathEffectsRpc(netIdentity.connectionToClient, target.transform.position);
 			PlayDeathEffectsRpc(target.netIdentity.connectionToClient, target.transform.position);*/
 			target.DisableHexagonOutlines();
+			//OnlineGameManager.Instance.UnregisterUnit(target.playerID, target);
 			UpdateOutlinesServer();
 		}
 	}

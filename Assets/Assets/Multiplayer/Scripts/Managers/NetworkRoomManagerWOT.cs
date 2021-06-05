@@ -27,7 +27,7 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			int y = Random.Range(-Map.Instance.mapWidth + 1, Map.Instance.mapWidth);
 			int z = 0 - x - y;
 			hexKey = x + "_" + y + "_" + z;
-			if (Map.Instance.mapDictionary.ContainsKey(hexKey) && (Map.Instance.mapDictionary[hexKey].OccupierBuilding == null) && (Map.Instance.mapDictionary[hexKey].terrainType == TerrainType.Plain))
+			if (Map.Instance.mapDictionary.ContainsKey(hexKey) && (Map.Instance.mapDictionary[hexKey].GetOccupierBuilding() == null) && (Map.Instance.mapDictionary[hexKey].terrainType == TerrainType.Plain))
 			{
 				isValidPosToSpawn = true;
 				startPos = Map.Instance.mapDictionary[hexKey].transform.position;
@@ -46,7 +46,9 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			colorIndex = Random.Range(0, playerColors.Count);
 		} while (colorsUsed[colorIndex] == true);
 		TownCenter tempPlayer = player.GetComponent<TownCenter>();
-		tempPlayer.OccupiedHex = Map.Instance.mapDictionary[hexKey];
+		//tempPlayer.OccupiedHex = Map.Instance.mapDictionary[hexKey];
+		OnlineGameManager.Instance.UpdateBuildingsOccupiedTerrain(tempPlayer, Map.Instance.mapDictionary[hexKey]);
+		tempPlayer.OnTerrainOccupiersChange(OnlineGameManager.Instance.buildingsToOccupiedTerrains[tempPlayer].Key, 1);
 		tempPlayer.playerColor = playerColors[colorIndex];
 		colorsUsed[colorIndex] = true;
 		return player;

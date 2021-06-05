@@ -12,10 +12,10 @@ public class TownCenter : BuildingBase
 	private InputManager inputManager;
 
 	[SerializeField] private GameObject canvasPrefab;
-	[SerializeField] public int woodCount;
-	[SerializeField] public int meatCount;
-	[SerializeField] public int currentPopulation;
-	[SerializeField] public int maxPopulation;
+	[SerializeField][SyncVar] public int woodCount;
+	[SerializeField][SyncVar] public int meatCount;
+	[SerializeField][SyncVar] public int currentPopulation;
+	[SerializeField][SyncVar] public int maxPopulation;
 	[SyncVar] public int actionPoint;
 
 	public event Action<int> OnWoodCountChange;
@@ -32,8 +32,9 @@ public class TownCenter : BuildingBase
 		base.OnStartServer();
 		playerID = netId;
 		TerrainHexagon.OnTerrainOccupiersChange += OnTerrainOccupiersChange;
-		OccupiedHex.OccupierBuilding = this;
-		OnTerrainOccupiersChange(OccupiedHex.Key, 1);
+		//OccupiedHex.OccupierBuilding = this;
+		//OnlineGameManager.Instance.buildingsToOccupiedTerrains[this].OccupierBuilding = this;
+		//OnTerrainOccupiersChange(OnlineGameManager.Instance.buildingsToOccupiedTerrains[this].Key, 1);
 		StartCoroutine(InitResources());
 	}
 
@@ -64,17 +65,17 @@ public class TownCenter : BuildingBase
 	{
 		if(invoker == 0)
 		{
-			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].OccupierUnit.playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
+			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].GetOccupierUnit().playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
 			{
-				ShowHideOccupierRpc(Map.Instance.mapDictionary[key].OccupierUnit, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]), true);
+				ShowHideOccupierRpc(Map.Instance.mapDictionary[key].GetOccupierUnit(), OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]), true);
 				//Debug.LogError("unit null:" + Map.Instance.mapDictionary[key].OccupierUnit == null);
 			}
 		}
 		else
 		{
-			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].OccupierBuilding.playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
+			if ((Map.Instance.mapDictionary.ContainsKey(key)) && (Map.Instance.mapDictionary[key].GetOccupierBuilding().playerID != playerID) && (OnlineGameManager.Instance.PlayersToDiscoveredTerrains.ContainsKey(playerID)))
 			{
-				ShowHideOccupierRpc(Map.Instance.mapDictionary[key].OccupierBuilding, OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]), false);
+				ShowHideOccupierRpc(Map.Instance.mapDictionary[key].GetOccupierBuilding(), OnlineGameManager.Instance.PlayersToDiscoveredTerrains[playerID].Contains(Map.Instance.mapDictionary[key]), false);
 				//Debug.LogError("building null:" + Map.Instance.mapDictionary[key].OccupierBuilding == null);
 			}
 		}
@@ -102,17 +103,32 @@ public class TownCenter : BuildingBase
 		base.InitCmd();
 		//transform.eulerAngles = new Vector3(0, -60, 0);
 
-		ExploreTerrainsRpc(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary["0_0_0"], Map.Instance.mapWidth), false);
-		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, OccupiedHex.Key, 1);
+		ExploreTerrains(Map.Instance.GetDistantHexagons(Map.Instance.mapDictionary["0_0_0"], Map.Instance.mapWidth), false);
+		OnlineGameManager.Instance.AddDiscoveredTerrains(playerID, OnlineGameManager.Instance.buildingsToOccupiedTerrains[this].Key, 1);
 	}
 
+
+	[Server]
+	public void ExploreTerrains(List<TerrainHexagon> hexes, bool isDiscovered)
+	{
+		foreach(TerrainHexagon hex in hexes)
+		{
+			ExploreTerrainRpc(hex.gameObject, isDiscovered);
+		}
+	}
+
+	[TargetRpc]
+	public void ExploreTerrainRpc(GameObject hex, bool isDiscovered)
+	{
+		hex.GetComponent<TerrainHexagon>().SetIsExplored(isDiscovered);
+	}
 
 	[TargetRpc]
 	public void ExploreTerrainsRpc(List<TerrainHexagon> distantNeighbours, bool isDiscovered)
 	{
 		foreach (TerrainHexagon hex in distantNeighbours)
 		{
-			hex.IsExplored = isDiscovered;
+			hex.SetIsExplored(isDiscovered);
 		}
 	}
 
@@ -134,7 +150,7 @@ public class TownCenter : BuildingBase
 #elif UNITY_ANDROID
 		if(Map.Instance.UnitToMove == null || !Map.Instance.UnitToMove.IsMoving)
 		{
-			if (inputManager.HasValidTap() && !IsPointerOverUIObject() &&  && EventSystem.current.currentSelectedGameObject == null)
+			if (inputManager.HasValidTap() && !IsPointerOverUIObject() && EventSystem.current.currentSelectedGameObject == null)
 			{
 				ValidatePlayRequestCmd();
 			}
@@ -318,7 +334,7 @@ public class TownCenter : BuildingBase
 			if(Map.Instance.UnitToMove == null)
 			{
 				//if selected terrain is empty, show terrain info
-				if((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding == null))
+				if((selectedHexagon.GetOccupierUnit() == null) && (selectedHexagon.GetOccupierBuilding() == null))
 				{
 					if(Map.Instance.selectedHexagon != selectedHexagon)
 					{
@@ -335,7 +351,7 @@ public class TownCenter : BuildingBase
 					}
 				}
 				//if selected terrain only has a occupier friendly unit and not a building
-				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == playerID))
+				else if ((selectedHexagon.GetOccupierBuilding() == null) && (selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierUnit().playerID == playerID))
 				{
 					if (Map.Instance.selectedHexagon != selectedHexagon)
 					{
@@ -344,7 +360,7 @@ public class TownCenter : BuildingBase
 						{
 							DeselectBuilding(this);
 						}
-						SelectUnit(selectedHexagon.OccupierUnit);
+						SelectUnit(selectedHexagon.GetOccupierUnit());
 					}
 					else
 					{
@@ -352,7 +368,7 @@ public class TownCenter : BuildingBase
 					}
 				}
 				//if selected terrain only has a occupier building and not an unit, open building menu
-				else if((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.netId == netId))
+				else if((selectedHexagon.GetOccupierUnit() == null) && (selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierBuilding().netId == netId))
 				{
 					if(Map.Instance.selectedHexagon != null)
 					{
@@ -360,15 +376,15 @@ public class TownCenter : BuildingBase
 					}
 					if (!menu_visible)
 					{
-						SelectBuilding(selectedHexagon.OccupierBuilding);
+						SelectBuilding(selectedHexagon.GetOccupierBuilding());
 					}
 					else
 					{
-						DeselectBuilding(selectedHexagon.OccupierBuilding);
+						DeselectBuilding(selectedHexagon.GetOccupierBuilding());
 					}
 				}
 				//if selected terrain has both friendly unit and friendly building, select unit
-				else if((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID == netId) && (selectedHexagon.OccupierBuilding.playerID == netId))
+				else if((selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierUnit().playerID == netId) && (selectedHexagon.GetOccupierBuilding().playerID == netId))
 				{
 					if (Map.Instance.selectedHexagon != null)
 					{
@@ -378,7 +394,7 @@ public class TownCenter : BuildingBase
 					{
 						DeselectBuilding(this);
 					}
-					SelectUnit(selectedHexagon.OccupierUnit);
+					SelectUnit(selectedHexagon.GetOccupierUnit());
 				}
 
 			}
@@ -386,7 +402,7 @@ public class TownCenter : BuildingBase
 			else
 			{
 				//if selected terrain is empty, ValidateRequestToMove to that terrain 
-				if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding == null))
+				if ((selectedHexagon.GetOccupierUnit() == null) && (selectedHexagon.GetOccupierBuilding() == null))
 				{
 					if (Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
@@ -395,10 +411,10 @@ public class TownCenter : BuildingBase
 					}
 				}
 				//if selected terrain only has an occupier unit and not a building
-				else if ((selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == netId))
+				else if ((selectedHexagon.GetOccupierBuilding() == null) && (selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierUnit().playerID == netId))
 				{
 					//currently selected and previously selected units are same, show terrain info
-					if (Map.Instance.UnitToMove == selectedHexagon.OccupierUnit)
+					if (Map.Instance.UnitToMove == selectedHexagon.GetOccupierUnit())
 					{
 						DeselectUnit(Map.Instance.UnitToMove);
 						SelectTerrain(selectedHexagon);
@@ -407,43 +423,43 @@ public class TownCenter : BuildingBase
 					else
 					{
 						DeselectUnit(Map.Instance.UnitToMove);
-						SelectUnit(selectedHexagon.OccupierUnit);
+						SelectUnit(selectedHexagon.GetOccupierUnit());
 					}
 				}
 				//if selected terrain only has an occupier building and not an unit, ValidateRequestToMove building
-				else if ((selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierBuilding.netId == netId))
+				else if ((selectedHexagon.GetOccupierUnit() == null) && (selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierBuilding().netId == netId))
 				{
 					if (Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
 						DeselectUnit(Map.Instance.UnitToMove);
-						SelectBuilding(selectedHexagon.OccupierBuilding);
+						SelectBuilding(selectedHexagon.GetOccupierBuilding());
 					}
 				}
 				//if selected terrain has both friendly unit and friendly building, select unit on town
-				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierUnit.playerID == playerID) && (selectedHexagon.OccupierBuilding.playerID == netId))
+				else if ((selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierUnit().playerID == playerID) && (selectedHexagon.GetOccupierBuilding().playerID == netId))
 				{
-					if(Map.Instance.UnitToMove == selectedHexagon.OccupierUnit)
+					if(Map.Instance.UnitToMove == selectedHexagon.GetOccupierUnit())
 					{
 						DeselectUnit(Map.Instance.UnitToMove);
 					}
 					else
 					{
 						DeselectUnit(Map.Instance.UnitToMove);
-						SelectUnit(selectedHexagon.OccupierUnit);
+						SelectUnit(selectedHexagon.GetOccupierUnit());
 					}
 				}
 				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
-				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != netId) && (selectedHexagon.OccupierBuilding.playerID != netId))
+				else if ((selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierUnit().playerID != netId) && (selectedHexagon.GetOccupierBuilding().playerID != netId))
 				{
-					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.OccupierUnit, false));
+					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.GetOccupierUnit(), false));
 				}
 				//if selected terrain only has an enemy unit and not a building, attack to enemy unit
-				else if((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding == null) && (selectedHexagon.OccupierUnit.playerID != netId))
+				else if((selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierBuilding() == null) && (selectedHexagon.GetOccupierUnit().playerID != netId))
 				{
-					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.OccupierUnit, false));
+					StartCoroutine(Map.Instance.UnitToMove.ValidateAttackWrapper(selectedHexagon.GetOccupierUnit(), false));
 				}
 				//if selected terrain only has an enemy building and not an unit, ValidateRequestToMove to building and can start occupation next turn
-				else if ((selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit == null) && (selectedHexagon.OccupierBuilding.playerID != netId))
+				else if ((selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierUnit() == null) && (selectedHexagon.GetOccupierBuilding().playerID != netId))
 				{
 					if(Map.Instance.UnitToMove.ValidateRequestToMove(selectedHexagon) == false)
 					{
@@ -631,13 +647,14 @@ public class TownCenter : BuildingBase
 	public bool ValidateCreateUnit(UnitBase unitScript)
 	{
 		return  (unitScript != null) &&
-				(OccupiedHex.OccupierUnit == null) &&
+				(OnlineGameManager.Instance.buildingsToOccupiedTerrains[this].GetOccupierUnit() == null) &&
 				(unitScript.unitProperties.woodCostToCreate <= woodCount) &&
 				(unitScript.unitProperties.meatCostToCreate <= meatCount) &&
 				(unitScript.unitProperties.populationCostToCreate <= maxPopulation - currentPopulation) &&
 				(unitScript.unitProperties.actionPointCostToCreate <= actionPoint);
 
 	}
+
 
 	[Command]
 	public void CreateUnitCmd(string unitName)
@@ -657,11 +674,14 @@ public class TownCenter : BuildingBase
 
 		unitScript = unitObject.GetComponent<UnitBase>();
 		unitScript.playerColor = playerColor;
-		unitScript.occupiedHex = OccupiedHex;
 		unitScript.playerID = netId;
-		OccupiedHex.OccupierUnit = unitScript;
 		NetworkServer.Spawn(unitObject, gameObject);
 		OnlineGameManager.Instance.RegisterUnit(netId, unitScript);
+
+		OnlineGameManager.Instance.UpdateUnitsOccupiedTerrain(unitScript, OnlineGameManager.Instance.buildingsToOccupiedTerrains[this]);
+		//unitScript.occupiedHex = OccupiedHex;
+		//OccupiedHex.OccupierUnit = unitScript;
+
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
 
 		UpdateResourceCount(ResourceType.Wood, -unitScript.unitProperties.woodCostToCreate);
@@ -683,7 +703,7 @@ public class TownCenter : BuildingBase
 	{
 		GameObject building = NetworkRoomManagerWOT.singleton.spawnPrefabs.Find(prefab => prefab.name == buildingName);
 
-		if (building == null) { return false; }
+		if (building == null) { Debug.LogError("Couldn't find prefab " + buildingName); return false; }
 
 		BuildingBase buildingScript = building.GetComponent<BuildingBase>();
 
@@ -693,18 +713,21 @@ public class TownCenter : BuildingBase
 
 		buildingScript = buildingObject.GetComponent<BuildingBase>();
 		buildingScript.playerColor = playerColor;
-		buildingScript.OccupiedHex = OccupiedHex;
 		buildingScript.playerID = playerID;
 		NetworkServer.Spawn(building, gameObject);
+		OnlineGameManager.Instance.RegisterBuilding(netId, buildingScript);
+
 		if(buildingScript.buildingProperties.buildingType != BuildingType.House)
 		{
-			OccupiedHex.OccupierBuilding = buildingScript;
+			//buildingScript.OccupiedHex = OccupiedHex;
+			//OccupiedHex.OccupierBuilding = buildingScript;
+			OnlineGameManager.Instance.UpdateBuildingsOccupiedTerrain(buildingScript, OnlineGameManager.Instance.buildingsToOccupiedTerrains[this]);
 		}
 		else
 		{
 			UpdateResourceCount(ResourceType.MaxPopulation, 2);
 		}
-		OnlineGameManager.Instance.RegisterBuilding(netId, buildingScript);
+
 		ToggleBuildingMenuRpc(owner.netIdentity.connectionToClient, false);
 
 		UpdateResourceCount(ResourceType.Wood, -buildingScript.buildingProperties.woodCostToCreate);
@@ -733,7 +756,7 @@ public class TownCenter : BuildingBase
 		return true;
 	}
 }
-
+/*
 public static class CustomReadWriteFunctions2
 {
 	public static void WriteTownCenter(this NetworkWriter writer, TownCenter value)
@@ -781,3 +804,4 @@ public static class CustomReadWriteFunctions2
 		return townCenter;
 	}
 }
+*/

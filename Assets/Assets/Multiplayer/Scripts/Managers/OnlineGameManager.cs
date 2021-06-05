@@ -30,6 +30,9 @@ public class OnlineGameManager : NetworkBehaviour
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
 	private Dictionary<uint, List<BuildingBase>> buildings = new Dictionary<uint, List<BuildingBase>>();
 
+	public Dictionary<BuildingBase, TerrainHexagon> buildingsToOccupiedTerrains = new Dictionary<BuildingBase, TerrainHexagon>();
+	public Dictionary<UnitBase, TerrainHexagon> unitsToOccupiedTerrains = new Dictionary<UnitBase, TerrainHexagon>();
+
 	private bool canGiveTurnToNextPlayer = true;
 	private int hasTurnIndex = 0;
 
@@ -64,7 +67,7 @@ public class OnlineGameManager : NetworkBehaviour
 		}
 		if (shouldDiscover)
 		{
-			players[playerID].ExploreTerrainsRpc(distantNeighbours, true);
+			players[playerID].ExploreTerrains(distantNeighbours, true);
 		}
 	}
 
@@ -78,6 +81,8 @@ public class OnlineGameManager : NetworkBehaviour
 			buildings.Add(player.playerID, new List<BuildingBase>());
 			playerList.Add(player);
 			players[player.netId].isHost = isHost;
+			buildings[player.playerID].Add(player);
+			//UpdateBuildingsOccupiedTerrain(player, player.OccupiedHex);
 			Debug.Log("Player-" + player.netId + " has joined the game");
 		}
 	}
@@ -90,6 +95,11 @@ public class OnlineGameManager : NetworkBehaviour
 			players.Remove(player.netId);
 			units.Remove(player.netId);
 			buildings.Remove(player.netId);
+			if (buildingsToOccupiedTerrains[player] != null)
+			{
+				buildingsToOccupiedTerrains[player].SetOccupierBuilding(null);
+			}
+			buildingsToOccupiedTerrains.Remove(player);
 			if (playerList.Contains(player))
 			{
 				if(hasTurnIndex == playerList.IndexOf(player))
@@ -112,7 +122,29 @@ public class OnlineGameManager : NetworkBehaviour
 			if (!units[playerID].Contains(unit))
 			{
 				units[playerID].Add(unit);
+				//UpdateUnitsOccupiedTerrain(unit, buildingsToOccupiedTerrains[players[playerID]]);
 			}
+		}
+	}
+
+	[Server]
+	public void UpdateUnitsOccupiedTerrain(UnitBase unit, TerrainHexagon newOccupied)
+	{
+		if (!unitsToOccupiedTerrains.ContainsKey(unit))
+		{
+			unitsToOccupiedTerrains.Add(unit, newOccupied);
+		}
+		else
+		{
+			if(unitsToOccupiedTerrains[unit] != null)
+			{
+				unitsToOccupiedTerrains[unit].SetOccupierUnit(null);
+			}
+			unitsToOccupiedTerrains[unit] = newOccupied;
+		}
+		if (newOccupied != null)
+		{
+			newOccupied.SetOccupierUnit(unit);
 		}
 	}
 
@@ -124,7 +156,29 @@ public class OnlineGameManager : NetworkBehaviour
 			if (!buildings[playerID].Contains(building))
 			{
 				buildings[playerID].Add(building);
+				//UpdateBuildingsOccupiedTerrain(building, building.OccupiedHex);
 			}
+		}
+	}
+
+	[Server]
+	public void UpdateBuildingsOccupiedTerrain(BuildingBase building, TerrainHexagon newOccupied)
+	{
+		if (!buildingsToOccupiedTerrains.ContainsKey(building))
+		{
+			buildingsToOccupiedTerrains.Add(building, newOccupied);
+		}
+		else
+		{
+			if(buildingsToOccupiedTerrains[building] != null)
+			{
+				buildingsToOccupiedTerrains[building].SetOccupierBuilding(null);
+			}
+			buildingsToOccupiedTerrains[building] = newOccupied;
+		}
+		if(newOccupied != null)
+		{
+			newOccupied.SetOccupierBuilding(building);
 		}
 	}
 
@@ -136,6 +190,14 @@ public class OnlineGameManager : NetworkBehaviour
 			if (units[playerID].Contains(unit))
 			{
 				units[playerID].Remove(unit);
+				if(unitsToOccupiedTerrains[unit] != null)
+				{
+					unitsToOccupiedTerrains[unit].SetOccupierUnit(null);
+				}
+				unitsToOccupiedTerrains.Remove(unit);
+				players[playerID].UpdateResourceCount(ResourceType.CurrentPopulation, -1);
+				NetworkServer.Destroy(unit.gameObject);
+				Destroy(unit.gameObject);
 				if ((units[playerID].Count == 0)/* && players[playerID].isConquered*/)
 				{
 					//players[playerID].transform.localScale = Vector3.zero;
@@ -166,6 +228,11 @@ public class OnlineGameManager : NetworkBehaviour
 			if (buildings[playerID].Contains(building))
 			{
 				buildings[playerID].Remove(building);
+				if (buildingsToOccupiedTerrains[building] != null)
+				{
+					buildingsToOccupiedTerrains[building].SetOccupierBuilding(null);
+				}
+				buildingsToOccupiedTerrains.Remove(building);
 				if ((buildings[playerID].Count == 0)/* && players[playerID].isConquered*/)
 				{
 					/*//players[playerID].transform.localScale = Vector3.zero;

@@ -9,7 +9,7 @@ public class BuildingBase : NetworkBehaviour
 	[SerializeField] public BuildingProperties buildingProperties;
 	//[SerializeField] public BuildingType buildingType;
 	
-	/*[SyncVar]*/ public TerrainHexagon OccupiedHex { get; set; }
+	///*[SyncVar]*/ public TerrainHexagon OccupiedHex { get; set; }
 	[HideInInspector][SyncVar] public uint playerID;
 	
 	protected BuildingUI buildingMenuUI;

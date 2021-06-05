@@ -1,9 +1,10 @@
+using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UnitCreationPanel : MonoBehaviour
+public class UnitCreationPanel : NetworkBehaviour
 {
 	[SerializeField] private Image unitIcon;
 	[SerializeField] private Text unitName;
@@ -35,6 +36,7 @@ public class UnitCreationPanel : MonoBehaviour
 	public UnitProperties UnitProperties { get; set; }
 	private bool canCreate;
 
+	
 	public void Init(TownCenter ownerPlayer, UnitProperties unitProperties)
 	{
 		this.OwnerPlayer = ownerPlayer;
@@ -42,6 +44,7 @@ public class UnitCreationPanel : MonoBehaviour
 		this.UnitProperties = unitProperties;
 		UpdateUI();
 	}
+
 
 	private void UpdateUI()
 	{

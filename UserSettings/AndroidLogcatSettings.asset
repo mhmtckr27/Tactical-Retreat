@@ -1,9 +1,9 @@
 {
-    "m_SelectedDeviceId": "861b723b",
+    "m_SelectedDeviceId": "36351c5a0007",
     "m_SelectedPackage": {
-        "deviceId": "861b723b",
+        "deviceId": "36351c5a0007",
         "name": "com.DefaultCompany.TacticalRetreat",
-        "processId": 27797,
+        "processId": 29305,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -237,9 +237,33 @@
             "exited": false
         },
         {
+            "deviceId": "861b723b",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 16685,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 19117,
+            "exited": false
+        },
+        {
             "deviceId": "36351c5a0007",
             "name": "com.DefaultCompany.TacticalRetreat",
             "processId": 2271,
+            "exited": false
+        },
+        {
+            "deviceId": "36351c5a0007",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 26128,
+            "exited": false
+        },
+        {
+            "deviceId": "36351c5a0007",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 29305,
             "exited": false
         }
     ],

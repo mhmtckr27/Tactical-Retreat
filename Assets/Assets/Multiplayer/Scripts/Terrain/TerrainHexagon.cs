@@ -7,14 +7,14 @@ using Mirror;
 public class TerrainHexagon : NetworkBehaviour
 {
 	[SerializeField] public TerrainType terrainType;
-	[SerializeField] private GameObject resourceGameObject;
+	[SerializeField] public GameObject resourceGameObject;
 	//[SerializeField] public Resource resource;
 
 	//TODO: attention pls! eger problem yaratirsa syncvar yap, sebebini bilmiyorum :d
 	[SyncVar] public GameObject unexploredBlock;
 
 	private bool isExplored;
-	public bool IsExplored
+	/*public bool IsExplored
 	{
 		get => isExplored;
 		set
@@ -23,49 +23,11 @@ public class TerrainHexagon : NetworkBehaviour
 			OnIsExploredChange();
 			OnIsExploredChangeCmd();
 		}
-	}
+	}*/
 
-	[Command(requiresAuthority = false)]
-	public void OnIsExploredChangeCmd()
-	{
-		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
-		{
-			OnTerrainOccupiersChange.Invoke(Key, 0);
-		}
-		if ((OnTerrainOccupiersChange != null) && (occupierBuilding != null))
-		{
-			OnTerrainOccupiersChange.Invoke(Key, 1);
-		}
-	}
-
-	public static event Action<string, int> OnTerrainOccupiersChange;
-
-	public void OnIsExploredChange()
-	{
-		unexploredBlock.GetComponent<MeshRenderer>().enabled = !IsExplored;
-		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
-		{
-			meshRenderer.enabled = IsExplored;
-		}
-		/*if(OccupierUnit != null)
-		{
-			foreach (MeshRenderer meshRenderer in OccupierUnit.GetComponentsInChildren<MeshRenderer>())
-			{
-				meshRenderer.enabled = IsDiscovered;
-			}
-		}
-		if(occupierBuilding != null)
-		{
-			foreach (MeshRenderer meshRenderer in occupierBuilding.GetComponentsInChildren<MeshRenderer>())
-			{
-				meshRenderer.enabled = IsDiscovered;
-			}
-		}*/
-	}
-
-	[HideInInspector][SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
+	[HideInInspector] [SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
-	private GameObject[] outlines = new GameObject[2];
+	public GameObject[] outlines = new GameObject[2];
 	private int[] coordinates = new int[3];
 	private string key;
 
@@ -87,11 +49,13 @@ public class TerrainHexagon : NetworkBehaviour
 	public int[] Coordinates { get => coordinates; set => coordinates = value; }
 	public string Key { get => key; set => key = value; }
 
-	/*[SyncVar]*/ private UnitBase occupierUnit;
 
-	/*[SyncVar]*/ private BuildingBase occupierBuilding;
-	public UnitBase OccupierUnit 
-	{ 
+	public UnitBase occupierUnit;
+
+
+	public BuildingBase occupierBuilding;
+	/*public UnitBase OccupierUnit
+	{
 		get => occupierUnit;
 		set
 		{
@@ -113,8 +77,114 @@ public class TerrainHexagon : NetworkBehaviour
 				OnTerrainOccupiersChange.Invoke(Key, 1);
 			}
 		}
+	}*/
+
+	public static event Action<string, int> OnTerrainOccupiersChange;
+
+	public void SetOccupierBuilding(BuildingBase newValue)
+	{
+		occupierBuilding = newValue;
+		if ((OnTerrainOccupiersChange != null) && (occupierBuilding != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 1);
+		}
+		if (!isServer)
+		{
+			Debug.LogError("hello mf");
+			SetOccupierBuildingCmd(newValue);
+		}
+	}
+	[Command(requiresAuthority = false)]
+	public void SetOccupierBuildingCmd(BuildingBase newValue)
+	{
+		occupierBuilding = newValue;
+		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 1);
+		}
+	}
+	public void SetOccupierUnit(UnitBase newValue)
+	{
+		occupierUnit = newValue;
+		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 0);
+		}
+		if (!isServer)
+		{
+			SetOccupierUnitCmd(newValue);
+		}
 	}
 
+	[Command(requiresAuthority = false)]
+	public void SetOccupierUnitCmd(UnitBase newValue)
+	{
+		occupierUnit = newValue;
+		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 0);
+		}
+	}
+
+	[Server]
+	public BuildingBase GetOccupierBuilding()
+	{
+		return occupierBuilding;
+	}
+
+	[Server]
+	public UnitBase GetOccupierUnit()
+	{
+		return occupierUnit;
+	}
+
+	public void SetIsExplored(bool newValue)
+	{
+		isExplored = newValue;
+		OnIsExploredChange();
+		OnIsExploredChangeCmd();
+	}
+
+	public bool GetIsExplored()
+	{
+		return isExplored;
+	}
+
+	[Command(requiresAuthority = false)]
+	public void OnIsExploredChangeCmd()
+	{
+		if ((OnTerrainOccupiersChange != null) && (occupierUnit != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 0);
+		}
+		if ((OnTerrainOccupiersChange != null) && (occupierBuilding != null))
+		{
+			OnTerrainOccupiersChange.Invoke(Key, 1);
+		}
+	}
+
+	public void OnIsExploredChange()
+	{
+		unexploredBlock.GetComponent<MeshRenderer>().enabled = !isExplored;
+		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
+		{
+			meshRenderer.enabled = isExplored;
+		}
+		/*if(OccupierUnit != null)
+		{
+			foreach (MeshRenderer meshRenderer in OccupierUnit.GetComponentsInChildren<MeshRenderer>())
+			{
+				meshRenderer.enabled = IsDiscovered;
+			}
+		}
+		if(occupierBuilding != null)
+		{
+			foreach (MeshRenderer meshRenderer in occupierBuilding.GetComponentsInChildren<MeshRenderer>())
+			{
+				meshRenderer.enabled = IsDiscovered;
+			}
+		}*/
+	}
 
 	private void Awake()
 	{
@@ -172,16 +242,18 @@ public class TerrainHexagon : NetworkBehaviour
 		NeighbourKeys.Add(Neighbour_SW);
 		NeighbourKeys.Add(Neighbour_NW);
 	}
-	/*
-	public override bool OnSerialize(NetworkWriter writer, bool initialState)
+	
+	/*public override bool OnSerialize(NetworkWriter writer, bool initialState)
 	{
 		Debug.LogWarning("onser:" + writer.Length);
+		CustomReadWriteFunctions.WriteTerrainHexagon(writer, this);
 		return base.OnSerialize(writer, initialState);
 	}
 
 	public override void OnDeserialize(NetworkReader reader, bool initialState)
 	{
 		Debug.LogWarning("ondeser:" + reader.Length);
+		CustomReadWriteFunctions.ReadTerrainHexagon(reader);
 		base.OnDeserialize(reader, initialState);
 	}*/
 }
@@ -193,86 +265,85 @@ public enum TerrainType
 	Forest,
 	Animals
 }
-
-
+/*
 public static class CustomReadWriteFunctions
 {
-	public static void WriteTerrainHexagon(this NetworkWriter writer, SPTerrainHexagon value)
+	public static void WriteTerrainHexagon(this NetworkWriter writer, TerrainHexagon value)
 	{
-		if (value == null) { return; }
-		/*
+		if(value == null) { return; }
 		writer.WriteInt32((int)value.terrainType);
-		writer.WriteGameObject(value.resource);
-		writer.WriteArray(value.Outlines);*/
-		/*writer.WriteBoolean(value.IsDiscovered);
-		writer.WriteArray(value.Coordinates);
+		writer.WriteGameObject(value.resourceGameObject);
+		writer.WriteGameObject(value.unexploredBlock);
+		writer.WriteBoolean(value.GetIsExplored());
+		writer.WriteBoolean(value.isResourceCollected);
+		writer.WriteList<BuildingType>(value.buildablesOnThisTerrain);
+		writer.WriteArray<GameObject>(value.outlines);
+		writer.WriteArray<int>(value.Coordinates);
 		writer.WriteString(value.Key);
-		writer.WriteList(value.NeighbourKeys);
+		writer.WriteList<string>(value.NeighbourKeys);
 		writer.WriteString(value.Neighbour_N);
 		writer.WriteString(value.Neighbour_NE);
 		writer.WriteString(value.Neighbour_SE);
 		writer.WriteString(value.Neighbour_S);
+		writer.WriteString(value.Neighbour_SW);
 		writer.WriteString(value.Neighbour_NW);
-		writer.WriteString(value.Neighbour_SW);*/
-		//writer.WriteBoolean(value.IsDiscovered);
 
-		NetworkIdentity networkIdentity = value.GetComponent<NetworkIdentity>();
-		writer.WriteNetworkIdentity(networkIdentity);
+		writer.WriteNetworkBehaviour(value);
 
-		//writer.WriteBoolean(value.isResourceCollected);
-		//writer.WriteGameObject(value.undiscoveredBlock);
-		
-		//writer.WriteUnitBase(value.OccupierUnit);
-		//writer.WriteTownCenter(value.OccupierBuilding as TownCenter);
+		writer.WriteNetworkBehaviour(value.GetOccupierUnit());
+
+		writer.WriteNetworkBehaviour(value.GetOccupierBuilding());
+
+		Debug.LogWarning("server mi writer");
 	}
-	
-	public static SPTerrainHexagon ReadTerrainHexagon(this NetworkReader reader)
+
+	public static TerrainHexagon ReadTerrainHexagon(this NetworkReader reader)
 	{
-		/*TerrainType terrainType = (TerrainType)reader.ReadInt32();
-		GameObject resource = reader.ReadGameObject();
-		*/
-		/*
+		TerrainType terrainType = (TerrainType) reader.ReadInt32();
+		GameObject resourceGameObject = reader.ReadGameObject();
+		GameObject unexploredBlock = reader.ReadGameObject();
+		bool isExplored = reader.ReadBoolean();
+		bool isResourceCollected = reader.ReadBoolean();
+		List<BuildingType> buildablesOnThisTerrain = reader.ReadList<BuildingType>();
 		GameObject[] outlines = reader.ReadArray<GameObject>();
 		int[] coordinates = reader.ReadArray<int>();
 		string key = reader.ReadString();
 		List<string> neighbourKeys = reader.ReadList<string>();
-		string neighbour_N = reader.ReadString();
-		string neighbour_NE = reader.ReadString();
-		string neighbour_SE = reader.ReadString();
-		string neighbour_S = reader.ReadString();
-		string neighbour_NW = reader.ReadString();
-		string neighbour_SW = reader.ReadString();*/
-		//bool isDiscovered = reader.ReadBoolean();
-
-		NetworkIdentity networkIdentity = reader.ReadNetworkIdentity();
-		SPTerrainHexagon hex = networkIdentity != null
-			? networkIdentity.GetComponent<SPTerrainHexagon>()
-			: null;
-		//if(hex == null) { return null; }
-
-		//hex.isResourceCollected = reader.ReadBoolean();
-		//hex.undiscoveredBlock = reader.ReadGameObject();
-		
-		//hex.OccupierUnit = reader.ReadUnitBase();
-		//hex.OccupierBuilding = reader.ReadTownCenter();
+		string neighbour_n = reader.ReadString();
+		string neighbour_ne = reader.ReadString();
+		string neighbour_se = reader.ReadString();
+		string neighbour_s = reader.ReadString();
+		string neighbour_sw = reader.ReadString();
+		string neighbour_nw = reader.ReadString();
 
 
-		/*hex.terrainType = terrainType;
-		hex.resource = resource;
 
-		//
-		//hex.Outlines = outlines;*/
-		//hex.Coordinates = coordinates;
-		//hex.Key = key;
-		/*hex.NeighbourKeys = neighbourKeys;
-		hex.Neighbour_N = neighbour_N;
-		hex.Neighbour_NE = neighbour_NE;
-		hex.Neighbour_SE = neighbour_SE;
-		hex.Neighbour_S = neighbour_S;
-		hex.Neighbour_NW = neighbour_NW;
-		hex.Neighbour_SW = neighbour_SW;*/
-		//hex.IsDiscovered = isDiscovered;		
-		return hex;
+		TerrainHexagon toReturn = reader.ReadNetworkBehaviour() as TerrainHexagon;
+		UnitBase unit = reader.ReadNetworkBehaviour() as UnitBase;
+		BuildingBase building = reader.ReadNetworkBehaviour() as BuildingBase;
 
+		toReturn.terrainType = terrainType;
+		toReturn.resourceGameObject = resourceGameObject;
+		toReturn.unexploredBlock = unexploredBlock;
+		toReturn.SetIsExplored(isExplored);
+		toReturn.isResourceCollected = isResourceCollected;
+		toReturn.buildablesOnThisTerrain = buildablesOnThisTerrain;
+		toReturn.outlines = outlines;
+		toReturn.Coordinates = coordinates;
+		toReturn.Key = key;
+		toReturn.NeighbourKeys = neighbourKeys;
+		toReturn.Neighbour_N = neighbour_n;
+		toReturn.Neighbour_NE = neighbour_ne;
+		toReturn.Neighbour_SE = neighbour_se;
+		toReturn.Neighbour_S = neighbour_s;
+		toReturn.Neighbour_SW = neighbour_sw;
+		toReturn.Neighbour_NW = neighbour_nw;
+
+		toReturn.SetOccupierUnit(unit);
+		toReturn.SetOccupierBuilding(building);
+		Debug.LogWarning("server mi reader");
+
+
+		return toReturn;
 	}
-}
+}*/

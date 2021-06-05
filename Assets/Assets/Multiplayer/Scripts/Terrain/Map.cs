@@ -347,7 +347,7 @@ public class Map : NetworkBehaviour
 
 					if (neighbour != null)
 					{
-						if ((neighbour.OccupierUnit == null))
+						if ((neighbour.GetOccupierUnit() == null))
 						{
 							if (!blockedToMoveHexagonTypes.Contains(neighbour.terrainType))
 							{
@@ -382,7 +382,7 @@ public class Map : NetworkBehaviour
 
 					if (neighbour != null)
 					{
-						if ((neighbour.OccupierUnit != null) && (neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
+						if ((neighbour.GetOccupierUnit() != null) && (neighbour != start) && (occupiedNeighbours != null) && !occupiedNeighbours.Contains(neighbour) && (i < (attackRange + 1)) && !blockedToAttackHexagonTypes.Contains(neighbour.terrainType))
 						{
 							//Debug.LogWarning("occupied neighbour:" + neighbour.Key);
 							occupiedNeighbours.Add(neighbour);
