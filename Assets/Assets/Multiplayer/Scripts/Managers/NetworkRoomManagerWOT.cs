@@ -9,10 +9,10 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	[SerializeField] private GameObject onlineGameManagerPrefab;
 	[SerializeField] private List<Color> playerColors;
 	private bool[] colorsUsed;
-
+	public int mapWidth;
 	public override void Awake()
 	{
-		base.Awake();
+		//base.Awake();
 		colorsUsed = new bool[playerColors.Count];
 	}
 	
@@ -60,6 +60,7 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 		{
 			GameObject map = Instantiate(MapPrefab);
 			NetworkServer.Spawn(map);
+			Map.Instance.SetMapWidth(mapWidth);
 			Map.Instance.GenerateMap();
 			Map.Instance.CreateUndiscoveredBlocks();
 			//Map.Instance.DilateMap();

@@ -54,7 +54,7 @@ public class SPTerrainHexagon : MonoBehaviour
 		}
 	}
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
-	private GameObject[] outlines = new GameObject[2];
+	private GameObject[] outlines = new GameObject[3];
 	private int[] coordinates = new int[3];
 	private string key;
 
@@ -108,6 +108,7 @@ public class SPTerrainHexagon : MonoBehaviour
 	{
 		outlines[0] = transform.GetChild(0).gameObject;
 		outlines[1] = transform.GetChild(1).gameObject;
+		outlines[2] = transform.GetChild(2).gameObject;
 		NeighbourKeys = new List<string>();
 
 	}

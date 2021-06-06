@@ -18,7 +18,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &365760006130420976
 Transform:
@@ -116,6 +116,6 @@ MonoBehaviour:
   woodCount: 100
   meatCount: 100
   currentPopulation: 0
-  maxPopulation: 0
+  maxPopulation: 2
   actionPoint: 0
   exploredEnemyTowns: []

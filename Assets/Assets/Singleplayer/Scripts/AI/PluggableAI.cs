@@ -52,6 +52,9 @@ public class PluggableAI : MonoBehaviour
 				string unitName = SPGameManager.Instance.spawnablePrefabs[Random.Range(0, SPGameManager.Instance.spawnablePrefabs.Count)].name;
 				TownCenter.CreateUnit(TownCenter, unitName);
 				break;
+			case Priority.IncreaseMaxPopulation:
+				TownCenter.CreateBuilding(TownCenter, "SPHouse");
+				break;
 		}
 		yield return null;
 	}
@@ -60,11 +63,13 @@ public class PluggableAI : MonoBehaviour
 	{
 		int minResourceCount = int.MaxValue;
 		ResourceType minResourceType = ResourceType.None;
+
 		if(TownCenter.woodCount < minResourceCount)
 		{
 			minResourceCount = TownCenter.woodCount;
 			minResourceType = ResourceType.Wood;
 		}
+
 		if(TownCenter.meatCount < minResourceCount)
 		{
 			minResourceCount = TownCenter.meatCount;
@@ -81,6 +86,10 @@ public class PluggableAI : MonoBehaviour
 			{
 				currentPriority = Priority.CollectMeat;
 			}
+		}
+		else if((TownCenter.maxPopulation - TownCenter.currentPopulation) < 1)
+		{
+			currentPriority = Priority.IncreaseMaxPopulation;
 		}
 		else
 		{
@@ -148,10 +157,10 @@ public class PluggableAI : MonoBehaviour
 					yield return StartCoroutine(Occupy(GetClosestEnemyTownCenter(unit), unit));
 					break;
 				case Priority.AttackUnit:
-					Debug.LogWarning("before attack");
+					//Debug.LogWarning("before attack");
 					SPUnitBase target = GetClosestEnemy(unit);
 					yield return StartCoroutine(Attack(unit, target));
-					Debug.LogWarning("after attack");
+					//Debug.LogWarning("after attack");
 					break;
 				case Priority.ExploreMap:
 					yield return StartCoroutine(ExploreMap(unit));
@@ -590,6 +599,7 @@ public enum Priority
 	CollectWood,
 	CollectMeat,
 	CreateUnit,
+	IncreaseMaxPopulation
 }
 
 public enum PlayStyle

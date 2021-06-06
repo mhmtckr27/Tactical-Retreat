@@ -4,11 +4,11 @@ using Mirror;
 
 public class Map : NetworkBehaviour
 {
-	private const float blockHeight = 1.73f;
-	private const float blockWidth = 2f;
-	private const float blockOffsetZ = 0.75f * blockWidth;
+	public static float blockHeight = 1.73f;
+	public static float blockWidth = 2f;
+	public static float blockOffsetZ = 0.75f * blockWidth;
 
-	[SerializeField] public int mapWidth;
+	[SerializeField][SyncVar] public int mapWidth;
 	[SerializeField] private BlockPrefabsWithCreationProbability[] terrainPrefabs;
 	[SerializeField] private GameObject undiscoveredBlock;
 
@@ -61,7 +61,16 @@ public class Map : NetworkBehaviour
 		{
 			Destroy(gameObject);
 		}
+
+
 	}
+
+	[Server]
+	public void SetMapWidth(int newValue)
+	{
+		mapWidth = newValue;
+	}
+
 
 	[Server]
 	public void GenerateMap()

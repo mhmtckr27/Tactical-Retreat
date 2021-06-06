@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.SceneManagement;
 
 public class OnlineGameManager : NetworkBehaviour
 {
@@ -25,7 +26,7 @@ public class OnlineGameManager : NetworkBehaviour
 	//if sth goes wrong, make it syncdictionary :D
 	private Dictionary<uint, List<TerrainHexagon>> playersToDiscoveredTerrains = new Dictionary<uint, List<TerrainHexagon>>();
 	public Dictionary<uint, List<TerrainHexagon>> PlayersToDiscoveredTerrains { get => playersToDiscoveredTerrains; }
-	private List<TownCenter> playerList = new List<TownCenter>();
+	public List<TownCenter> playerList = new List<TownCenter>();
 	private Dictionary<uint, TownCenter> players = new Dictionary<uint, TownCenter>();
 	private Dictionary<uint, List<UnitBase>> units = new Dictionary<uint, List<UnitBase>>();
 	private Dictionary<uint, List<BuildingBase>> buildings = new Dictionary<uint, List<BuildingBase>>();
@@ -39,7 +40,7 @@ public class OnlineGameManager : NetworkBehaviour
 	[Server]
 	private void Start()
 	{
-		Invoke(nameof(StartGame), .25f);
+		Invoke(nameof(StartGame), 1f);
 	}
 
 	[Server]
@@ -87,11 +88,41 @@ public class OnlineGameManager : NetworkBehaviour
 		}
 	}
 
+	[ClientRpc]
+	public void OnHostDisconnectedRpc()
+	{
+		OnLoadScene("Start");
+	}
+
+	public void OnLoadScene(string sceneToLoad)
+	{
+		SceneManager.LoadScene(sceneToLoad);
+	}
+
 	[Server]
 	public void UnregisterPlayer(TownCenter player)
 	{
 		if (players.ContainsKey(player.netId))
 		{
+			TerrainHexagon.OnTerrainOccupiersChange -= player.OnTerrainOccupiersChange;
+
+			List<UnitBase> unitsToDestroy = units[player.playerID];
+			int unitCount = unitsToDestroy.Count;
+			for(int i = 0; i < unitCount; i++)
+			{
+				NetworkServer.Destroy(unitsToDestroy[i].gameObject);
+				Destroy(unitsToDestroy[i].gameObject);
+			}
+
+			List<BuildingBase> buildingsToDestroy = buildings[player.playerID];
+			int buildingCount = buildingsToDestroy.Count;
+			for (int i = 0; i < buildingCount; i++)
+			{
+				NetworkServer.Destroy(buildingsToDestroy[i].gameObject);
+				Destroy(buildingsToDestroy[i].gameObject);
+			}
+
+
 			players.Remove(player.netId);
 			units.Remove(player.netId);
 			buildings.Remove(player.netId);
@@ -102,13 +133,20 @@ public class OnlineGameManager : NetworkBehaviour
 			buildingsToOccupiedTerrains.Remove(player);
 			if (playerList.Contains(player))
 			{
-				if(hasTurnIndex == playerList.IndexOf(player))
+				if(hasTurnIndex == playerList.IndexOf(player) || player.hasTurn)
 				{
-					hasTurnIndex++;
+					//hasTurnIndex++;
+					//Debug.LogError("sirayi degistir");
+					hasTurnIndex = (hasTurnIndex == (playerList.Count - 1)) ? 0 : (hasTurnIndex + 1);
+					canGiveTurnToNextPlayer = true;
 				}
 				playerList.Remove(player);
 				NetworkServer.Destroy(player.gameObject);
 				Destroy(player.gameObject);
+				if (canGiveTurnToNextPlayer)
+				{
+					NextTurn();
+				}
 			}
 			Debug.Log("Player-" + player.netId + " has left the game");
 		}
@@ -295,7 +333,10 @@ public class OnlineGameManager : NetworkBehaviour
 	public void NextTurn()
 	{
 		if(!canGiveTurnToNextPlayer) { return; }
-		GiveTurnToPlayer(playerList[hasTurnIndex], true);
+		if (playerList.Count > hasTurnIndex)
+		{
+			GiveTurnToPlayer(playerList[hasTurnIndex], true);
+		}
 	}
 
 	[Server]

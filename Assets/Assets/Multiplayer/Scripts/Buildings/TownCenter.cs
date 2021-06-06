@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class TownCenter : BuildingBase
 {
@@ -47,9 +48,30 @@ public class TownCenter : BuildingBase
 		buildingMenuUI.townCenter = this;
 		InitCmd();
 		inputManager = GetComponent<InputManager>();
+		Camera[] cams = Camera.allCameras;
+		foreach (Camera cam in cams)
+		{
+			cam.GetComponent<CameraManager>().UpdateCameraSizes();
+		}
 
 	}
 
+	[Command]
+	public void UnregisterPlayerCmd()
+	{
+		OnlineGameManager.Instance.UnregisterPlayer(this);
+	}
+
+	[TargetRpc]
+	public void OnLoadSceneRpc(string sceneToLoad)
+	{
+		SceneManager.LoadScene(sceneToLoad);
+	}
+	[Server]
+	public void UnregisterPlayer()
+	{
+		OnlineGameManager.Instance.UnregisterPlayer(this);
+	}
 	private IEnumerator InitResources()
 	{
 		yield return new WaitForEndOfFrame();
@@ -480,6 +502,10 @@ public class TownCenter : BuildingBase
 		if (unit.CanMoveCmd())
 		{
 			unit.SetIsInMoveMode(true);
+			foreach (UnitBase friendlyUnit in OnlineGameManager.Instance.GetUnits(playerID))
+			{
+				ShowHidePlayableUnitOutlineRpc(OnlineGameManager.Instance.unitsToOccupiedTerrains[friendlyUnit], false);
+			}
 		}
 	}
 	
@@ -487,6 +513,10 @@ public class TownCenter : BuildingBase
 	public void DeselectUnit(UnitBase unit)
 	{
 		unit.SetIsInMoveMode(false);
+		foreach (UnitBase friendlyUnit in OnlineGameManager.Instance.GetUnits(playerID))
+		{
+			ShowHidePlayableUnitOutlineRpc(OnlineGameManager.Instance.unitsToOccupiedTerrains[friendlyUnit], true);
+		}
 	}
 
 	[Server]
@@ -552,6 +582,10 @@ public class TownCenter : BuildingBase
 		{
 			unit.remainingMovesThisTurn = unit.unitProperties.moveRange;
 			unit.HasAttacked = false;
+			if(unit.remainingMovesThisTurn > 0)
+			{
+				ShowHidePlayableUnitOutlineRpc(OnlineGameManager.Instance.unitsToOccupiedTerrains[unit], newHasTurn);
+			}
 		}
 		EnableNextTurnButton(newHasTurn);
 		if (hasTurn)
@@ -561,11 +595,17 @@ public class TownCenter : BuildingBase
 		}
 	}
 
+	[TargetRpc]
+	private void ShowHidePlayableUnitOutlineRpc(TerrainHexagon hex, bool show)
+	{
+		hex.ToggleOutlineVisibility(2, show);
+	}
+
 	[Server]
 	public int CalculateActionPointGain()
 	{
 		//calculate using unit count and many other things
-		return 3;
+		return OnlineGameManager.Instance.GetUnits(playerID).Count < 2 ? 2 : OnlineGameManager.Instance.GetUnits(playerID).Count;
 	}
 
 	[TargetRpc]
@@ -594,7 +634,7 @@ public class TownCenter : BuildingBase
 	}
 
 	[Server]
-	private void DeselectEverything()
+	public void DeselectEverything()
 	{
 		DeselectBuilding(this);
 		DeselectTerrain();

@@ -47,13 +47,13 @@ MonoBehaviour:
   terrainPrefabs:
   - blockPrefab: {fileID: 2891735083327226504, guid: f5fd796d1f60636469f9cc461dbedd37,
       type: 3}
-    creationProbability: 0.8
+    creationProbability: 0.6
   - blockPrefab: {fileID: 5810350800546516640, guid: 23b5dd4009e17f441a43212cad43edcc,
       type: 3}
-    creationProbability: 0.82
+    creationProbability: 0.7
   - blockPrefab: {fileID: 4642739875115892624, guid: 891cfb15cb3ac18488167127dec66c5d,
       type: 3}
-    creationProbability: 0.92
+    creationProbability: 0.85
   - blockPrefab: {fileID: 9040136914932431494, guid: 1709e651c52afdf44946660bd6fa761d,
       type: 3}
     creationProbability: 1

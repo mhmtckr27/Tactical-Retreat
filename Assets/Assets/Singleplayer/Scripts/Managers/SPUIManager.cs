@@ -71,6 +71,34 @@ public class SPUIManager : MonoBehaviour
 		Application.Quit();
 	}
 
+	public void OnMapWidthFieldChange()
+	{
+		if(mapWidth.text == "") { return; }
+		int tempMapWidth = int.Parse(mapWidth.text);
+		if(tempMapWidth < 5)
+		{
+			mapWidth.text = "5";
+		}
+		else if(tempMapWidth > 20)
+		{
+			mapWidth.text = "20";
+		}
+	}
+
+	public void OnAICountFieldChange()
+	{
+		if (aiPlayerCount.text == "") { return; }
+		int tempAICount = int.Parse(aiPlayerCount.text);
+		if (tempAICount < 1)
+		{
+			aiPlayerCount.text = "1";
+		}
+		else if (tempAICount > 6)
+		{
+			aiPlayerCount.text = "6";
+		}
+	}
+
 	public void OnSPStartButton()
 	{
 		if (aiPlayerCount.text == "")

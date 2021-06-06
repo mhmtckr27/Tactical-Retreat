@@ -68,18 +68,32 @@ public class UIManager : MonoBehaviour
 		// stop host if host mode
 		if (NetworkServer.active && NetworkClient.isConnected)
 		{
+			//Debug.LogError("host");
+			List<TownCenter> playerListTemp = OnlineGameManager.Instance.playerList;
+			int playerCount = playerListTemp.Count;
+			for(int i = 0; i < playerCount; i++)
+			{
+				playerListTemp[0].UnregisterPlayer();
+			}
 			NetworkManagerHUDWOT.manager.StopHost();
+			OnLoadScene("Start");
+			//OnlineGameManager.Instance.OnHostDisconnectedRpc();
 		}
 		// stop client if client-only
 		else if (NetworkClient.isConnected)
 		{
+			//Debug.LogError("client");
+			townCenterUI.townCenter.UnregisterPlayerCmd();
 			NetworkManagerHUDWOT.manager.StopClient();
+			OnLoadScene("Start");
 		}
 		// stop server if server-only
 		else if (NetworkServer.active)
 		{
+			//Debug.LogError("server");
 			NetworkManagerHUDWOT.manager.StopServer();
 		}
+		//OnLoadScene("Start");
 	}
 
 	public void OnQuitButton()
@@ -114,6 +128,14 @@ public class UIManager : MonoBehaviour
 			// Server + Client
 			if (Application.platform != RuntimePlatform.WebGLPlayer)
 			{
+				if (mapWidth.text == "")
+				{
+					(NetworkManagerHUDWOT.manager as NetworkRoomManagerWOT).mapWidth = 6;
+				}
+				else
+				{
+					(NetworkManagerHUDWOT.manager as NetworkRoomManagerWOT).mapWidth = int.Parse(mapWidth.text);
+				}
 				NetworkManagerHUDWOT.manager.StartHost();
 			}
 		}

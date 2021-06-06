@@ -16,11 +16,11 @@ GameObject:
   - component: {fileID: -200041469235331036}
   - component: {fileID: 4715485908905881443}
   m_Layer: 6
-  m_Name: Peasant_New
+  m_Name: SPPeasant_New
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &7320981355038013345
 Transform:
@@ -116,17 +116,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  unitType: 0
-  initialRotation: {x: 0, y: 30, z: 0}
-  health: 5
-  armor: 0
-  damage: 2
-  moveRange: 3
-  attackRange: 3
-  hasAttacked: 0
+  isPendingDead: 0
+  currentHealth: 0
+  currentArmor: 0
+  canvas: {fileID: 0}
+  healthBar: {fileID: 0}
+  armorBar: {fileID: 0}
+  unitProperties: {fileID: 0}
+  playerColor: {r: 0, g: 0, b: 0, a: 0}
   playerID: 0
-  blockedTerrains: 01000000
-  occupiedHexagon: {fileID: 0}
+  remainingMovesThisTurn: 0
   isInMoveMode: 0
 --- !u!114 &-200041469235331036
 MonoBehaviour:

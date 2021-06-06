@@ -49,6 +49,15 @@ public class SPTownCenter : SPBuildingBase
 		}
 		SPGameManager.Instance.AddDiscoveredTerrains(PlayerID, OccupiedHex.Key, 1);
 
+		if (!IsAI)
+		{
+			Camera[] cams = Camera.allCameras;
+			foreach (Camera cam in cams)
+			{
+				cam.GetComponent<CameraManager>().SPUpdateCameraSizes();
+			}
+		}
+
 		StartCoroutine(InitResources());
 	}
 
@@ -394,7 +403,7 @@ public class SPTownCenter : SPBuildingBase
 					}
 				}
 				//if selected terrain has both enemy unit and enemy building, attack to enemy unit
-				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
+				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID != PlayerID))
 				{
 					StartCoroutine(SPMap.Instance.UnitToMove.ValidateAttack(selectedHexagon.OccupierUnit));
 				}
@@ -424,12 +433,27 @@ public class SPTownCenter : SPBuildingBase
 		if (unit.CanMove())
 		{
 			unit.SetIsInMoveMode(true);
+			if (!IsAI)
+			{
+				foreach(SPUnitBase friendlyUnit in SPGameManager.Instance.GetUnits(PlayerID))
+				{
+					friendlyUnit.occupiedHex.ToggleOutlineVisibility(2, false);
+				}
+			}
+			//unit.occupiedHex.ToggleOutlineVisibility(2, true);
 		}
 	}
 
 	public virtual void DeselectUnit(SPUnitBase unit)
 	{
 		unit.SetIsInMoveMode(false);
+		if (!IsAI)
+		{
+			foreach (SPUnitBase friendlyUnit in SPGameManager.Instance.GetUnits(PlayerID))
+			{
+				friendlyUnit.occupiedHex.ToggleOutlineVisibility(2, true);
+			}
+		}
 	}
 
 	public virtual void SelectTerrain(SPTerrainHexagon terrainHexagon)
@@ -478,6 +502,10 @@ public class SPTownCenter : SPBuildingBase
 		{
 			unit.remainingMovesThisTurn = unit.unitProperties.moveRange;
 			unit.HasAttacked = false;
+			if(unit.remainingMovesThisTurn > 0 && !IsAI)
+			{
+				unit.occupiedHex.ToggleOutlineVisibility(2, newHasTurn);
+			}
 		}
 		EnableNextTurnButton(newHasTurn);
 		if (HasTurn)
@@ -490,7 +518,7 @@ public class SPTownCenter : SPBuildingBase
 	public virtual int CalculateActionPointGain()
 	{
 		//TODO calculate using unit count and many other things
-		return 3;
+		return SPGameManager.Instance.GetUnits(PlayerID).Count < 2 ? 2 : SPGameManager.Instance.GetUnits(PlayerID).Count;
 	}
 
 	protected virtual void EnableNextTurnButton(bool enable)
@@ -635,6 +663,10 @@ public class SPTownCenter : SPBuildingBase
 
 		}
 		*/
-		return true;
+		return  (buildingScript != null) &&
+				(buildingScript.buildingProperties.woodCostToCreate <= woodCount) &&
+				(buildingScript.buildingProperties.meatCostToCreate <= meatCount) &&
+				(buildingScript.buildingProperties.populationCostToCreate <= maxPopulation - currentPopulation) &&
+				(buildingScript.buildingProperties.actionPointCostToCreate <= actionPoint);
 	}
 }

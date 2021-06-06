@@ -64,6 +64,7 @@ public class SPGameManager : MonoBehaviour
 
 	public void OnSingleplayerGameStart(Scene scene, LoadSceneMode loadSceneMode)
 	{
+        if(scene.name == "Start") { Destroy(gameObject); }
         if (scene.name != "Singleplayer") { return; }
         totalPlayerCount = aiPlayerCount + 1;
         colorsUsed = new bool[playerColors.Count];
@@ -71,7 +72,7 @@ public class SPGameManager : MonoBehaviour
         Instantiate(mapPrefab).GetComponent<SPMap>();
         SPMap.Instance.mapWidth = mapWidth;
         SPMap.Instance.SPGenerateMap();
-		//map.SPDilateMap();
+        //map.SPDilateMap();
 		if (!enableMapVisibilityHack)
 		{
             SPMap.Instance.SPCreateUndiscoveredBlocks();

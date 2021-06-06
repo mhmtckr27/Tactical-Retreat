@@ -392,6 +392,7 @@ public class UnitBase : NetworkBehaviour
 	public IEnumerator PlayDeathEffects(Vector3 pos)
 	{
 		PlayDeathEffectsRpc(pos);
+		OnlineGameManager.Instance.GetPlayer(playerID).DeselectEverything();
 		yield return null;
 	}
 
@@ -415,6 +416,7 @@ public class UnitBase : NetworkBehaviour
 			yield return new WaitForSeconds(0.05f);
 		}
 		ParticleSystem particle = Instantiate(unitProperties.deathParticle, pos, Quaternion.identity, null).GetComponent<ParticleSystem>();
+		//particle.
 	}
 
 	[Server]

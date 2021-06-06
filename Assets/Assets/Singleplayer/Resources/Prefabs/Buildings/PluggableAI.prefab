@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playStyle: 0
-  resourcePriorityThreshold: 50
-  townCenterDangerRadius: 3
+  resourcePriorityThreshold: 100
+  townCenterDangerRadius: 2

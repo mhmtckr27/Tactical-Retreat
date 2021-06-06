@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapPrefab: {fileID: 8817684899006194439, guid: f2bfa62496de36e41b6573790426cb3a,
     type: 3}
-  enableMapVisibilityHack: 1
+  enableMapVisibilityHack: 0
   playerPrefab: {fileID: 1033752471153055306, guid: 0c5d00c9f6e43044a9b0449e31f870ab,
     type: 3}
   aiPlayerPrefab: {fileID: 1033752471153055306, guid: d668f7ecc7b9a014699f8760fe2bc77d,
@@ -57,14 +57,14 @@ MonoBehaviour:
   - {fileID: 3761040840066398345, guid: 712a0ca875b24d74482564c115a28a41, type: 3}
   - {fileID: 1147478722433893387, guid: f70d7311b0952c24eadbc0fd71da4c6f, type: 3}
   playerColors:
-  - {r: 0, g: 1, b: 1, a: 1}
-  - {r: 0, g: 1, b: 0, a: 1}
-  - {r: 1, g: 1, b: 0, a: 1}
-  - {r: 1, g: 0, b: 0, a: 1}
-  - {r: 1, g: 0, b: 1, a: 1}
-  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 0.495283, g: 1, b: 1, a: 1}
+  - {r: 0.51370597, g: 0.9811321, b: 0.51370597, a: 1}
+  - {r: 1, g: 1, b: 0.514151, a: 1}
+  - {r: 0.9150943, g: 0.44459772, b: 0.44459772, a: 1}
+  - {r: 1, g: 0.6084906, b: 1, a: 1}
+  - {r: 0.4198113, g: 0.4198113, b: 1, a: 1}
   - {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
   - {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
-  - {r: 1, g: 0.5019608, b: 0, a: 1}
+  - {r: 1, g: 0.6875509, b: 0.3726415, a: 1}
   mapWidth: 6
   aiPlayerCount: 1

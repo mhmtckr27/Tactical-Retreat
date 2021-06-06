@@ -27,7 +27,7 @@ public class TerrainHexagon : NetworkBehaviour
 
 	[HideInInspector] [SyncVar(hook = nameof(OnResourceCollected))] public bool isResourceCollected;
 	[HideInInspector] public List<BuildingType> buildablesOnThisTerrain;
-	public GameObject[] outlines = new GameObject[2];
+	public GameObject[] outlines;
 	private int[] coordinates = new int[3];
 	private string key;
 
@@ -188,8 +188,10 @@ public class TerrainHexagon : NetworkBehaviour
 
 	private void Awake()
 	{
+		outlines = new GameObject[3];
 		outlines[0] = transform.GetChild(0).gameObject;
 		outlines[1] = transform.GetChild(1).gameObject;
+		outlines[2] = transform.GetChild(2).gameObject;
 		NeighbourKeys = new List<string>();
 		
 	}

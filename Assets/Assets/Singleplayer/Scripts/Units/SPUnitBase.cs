@@ -331,7 +331,7 @@ public class SPUnitBase : MonoBehaviour
 
 	public IEnumerator PlayDeathEffectsWrapper(Vector3 pos)
 	{
-		yield return StartCoroutine(PlayDeathEffectsWrapper(pos));
+		yield return StartCoroutine(PlayDeathEffects(pos));
 	}
 
 	protected IEnumerator PlayDeathEffects(Vector3 pos)
@@ -348,6 +348,7 @@ public class SPUnitBase : MonoBehaviour
 			yield return new WaitForSeconds(0.05f);
 		}*/
 		Destroy(gameObject);
+		SPGameManager.Instance.GetPlayer(playerID).DeselectEverything();
 	}
 
 	//TODO update
@@ -573,12 +574,18 @@ public class SPUnitBase : MonoBehaviour
 		if (unit == null)
 		{
 			SPMap.Instance.currentState = State.None;
-			SPMap.Instance.UnitToMove = unit;
+			/*foreach(SPUnitBase friendlyUnit in SPGameManager.Instance.GetUnits(playerID))
+			{
+				if(friendlyUnit.remainingMovesThisTurn > 0)
+				{
+					friendlyUnit.occupiedHex.ToggleOutlineVisibility(2, true);
+				}
+			}*/
 		}
 		else if (unit == this)
 		{
 			SPMap.Instance.currentState = State.UnitAction;
-			SPMap.Instance.UnitToMove = unit;
 		}
+		SPMap.Instance.UnitToMove = unit;
 	}
 }

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4280086507372482}
   - component: {fileID: 198052270621678550}
   - component: {fileID: 199968928986614218}
+  - component: {fileID: 5249918470550452092}
   m_Layer: 0
   m_Name: HitBlood_Mobile
   m_TagString: Untagged
@@ -4703,7 +4704,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: b2ffa08da972da443bd00a6922421ea8, type: 2}
-  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4749,3 +4749,15 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
+--- !u!114 &5249918470550452092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1850033487435682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 277683867bdb7eb4bb167bdfaa12269d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

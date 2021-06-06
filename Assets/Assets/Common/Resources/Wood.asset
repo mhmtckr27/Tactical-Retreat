@@ -24,4 +24,4 @@ MonoBehaviour:
   costIcon: {fileID: 21300000, guid: f4168ff31126b294da15e7c938a4ce0d, type: 3}
   canBeCollected: 1
   resourceCount: 50
-  costToCollect: 3
+  costToCollect: 7
