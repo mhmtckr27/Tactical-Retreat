@@ -3,7 +3,27 @@ guid: 808cd2a52a5bd6045953336fe235b4ce
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body of house
+    second: {fileID: 2100000, guid: c681fd214fa32e74a853c21c0be507da, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pants
+    second: {fileID: 2100000, guid: d1b1ef2a37cee4a4cb357a38ba2ac40f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Roof
+    second: {fileID: 2100000, guid: ba9cfcde1e8e4614d9bc9389001618c0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin
+    second: {fileID: 2100000, guid: fed4987155934ab46ad064a7e2e1252f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
