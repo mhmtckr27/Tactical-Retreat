@@ -250,7 +250,7 @@ public class SPMap : MonoBehaviour
 	{
 		foreach(KeyValuePair<string, SPTerrainHexagon> kvp in mapDictionary)
 		{
-			GameObject tempUndiscovered = Instantiate(undiscoveredBlock, kvp.Value.transform.position, Quaternion.identity);
+			GameObject tempUndiscovered = Instantiate(undiscoveredBlock, kvp.Value.transform.position + new Vector3(0, 0.045f, 0), Quaternion.identity);
 			kvp.Value.unexploredBlock = tempUndiscovered;
 		}
 	}

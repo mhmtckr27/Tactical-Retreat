@@ -15,20 +15,39 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private GameObject settingsMenu;
 
 	[SerializeField] [Scene] private string singleplayerScene;
-	[SerializeField] [Scene] private string multiplayerScene;
+	[SerializeField] [Scene] private string roomScene;
+	[SerializeField] private Toggle hostSwitchToggle;
 	[SerializeField] private InputField networkAddress;
 	[SerializeField] private InputField mapWidth;
+	[SerializeField] private Text debugText;
+	[SerializeField] private GameObject debugPanel;
+	[SerializeField] private GameObject fieldsPanel;
 
 	public TownCenterUI townCenterUI;
 	public TerrainHexagonUI terrainHexagonUI;
 	public UnitCreationPanel unitCreationUI;
 	public BuildingCreationPanel buildingCreationUI;
 
+	private static UIManager instance;
+	public static UIManager Instance { get; }
+	
 	private void OnEnable()
 	{
 		if (terrainHexagonUI)
 		{
-			terrainHexagonUI.uiManager = this;
+			terrainHexagonUI.uiManager = this; 
+		}
+	}
+
+	private void Awake()
+	{
+		if(instance == null)
+		{
+			instance = this;
+		}
+		else if(instance != this)
+		{
+			Destroy(gameObject);
 		}
 	}
 
@@ -103,7 +122,21 @@ public class UIManager : MonoBehaviour
 
 	public void OnLoadScene(string sceneToLoad)
 	{
-		SceneManager.LoadScene(sceneToLoad);
+		if(sceneToLoad == "Room")
+		{
+			if (hostSwitchToggle.isOn)
+			{
+				OnHostButton();
+			}
+			else
+			{
+				OnClientButton();
+			}
+		}
+		else
+		{
+			SceneManager.LoadScene(sceneToLoad);
+		}
 	}
 
 	public void OnSingleplayerScene()
@@ -111,9 +144,9 @@ public class UIManager : MonoBehaviour
 		SceneManager.LoadScene(singleplayerScene);
 	}
 
-	public void OnMultiplayerButton()
+	public void OnRoomButton()
 	{
-		SceneManager.LoadScene(multiplayerScene);
+		SceneManager.LoadScene(roomScene);
 	}
 
 	public void OnMainMenuButton()
@@ -146,7 +179,27 @@ public class UIManager : MonoBehaviour
 		if (!NetworkClient.active)
 		{
 			NetworkManagerHUDWOT.manager.StartClient();
-			NetworkManagerHUDWOT.manager.networkAddress = networkAddress.text;
+			if(networkAddress.text == "")
+			{
+				NetworkManagerHUDWOT.manager.networkAddress = "localhost";
+			}
+			else
+			{
+				NetworkManagerHUDWOT.manager.networkAddress = networkAddress.text;
+			}
+		}
+	}
+
+	public void CancelClientConnectionAttempt()
+	{
+		if (!NetworkClient.isConnected && !NetworkServer.active)
+		{
+			if (NetworkClient.active)
+			{
+				NetworkManagerHUDWOT.manager.StopClient();
+				ShowDebugPanel(false);
+				ShowConnectionPanel(true);
+			}
 		}
 	}
 
@@ -156,5 +209,59 @@ public class UIManager : MonoBehaviour
 		{
 			NetworkManagerHUDWOT.manager.StartServer();
 		}
+	}
+
+	public void OnHostSwitchToggleValueChange()
+	{
+		mapWidth.gameObject.SetActive(hostSwitchToggle.isOn);
+		networkAddress.gameObject.SetActive(!hostSwitchToggle.isOn);
+	}
+
+	public void OnMapWidthFieldChange()
+	{
+		if (mapWidth.text == "") { return; }
+		int tempMapWidth = int.Parse(mapWidth.text);
+		if (tempMapWidth < 5)
+		{
+			mapWidth.text = "5";
+		}
+		else if (tempMapWidth > 20)
+		{
+			mapWidth.text = "20";
+		}
+	}
+
+
+	private void OnGUI()
+	{
+		if(SceneManager.GetActiveScene().name == "MultiplayerLobby" && !NetworkClient.isConnected && !NetworkServer.active)
+		{
+			ShowPanels();
+		}	
+	}
+
+	private void ShowPanels()
+	{
+		if (!NetworkClient.active)
+		{
+			ShowDebugPanel(false);
+			ShowConnectionPanel(true);
+		}
+		else
+		{
+			ShowConnectionPanel(false);
+			ShowDebugPanel(true);
+		}
+	}
+
+	private void ShowConnectionPanel(bool show)
+	{
+		fieldsPanel.SetActive(show);
+	}
+
+	private void ShowDebugPanel(bool show)
+	{
+		debugText.text = "Trying to connect to " + NetworkManagerHUDWOT.manager.networkAddress + "...";
+		debugPanel.gameObject.SetActive(show);
 	}
 }

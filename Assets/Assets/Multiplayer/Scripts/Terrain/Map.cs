@@ -189,7 +189,7 @@ public class Map : NetworkBehaviour
 	{
 		foreach(KeyValuePair<string, TerrainHexagon> kvp in mapDictionary)
 		{
-			GameObject tempUndiscovered = Instantiate(undiscoveredBlock, kvp.Value.transform.position, Quaternion.identity);
+			GameObject tempUndiscovered = Instantiate(undiscoveredBlock, kvp.Value.transform.position + new Vector3(0, 0.045f, 0), Quaternion.identity);
 			NetworkServer.Spawn(tempUndiscovered);
 			kvp.Value.unexploredBlock = tempUndiscovered;
 		}

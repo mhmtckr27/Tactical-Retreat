@@ -1,335 +1,47 @@
 {
     "m_SelectedDeviceId": "861b723b",
     "m_SelectedPackage": {
-        "deviceId": "861b723b",
-        "name": "com.DefaultCompany.TacticalRetreat",
-        "processId": 20679,
+        "deviceId": "",
+        "name": "",
+        "processId": 0,
         "exited": false
     },
     "m_SelectedPriority": 0,
     "m_KnownPackagesForSerialization": [
         {
             "deviceId": "861b723b",
-            "name": "com.miui.home",
-            "processId": 2672,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26812,
+            "processId": 16204,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 18767,
+            "processId": 22916,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19340,
+            "processId": 11477,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19705,
+            "processId": 23793,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 20210,
+            "processId": 24561,
             "exited": true
         },
         {
             "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 30370,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 23043,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 24877,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 25377,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26627,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 27574,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 29111,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 30752,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 15829,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 3148,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 27720,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 10559,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 11892,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 4237,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 7812,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 10447,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 11259,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 11681,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 12039,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 13431,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 13909,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 14660,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 15062,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 15489,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 16031,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19487,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 20287,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 23744,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 24663,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26351,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26917,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 27797,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 16685,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19117,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 25192,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 25693,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26012,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 26412,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 11817,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 12834,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 13320,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 13932,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 18027,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19207,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19615,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 19985,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 20340,
-            "exited": false
-        },
-        {
-            "deviceId": "861b723b",
-            "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 20679,
+            "name": "com.instagram.android",
+            "processId": 20381,
             "exited": false
         },
         {

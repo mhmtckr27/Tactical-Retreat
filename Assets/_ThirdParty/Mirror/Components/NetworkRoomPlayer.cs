@@ -147,7 +147,7 @@ namespace Mirror
             }
         }
 
-        void DrawPlayerReadyState()
+        public virtual void DrawPlayerReadyState()
         {
             GUILayout.BeginArea(new Rect(20f + (index * 100), 200f, 90f, 130f));
 
@@ -169,7 +169,7 @@ namespace Mirror
             GUILayout.EndArea();
         }
 
-        void DrawPlayerReadyButton()
+        public virtual void DrawPlayerReadyButton()
         {
             if (NetworkClient.active && isLocalPlayer)
             {
