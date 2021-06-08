@@ -15,11 +15,11 @@ D:/Projects/Unity Projects/Tactical Retreat
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-60838
+54648
 Successfully changed project path to: D:/Projects/Unity Projects/Tactical Retreat
 D:/Projects/Unity Projects/Tactical Retreat
 Using Asset Import Pipeline V2.
-Refreshing native plugins compatible for Editor in 39.68 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 41.11 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 2020.3.0f1 (c7b5465681fb)
 [Subsystems] Discovering subsystems at path D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/Resources/UnitySubsystems
@@ -35,61 +35,45 @@ Initialize mono
 Mono path[0] = 'D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/Managed'
 Mono path[1] = 'D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit'
 Mono config path = 'D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56564
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56428
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: D:/Programlar/UnityEditors/2020.3.0f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.000760 seconds.
+Registered in 0.000756 seconds.
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 37.68 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 37.80 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.402 seconds
+- Completed reload, in  1.551 seconds
 Platform modules already initialized, skipping
 Registering precompiled user dll's ...
-Registered in 0.002093 seconds.
+Registered in 0.002061 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
-Refreshing native plugins compatible for Editor in 38.31 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 41.33 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
-Find all reader and writers took 128 milliseconds
+Find all reader and writers took 138 milliseconds
 Script Module: UnityEngine.UI.dll
-Weave behaviours and messages took108 milliseconds
-Find all reader and writers took 112 milliseconds
-Script Module: Assembly-CSharp.dll
-[BuildingBase] NetworkBehaviourProcessor
-[BuildingBase] NetworkBehaviourProcessor
-[TownCenter] NetworkBehaviourProcessor
-[BuildingBase] NetworkBehaviourProcessor
-[WoodcutterCottage] NetworkBehaviourProcessor
-[UnitCreationPanel] NetworkBehaviourProcessor
-[OnlineGameManager] NetworkBehaviourProcessor
-[Map] NetworkBehaviourProcessor
-[TerrainHexagon] NetworkBehaviourProcessor
-[UnitBase] NetworkBehaviourProcessor
-[Archer] NetworkBehaviourProcessor
-[UnitBase] NetworkBehaviourProcessor
-Weave behaviours and messages took89 milliseconds
-  ProcessSitesModule Assembly-CSharp.dll elapsed time:00:00:00.0144998
-Find all reader and writers took 113 milliseconds
+Weave behaviours and messages took103 milliseconds
+Find all reader and writers took 126 milliseconds
 Script Module: UnityEngine.TestRunner.dll
-Weave behaviours and messages took37 milliseconds
-Find all reader and writers took 136 milliseconds
+Weave behaviours and messages took34 milliseconds
+Find all reader and writers took 176 milliseconds
 Script Module: Unity.InputSystem.dll
-Weave behaviours and messages took308 milliseconds
-Find all reader and writers took 102 milliseconds
+Weave behaviours and messages took304 milliseconds
+Find all reader and writers took 108 milliseconds
 Script Module: SimpleWebTransport.dll
-Weave behaviours and messages took10 milliseconds
-Find all reader and writers took 105 milliseconds
+Weave behaviours and messages took9 milliseconds
+Find all reader and writers took 115 milliseconds
 Script Module: Unity.Timeline.dll
-Weave behaviours and messages took49 milliseconds
-Find all reader and writers took 118 milliseconds
+Weave behaviours and messages took48 milliseconds
+Find all reader and writers took 117 milliseconds
 Script Module: Mirror.Examples.dll
 [Projectile] NetworkBehaviourProcessor
 [Tank] NetworkBehaviourProcessor
@@ -115,9 +99,9 @@ Script Module: Mirror.Examples.dll
 [PlayerController] NetworkBehaviourProcessor
 [RandomColor] NetworkBehaviourProcessor
 [ShootingTankBehaviour] NetworkBehaviourProcessor
-Weave behaviours and messages took30 milliseconds
-  ProcessSitesModule Mirror.Examples.dll elapsed time:00:00:00.0019747
-Find all reader and writers took 108 milliseconds
+Weave behaviours and messages took28 milliseconds
+  ProcessSitesModule Mirror.Examples.dll elapsed time:00:00:00.0085004
+Find all reader and writers took 110 milliseconds
 Script Module: Mirror.Components.dll
 [NetworkAnimator] NetworkBehaviourProcessor
 [NetworkRoomPlayer] NetworkBehaviourProcessor
@@ -149,62 +133,62 @@ Script Module: Mirror.Components.dll
 [NetworkTransformBase] NetworkBehaviourProcessor
 [NetworkTransformBase] NetworkBehaviourProcessor
 [NetworkTransformChild] NetworkBehaviourProcessor
-Weave behaviours and messages took35 milliseconds
-  ProcessSitesModule Mirror.Components.dll elapsed time:00:00:00.0019992
-Find all reader and writers took 110 milliseconds
+Weave behaviours and messages took30 milliseconds
+  ProcessSitesModule Mirror.Components.dll elapsed time:00:00:00.0014993
+Find all reader and writers took 111 milliseconds
 Script Module: Mirror.Tests.Common.dll
 Weave behaviours and messages took2 milliseconds
-Find all reader and writers took 129 milliseconds
+Find all reader and writers took 130 milliseconds
 Script Module: Unity.TextMeshPro.dll
-Weave behaviours and messages took125 milliseconds
-Find all reader and writers took 103 milliseconds
+Weave behaviours and messages took121 milliseconds
+Find all reader and writers took 104 milliseconds
 Script Module: Mirror.Tests.Runtime.dll
 Weave behaviours and messages took8 milliseconds
-Find all reader and writers took 109 milliseconds
+Find all reader and writers took 111 milliseconds
 Script Module: Unity.Notifications.Android.dll
-Weave behaviours and messages took6 milliseconds
-Find all reader and writers took 109 milliseconds
+Weave behaviours and messages took4 milliseconds
+Find all reader and writers took 107 milliseconds
 Script Module: Boxophobic.Utils.Scripts.dll
 Weave behaviours and messages took2 milliseconds
-Find all reader and writers took 106 milliseconds
+Find all reader and writers took 105 milliseconds
 Script Module: Telepathy.dll
 Weave behaviours and messages took4 milliseconds
-Find all reader and writers took 111 milliseconds
+Find all reader and writers took 112 milliseconds
 Script Module: Mirror.Authenticators.dll
-Weave behaviours and messages took6 milliseconds
-  ProcessSitesModule Mirror.Authenticators.dll elapsed time:00:00:00.0005001
-Find all reader and writers took 106 milliseconds
+Weave behaviours and messages took4 milliseconds
+  ProcessSitesModule Mirror.Authenticators.dll elapsed time:00:00:00
+Find all reader and writers took 105 milliseconds
 Script Module: kcp2k.dll
 Weave behaviours and messages took8 milliseconds
 Find all reader and writers took 109 milliseconds
 Script Module: Unity.Notifications.iOS.dll
 Weave behaviours and messages took5 milliseconds
-Find all reader and writers took 109 milliseconds
+Find all reader and writers took 112 milliseconds
 Script Module: Mirror.Examples.Cloud.GUI.dll
 Weave behaviours and messages took6 milliseconds
-Find all reader and writers took 110 milliseconds
+Find all reader and writers took 112 milliseconds
 Script Module: Mirror.Cloud.dll
 Weave behaviours and messages took4 milliseconds
-Find all reader and writers took 109 milliseconds
+Find all reader and writers took 111 milliseconds
 Script Module: Mirror.Examples.Cloud.Pong.dll
 [Ball] NetworkBehaviourProcessor
 [BallManager] NetworkBehaviourProcessor
 [Player] NetworkBehaviourProcessor
-Weave behaviours and messages took7 milliseconds
-  ProcessSitesModule Mirror.Examples.Cloud.Pong.dll elapsed time:00:00:00.0005003
-Find all reader and writers took 112 milliseconds
+Weave behaviours and messages took2 milliseconds
+  ProcessSitesModule Mirror.Examples.Cloud.Pong.dll elapsed time:00:00:00
+Find all reader and writers took 122 milliseconds
 Script Module: Assembly-CSharp-firstpass.dll
 Weave behaviours and messages took14 milliseconds
-Find all reader and writers took 104 milliseconds
+Find all reader and writers took 106 milliseconds
 Script Module: Mirror.Tests.Performance.Runtime.dll
 Weave behaviours and messages took0 milliseconds
-Find all reader and writers took 148 milliseconds
+Find all reader and writers took 150 milliseconds
 Script Module: UnityEditor.TestRunner.dll
-Weave behaviours and messages took61 milliseconds
+Weave behaviours and messages took60 milliseconds
 Find all reader and writers took 143 milliseconds
 Script Module: UnityEditor.UI.dll
 Weave behaviours and messages took21 milliseconds
-Find all reader and writers took 142 milliseconds
+Find all reader and writers took 145 milliseconds
 Script Module: Mirror.Tests.dll
 [EmptyBehaviour] NetworkBehaviourProcessor
 [SyncVarGameObjectEqualExposedBehaviour] NetworkBehaviourProcessor
@@ -303,51 +287,113 @@ Script Module: Mirror.Tests.dll
 [VirtualTargetRpc] NetworkBehaviourProcessor
 [VirtualOverrideTargetRpcWithBase] NetworkBehaviourProcessor
 [TargetRpcBehaviour] NetworkBehaviourProcessor
-Weave behaviours and messages took158 milliseconds
-  ProcessSitesModule Mirror.Tests.dll elapsed time:00:00:00.0094985
-Find all reader and writers took 142 milliseconds
+Weave behaviours and messages took143 milliseconds
+  ProcessSitesModule Mirror.Tests.dll elapsed time:00:00:00.0084728
+Find all reader and writers took 144 milliseconds
 Script Module: ParrelSync.dll
 Weave behaviours and messages took4 milliseconds
-Find all reader and writers took 114 milliseconds
+Find all reader and writers took 115 milliseconds
 Script Module: WeaverTestExtraAssembly.dll
-Weave behaviours and messages took4 milliseconds
-  ProcessSitesModule WeaverTestExtraAssembly.dll elapsed time:00:00:00.0004995
-Find all reader and writers took 141 milliseconds
+Weave behaviours and messages took1 milliseconds
+  ProcessSitesModule WeaverTestExtraAssembly.dll elapsed time:00:00:00
+Find all reader and writers took 134 milliseconds
 Script Module: Unity.Notifications.dll
 Weave behaviours and messages took5 milliseconds
-Find all reader and writers took 121 milliseconds
+Find all reader and writers took 123 milliseconds
 Script Module: Mirror.CompilerSymbols.dll
 Weave behaviours and messages took0 milliseconds
 Mono: successfully reloaded assembly
-- Completed reload, in 11.177 seconds
+- Completed reload, in 10.977 seconds
 Platform modules already initialized, skipping
 ========================================================================
 Worker process is ready to serve import requests
 Launched and connected shader compiler UnityShaderCompiler.exe after 0.06 seconds
 Refreshing native plugins compatible for Editor in 0.44 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 2147 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 2148 Unused Serialized files (Serialized files now loaded: 0)
 System memory in use before: 166.4 MB.
 System memory in use after: 166.5 MB.
 
-Unloading 34 unused Assets to reduce memory usage. Loaded Objects now: 2587.
-Total: 7.007700 ms (FindLiveObjects: 0.501200 ms CreateObjectMapping: 0.276300 ms MarkObjects: 6.093200 ms  DeleteObjects: 0.133400 ms)
+Unloading 34 unused Assets to reduce memory usage. Loaded Objects now: 2588.
+Total: 2.739600 ms (FindLiveObjects: 0.185300 ms CreateObjectMapping: 0.098700 ms MarkObjects: 2.384700 ms  DeleteObjects: 0.069700 ms)
 
 ========================================================================
-Received Prepare
-Refreshing native plugins compatible for Editor in 3.21 ms, found 0 plugins.
-Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 25 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 122.3 MB.
-System memory in use after: 122.4 MB.
+Received Import Request.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/BuildingCreationPanel.prefab
+  artifactKey: Guid(5d2748d61e96deb46bda63ca53aa3872) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/BuildingCreationPanel.prefab using Guid(5d2748d61e96deb46bda63ca53aa3872) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '60cd9eba95f3d0a93c0d1f396ccf1693') in 0.057057 seconds
+  Import took 0.060012 seconds .
 
-Unloading 25 unused Assets to reduce memory usage. Loaded Objects now: 2587.
-Total: 2.423700 ms (FindLiveObjects: 0.192400 ms CreateObjectMapping: 0.087900 ms MarkObjects: 2.127200 ms  DeleteObjects: 0.015100 ms)
+========================================================================
+Received Import Request.
+  Time since last request: 0.000268 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/TownCenterUI.prefab
+  artifactKey: Guid(88db3ef170cf53545b4266e8d5d69415) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/TownCenterUI.prefab using Guid(88db3ef170cf53545b4266e8d5d69415) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '88676dbbcdad641ddbcb394e63cb5930') in 0.014507 seconds
+  Import took 0.017235 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000175 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '733125829ef8902d1dc0a862fb7b7615') in 0.016518 seconds
+  Import took 0.019821 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000225 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/TerrainHexagonUI.prefab
+  artifactKey: Guid(c1d486cbd3c11e347b610d07c8f8debb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/TerrainHexagonUI.prefab using Guid(c1d486cbd3c11e347b610d07c8f8debb) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '228218dc598718b257ffdb92c634bbee') in 0.009630 seconds
+  Import took 0.013525 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000298 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/UnitCreationPanel.prefab
+  artifactKey: Guid(e0296aea00c341746b0d1bfe09783e52) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/UnitCreationPanel.prefab using Guid(e0296aea00c341746b0d1bfe09783e52) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '62b33eb3cb25fc1af64ef9a39fad7dfc') in 0.010262 seconds
+  Import took 0.014176 seconds .
 
 ========================================================================
 Received Prepare
 Registering precompiled user dll's ...
-Registered in 0.002865 seconds.
+Registered in 0.002121 seconds.
+Begin MonoManager ReloadAssembly
+Native extension for WindowsStandalone target not found
+Refreshing native plugins compatible for Editor in 0.48 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Invoked RoslynAnalysisRunner static constructor.
+RoslynAnalysisRunner will not be running.
+RoslynAnalysisRunner has terminated.
+Mono: successfully reloaded assembly
+- Completed reload, in  0.838 seconds
+Platform modules already initialized, skipping
+Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(537395200) extendedPlatform(0)
+Refreshing native plugins compatible for Editor in 0.46 ms, found 0 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 2116 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 163.7 MB.
+System memory in use after: 163.8 MB.
+
+Unloading 29 unused Assets to reduce memory usage. Loaded Objects now: 2593.
+Total: 1.804500 ms (FindLiveObjects: 0.166100 ms CreateObjectMapping: 0.073600 ms MarkObjects: 1.500700 ms  DeleteObjects: 0.062900 ms)
+
+AssetImportParameters requested are different than current active one (requested -> active):
+  custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
+========================================================================
+Received Import Request.
+  Time since last request: 30264.378235 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/Canvas.prefab
+  artifactKey: Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/Canvas.prefab using Guid(27c7a1b2770a75c4f886e825a70b990c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5273562a75cd5575e3eb2cae9ec6ddf1') in 0.069167 seconds
+  Import took 0.073210 seconds .
+
+========================================================================
+Received Prepare
+Registering precompiled user dll's ...
+Registered in 0.002019 seconds.
 Begin MonoManager ReloadAssembly
 Native extension for WindowsStandalone target not found
 Refreshing native plugins compatible for Editor in 0.49 ms, found 0 plugins.
@@ -356,24 +402,42 @@ Invoked RoslynAnalysisRunner static constructor.
 RoslynAnalysisRunner will not be running.
 RoslynAnalysisRunner has terminated.
 Mono: successfully reloaded assembly
-- Completed reload, in  1.136 seconds
+- Completed reload, in  0.759 seconds
 Platform modules already initialized, skipping
 Switching build target platform(5) subTarget(0) extendedPlatform(0) -> platform(13) subTarget(537395200) extendedPlatform(0)
-Refreshing native plugins compatible for Editor in 0.84 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 0.47 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 2115 Unused Serialized files (Serialized files now loaded: 0)
-System memory in use before: 163.6 MB.
-System memory in use after: 163.7 MB.
+Unloading 2117 Unused Serialized files (Serialized files now loaded: 0)
+System memory in use before: 163.8 MB.
+System memory in use after: 163.9 MB.
 
-Unloading 27 unused Assets to reduce memory usage. Loaded Objects now: 2590.
-Total: 1.839300 ms (FindLiveObjects: 0.165900 ms CreateObjectMapping: 0.068800 ms MarkObjects: 1.580700 ms  DeleteObjects: 0.022800 ms)
+Unloading 29 unused Assets to reduce memory usage. Loaded Objects now: 2597.
+Total: 1.769000 ms (FindLiveObjects: 0.158700 ms CreateObjectMapping: 0.070500 ms MarkObjects: 1.513000 ms  DeleteObjects: 0.025900 ms)
 
 AssetImportParameters requested are different than current active one (requested -> active):
   custom:graphics/normal-map-encoding: 01000000000000000000000000000000 -> 02000000000000000000000000000000
 ========================================================================
 Received Import Request.
-  path: Assets/Assets/Common/Scenes/MultiplayerLobby.unity
-  artifactKey: Guid(8803b85e9d2f10141a179af00b8a9886) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Assets/Common/Scenes/MultiplayerLobby.unity using Guid(8803b85e9d2f10141a179af00b8a9886) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '1a04a0f36d29fb3d44e0e3b9f632562a') in 0.013490 seconds
-  Import took 0.016565 seconds .
+  Time since last request: 221.662757 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab
+  artifactKey: Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab using Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '94c32fb25408f545d90d5f00cb3287f3') in 0.041246 seconds
+  Import took 0.043868 seconds .
 
+========================================================================
+Received Import Request.
+  Time since last request: 27.706759 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab
+  artifactKey: Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab using Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4dba06f1c9a692864c20c73d26be6886') in 0.003403 seconds
+  Import took 0.006247 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.632656 seconds.
+  path: Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab
+  artifactKey: Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Assets/Multiplayer/Resources/Prefabs/HUD/LobbyPlayerInfo.prefab using Guid(ffa5d303141e8c5449faaed75b20ae0d) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: 'f9f27af6c03248fec1eb5761ef5b0a1b') in 0.003660 seconds
+  Import took 0.006726 seconds .
+
+AssetImportWorkerClient::OnTransportError - code=2 error=End of file

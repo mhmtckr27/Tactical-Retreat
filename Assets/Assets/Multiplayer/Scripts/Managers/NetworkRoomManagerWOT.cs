@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class NetworkRoomManagerWOT : NetworkRoomManager
 {
@@ -10,6 +12,9 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	[SerializeField] private List<Color> playerColors;
 	private bool[] colorsUsed;
 	public int mapWidth;
+
+	public string playerName;
+
 	public override void Awake()
 	{
 		//base.Awake();
@@ -66,22 +71,33 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 			//Map.Instance.DilateMap();
 			Instantiate(onlineGameManagerPrefab);
 		}
+		if (sceneName == RoomScene)
+		{
+			FindObjectOfType<UIManager>().playerName = playerName;
+			Debug.LogError(playerName);
+		}
+	}
+
+	public override void OnRoomClientSceneChanged(NetworkConnection conn)
+	{
+		base.OnRoomClientSceneChanged(conn);
+		Debug.LogWarning(SceneManager.GetActiveScene().path);
+		if (SceneManager.GetActiveScene().path == RoomScene)
+		{
+			FindObjectOfType<UIManager>().playerName = playerName;
+			Debug.LogError(playerName);
+		}
+	}
+
+	public void SetPlayerName(string playerName)
+	{
+		this.playerName = playerName;
+		Debug.LogError(this.playerName);
 	}
 
 	public override void OnGUI()
 	{
 		if (!showRoomGUI)
 			return;
-
-		/*if (NetworkServer.active && IsSceneActive(GameplayScene))
-		{
-			GUILayout.BeginArea(new Rect(Screen.width - 150f, 10f, 140f, 30f));
-			if (GUILayout.Button("Return to Room"))
-				ServerChangeScene(RoomScene);
-			GUILayout.EndArea();
-		}*/
-		
-		if (IsSceneActive(RoomScene))
-			GUI.Box(new Rect(10f, 180f, 520f, 150f), "PLAYERS");
 	}
 }

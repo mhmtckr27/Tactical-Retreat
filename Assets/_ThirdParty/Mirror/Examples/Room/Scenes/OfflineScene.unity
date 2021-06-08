@@ -318,8 +318,8 @@ MonoBehaviour:
   serverTickRate: 30
   serverBatching: 0
   serverBatchInterval: 0
-  offlineScene: Assets/Mirror/Examples/Room/Scenes/OfflineScene.unity
-  onlineScene: Assets/Mirror/Examples/Room/Scenes/RoomScene.unity
+  offlineScene: Assets/_ThirdParty/Mirror/Examples/Room/Scenes/OfflineScene.unity
+  onlineScene: Assets/_ThirdParty/Mirror/Examples/Room/Scenes/RoomScene.unity
   transport: {fileID: 2008127830}
   networkAddress: localhost
   maxConnections: 5
@@ -336,8 +336,8 @@ MonoBehaviour:
   minPlayers: 1
   roomPlayerPrefab: {fileID: 114033720796874720, guid: deae2134a1d77704b9c595efe69767dd,
     type: 3}
-  RoomScene: Assets/Mirror/Examples/Room/Scenes/RoomScene.unity
-  GameplayScene: Assets/Mirror/Examples/Room/Scenes/OnlineScene.unity
+  RoomScene: Assets/_ThirdParty/Mirror/Examples/Room/Scenes/RoomScene.unity
+  GameplayScene: Assets/_ThirdParty/Mirror/Examples/Room/Scenes/OnlineScene.unity
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0

@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+	public string playerName;
 	[SerializeField] private Button nextTurnButton;
 	[SerializeField] private Text woodCountText;
 	[SerializeField] private Text meatCountText;
@@ -22,6 +23,15 @@ public class UIManager : MonoBehaviour
 	[SerializeField] private Text debugText;
 	[SerializeField] private GameObject debugPanel;
 	[SerializeField] private GameObject fieldsPanel;
+	[SerializeField] public Button readyButton;
+	[SerializeField] public GameObject disconnectButton;
+	[SerializeField] public GameObject lobbyPlayerInfoPrefab;
+	[SerializeField] public GameObject playersContent;
+	[SerializeField] public InputField playerNameInputField;
+
+	[HideInInspector] public Text readyText;
+	[HideInInspector] public Text playerNameText;
+	[HideInInspector] public GameObject removeButton;
 
 	public TownCenterUI townCenterUI;
 	public TerrainHexagonUI terrainHexagonUI;
@@ -122,8 +132,9 @@ public class UIManager : MonoBehaviour
 
 	public void OnLoadScene(string sceneToLoad)
 	{
-		if(sceneToLoad == "Room")
+		if(sceneToLoad == "ROOOOOOOOOOOMMMMM")
 		{
+			(NetworkManagerHUDWOT.manager as NetworkRoomManagerWOT).SetPlayerName(playerNameInputField.text);
 			if (hostSwitchToggle.isOn)
 			{
 				OnHostButton();
@@ -234,14 +245,20 @@ public class UIManager : MonoBehaviour
 
 	private void OnGUI()
 	{
-		if(SceneManager.GetActiveScene().name == "MultiplayerLobby" && !NetworkClient.isConnected && !NetworkServer.active)
+		if(!NetworkClient.isConnected && !NetworkServer.active)
 		{
 			ShowPanels();
-		}	
+		}
+
+		ShowDisconnectButton((NetworkServer.active && NetworkClient.isConnected) ||
+							(NetworkClient.isConnected) ||
+							(NetworkServer.active));
+		
 	}
 
 	private void ShowPanels()
 	{
+		if(debugPanel == null) { return; }
 		if (!NetworkClient.active)
 		{
 			ShowDebugPanel(false);
@@ -254,14 +271,47 @@ public class UIManager : MonoBehaviour
 		}
 	}
 
+	void ShowDisconnectButton(bool show)
+	{
+		// stop host if host mode
+		if (disconnectButton)
+		{
+			disconnectButton.SetActive(show);
+		}
+	}
+
 	private void ShowConnectionPanel(bool show)
 	{
-		fieldsPanel.SetActive(show);
+		if (fieldsPanel)
+		{
+			fieldsPanel.SetActive(show);
+		}
 	}
 
 	private void ShowDebugPanel(bool show)
 	{
-		debugText.text = "Trying to connect to " + NetworkManagerHUDWOT.manager.networkAddress + "...";
-		debugPanel.gameObject.SetActive(show);
+		if (debugPanel)
+		{
+			debugText.text = "Trying to connect to " + NetworkManagerHUDWOT.manager.networkAddress + "...";
+			debugPanel.gameObject.SetActive(show);
+		}
+	}
+
+	public void OnDisconnectButton()
+	{
+		if (NetworkServer.active && NetworkClient.isConnected)
+		{
+			NetworkManagerHUDWOT.manager.StopHost();
+		}
+		// stop client if client-only
+		else if (NetworkClient.isConnected)
+		{
+			NetworkManagerHUDWOT.manager.StopClient();
+		}
+		// stop server if server-only
+		else if (NetworkServer.active)
+		{
+			NetworkManagerHUDWOT.manager.StopServer();
+		}
 	}
 }

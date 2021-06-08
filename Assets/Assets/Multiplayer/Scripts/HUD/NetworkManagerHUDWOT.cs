@@ -69,7 +69,7 @@ namespace Mirror
                 }
             }
 
-           // StopButtons();
+            StopButtons();
 
             GUILayout.EndArea();
         }

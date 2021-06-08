@@ -136,7 +136,6 @@ namespace Mirror
                         ReadyPlayers++;
                 }
             }
-
             if (CurrentPlayers == ReadyPlayers)
                 CheckReadyToBegin();
             else
@@ -205,6 +204,7 @@ namespace Mirror
 
             int numberOfReadyPlayers = NetworkServer.connections.Count(conn => conn.Value != null && conn.Value.identity.gameObject.GetComponent<NetworkRoomPlayer>().readyToBegin);
             bool enoughReadyPlayers = minPlayers <= 0 || numberOfReadyPlayers >= minPlayers;
+
             if (enoughReadyPlayers)
             {
                 pendingPlayers.Clear();
