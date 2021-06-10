@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CameraManager : NetworkBehaviour
+public class SPCameraManager : MonoBehaviour
 {
     [SerializeField] private float minCamSize = 2;
     [SerializeField] private float maxCamSize = 10;
@@ -85,14 +85,14 @@ public class CameraManager : NetworkBehaviour
 			speed = (cam.orthographicSize / initialCamSize) * dragSpeed * Time.deltaTime;
             Vector3 newCamPos = cam.transform.position - new Vector3(Input.GetAxis("Mouse Y") * speed, 0, -Input.GetAxis("Mouse X") * speed);
 
-			newCamPos = CalculateNewCameraPosition(newCamPos);
+            newCamPos = SPCalculateNewCameraPosition(newCamPos);
 
 			cam.transform.position = newCamPos;
 #elif UNITY_ANDROID
 			speed = (cam.orthographicSize / initialCamSize) * .25f * Time.deltaTime;
 			Vector3 newCamPos = cam.transform.position - new Vector3(Input.touches[0].deltaPosition.y * speed, 0, -Input.touches[0].deltaPosition.x * speed);
 
-			newCamPos = CalculateNewCameraPosition(newCamPos);
+			newCamPos = SPCalculateNewCameraPosition(newCamPos);
 
 			cam.transform.position = newCamPos;
 #endif
@@ -100,64 +100,31 @@ public class CameraManager : NetworkBehaviour
 		Zoom();
     }
 
-	private Vector3 CalculateNewCameraPosition(Vector3 calculatedNewCamPos)
+	private Vector3 SPCalculateNewCameraPosition(Vector3 newCamPos)
 	{
-        int mapWidth = Map.Instance.mapWidth;
+        int mapWidth = SPMap.Instance.mapWidth;
 
-        if (calculatedNewCamPos.x > (mapWidth * 2 - 1) / 2 * Map.blockHeight - 4)
+        if (newCamPos.x > (mapWidth * 2 - 1) / 2 * Map.blockHeight - 4)
 		{
-			calculatedNewCamPos.x = (mapWidth * 2 - 1) / 2 * Map.blockHeight - 4;
+			newCamPos.x = (mapWidth * 2 - 1) / 2 * Map.blockHeight - 4;
 		}
-		else if (calculatedNewCamPos.x < (-1 * (mapWidth * 2 - 1) / 2 * Map.blockHeight - 8))
+		else if (newCamPos.x < (-1 * (mapWidth * 2 - 1) / 2 * Map.blockHeight - 8))
 		{
-			calculatedNewCamPos.x = -1 * (mapWidth * 2 - 1) / 2 * Map.blockHeight - 8;
+			newCamPos.x = -1 * (mapWidth * 2 - 1) / 2 * Map.blockHeight - 8;
 		}
 
 		string leftMostHexKey = "-" + (mapWidth - 1) + "_" + (mapWidth - 1) + "_0";
 		string rightMostHexKey = (mapWidth - 1) + "_" + "-" + (mapWidth - 1) + "_0";
-		
-		GetHexagonPositionCmd(leftMostHexKey, 0);
-		GetHexagonPositionCmd(rightMostHexKey, 1);
-		if (calculatedNewCamPos.z > pos.z)
+		if (newCamPos.z > (SPMap.Instance.mapDictionary[leftMostHexKey].transform.position.z))
 		{
-			calculatedNewCamPos.z = pos.z;
+			newCamPos.z = (SPMap.Instance.mapDictionary[leftMostHexKey].transform.position.z);
 		}
-		else if (calculatedNewCamPos.z < pos2.z)
+		else if (newCamPos.z < (SPMap.Instance.mapDictionary[rightMostHexKey].transform.position.z))
 		{
-			calculatedNewCamPos.z = pos2.z;
+			newCamPos.z = (SPMap.Instance.mapDictionary[rightMostHexKey].transform.position.z);
 		}
-		
-		return calculatedNewCamPos;
-	}
 
-	[SyncVar] public Vector3 pos;
-	[SyncVar] public Vector3 pos2;
-
-	[Command (requiresAuthority = false)]
-	private void GetHexagonPositionCmd(string key, int index)
-	{
-		if (Map.Instance.mapDictionary.ContainsKey(key))
-		{
-			if (index == 0)
-			{
-				pos = Map.Instance.mapDictionary[key].transform.position;
-			}
-			else
-			{
-				pos2 = Map.Instance.mapDictionary[key].transform.position;
-			}
-		}
-		else
-		{
-			if(index == 0)
-			{
-				pos = Vector3.zero;
-			}
-			else
-			{
-				pos2 = Vector3.zero;
-			}
-		}
+		return newCamPos;
 	}
 
 	private void Zoom()

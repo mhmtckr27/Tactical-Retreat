@@ -53,7 +53,6 @@ public class TownCenter : BuildingBase
 		{
 			cam.GetComponent<CameraManager>().UpdateCameraSizes();
 		}
-
 	}
 
 	[Command]

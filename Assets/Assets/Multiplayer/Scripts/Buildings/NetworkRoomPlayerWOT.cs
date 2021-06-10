@@ -1,4 +1,5 @@
 using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,18 +9,7 @@ public class NetworkRoomPlayerWOT : NetworkRoomPlayer
 {
 	UIManager canvasUI;
 	LobbyPlayerInfoManager lobbyPlayerInfoPanel;
-	string playerName;
-	public override void OnStartClient()
-	{
-		base.OnStartClient();
-		if(hasAuthority)
-		playerName = canvasUI.playerName;
-	}
-
-	public override void OnStartLocalPlayer()
-	{
-		base.OnStartLocalPlayer();
-	}
+	[SyncVar] public bool isPlayerSpawned;
 
 	private void OnEnable()
 	{
@@ -27,9 +17,8 @@ public class NetworkRoomPlayerWOT : NetworkRoomPlayer
 		canvasUI.readyButton.onClick.AddListener(OnReadyButton);
 		lobbyPlayerInfoPanel = Instantiate(canvasUI.lobbyPlayerInfoPrefab, canvasUI.playersContent.transform).GetComponent<LobbyPlayerInfoManager>();
 		canvasUI.removeButton.GetComponent<Button>().onClick.AddListener(OnRemoveButton);
-		Debug.LogError(playerName);
 	}
-
+	
 	public override void OnDisable()
 	{
 		base.OnDisable();
@@ -59,20 +48,7 @@ public class NetworkRoomPlayerWOT : NetworkRoomPlayer
 	
 	public override void DrawPlayerReadyState()
 	{
-		//if (!canvasUI) { Debug.LogError("canvas null"); return; }
-		//if (!canvasUI.playerNameText) { Debug.LogError("cok sacma"); return; }
-		//if (!isLocalPlayer) { return; }
-
-
-		if (playerName != "")
-		{
-			//lobbyPlayerInfoPanel.playerNameText.text = playerName;
-			lobbyPlayerInfoPanel.playerNameText.text = ((NetworkManagerHUDWOT.manager as NetworkRoomManager).roomSlots[index] as NetworkRoomPlayerWOT).playerName;
-		}
-		else
-		{
-			lobbyPlayerInfoPanel.playerNameText.text = "Player " + (index + 1);
-		}
+		lobbyPlayerInfoPanel.playerNameText.text = "Player " + (index + 1);
 
 		if (readyToBegin)
 		{

@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-	public string playerName;
 	[SerializeField] private Button nextTurnButton;
 	[SerializeField] private Text woodCountText;
 	[SerializeField] private Text meatCountText;
@@ -28,6 +27,7 @@ public class UIManager : MonoBehaviour
 	[SerializeField] public GameObject lobbyPlayerInfoPrefab;
 	[SerializeField] public GameObject playersContent;
 	[SerializeField] public InputField playerNameInputField;
+	[SerializeField] public GameObject loadingScreen;
 
 	[HideInInspector] public Text readyText;
 	[HideInInspector] public Text playerNameText;
@@ -47,6 +47,30 @@ public class UIManager : MonoBehaviour
 		{
 			terrainHexagonUI.uiManager = this; 
 		}
+		SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+		/*if (NetworkRoomManagerWOT.singleton as NetworkRoomManagerWOT)
+		{
+			(NetworkRoomManagerWOT.singleton as NetworkRoomManagerWOT).OnMapGenerationFinish += OnLoadingMapFinish;
+		}*/
+	}
+
+	private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
+	{
+		if(arg0.name == "Start")
+		{
+			if (NetworkManagerHUDWOT.manager)
+			{
+				Destroy(NetworkManagerHUDWOT.manager.gameObject);
+			}
+		}
+	}
+
+	private void OnDisable()
+	{
+		/*if (NetworkRoomManagerWOT.singleton as NetworkRoomManagerWOT)
+		{
+			(NetworkRoomManagerWOT.singleton as NetworkRoomManagerWOT).OnMapGenerationFinish -= OnLoadingMapFinish;
+		}*/
 	}
 
 	private void Awake()
@@ -59,6 +83,7 @@ public class UIManager : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
+		
 	}
 
 	private void Start()
@@ -134,7 +159,6 @@ public class UIManager : MonoBehaviour
 	{
 		if(sceneToLoad == "ROOOOOOOOOOOMMMMM")
 		{
-			(NetworkManagerHUDWOT.manager as NetworkRoomManagerWOT).SetPlayerName(playerNameInputField.text);
 			if (hostSwitchToggle.isOn)
 			{
 				OnHostButton();
@@ -158,11 +182,6 @@ public class UIManager : MonoBehaviour
 	public void OnRoomButton()
 	{
 		SceneManager.LoadScene(roomScene);
-	}
-
-	public void OnMainMenuButton()
-	{
-		SceneManager.LoadScene(0);
 	}
 
 	public void OnHostButton()

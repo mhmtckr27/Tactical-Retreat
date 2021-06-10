@@ -36,13 +36,13 @@ public class OnlineGameManager : NetworkBehaviour
 
 	private bool canGiveTurnToNextPlayer = true;
 	private int hasTurnIndex = 0;
-
+	/*
 	[Server]
 	private void Start()
 	{
 		Invoke(nameof(StartGame), 1f);
 	}
-
+	*/
 	[Server]
 	public override void OnStartServer()
 	{
@@ -319,14 +319,16 @@ public class OnlineGameManager : NetworkBehaviour
 		return null;
 	}
 
+	[Command (requiresAuthority = false)]
+	public void StartGameCmd()
+	{
+		StartGame();
+	}
+
 	[Server]
 	public void StartGame()
 	{
-		foreach (TownCenter player in playerList)
-		{
-			player.EnableNextTurnButton(false);
-		}
-		NextTurn();
+		Invoke(nameof(NextTurn), 0.5f);
 	}
 
 	[Server]

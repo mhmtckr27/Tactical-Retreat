@@ -18,7 +18,6 @@ public class TownCenterUI : BuildingUI
 		nextTurnButton.SetActive(true);
 	}
 
-
 	public void CreateUnitRequest(UnitProperties unitProperties)
 	{
 		townCenter.DeselectEverythingCmd();

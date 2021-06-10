@@ -1236,6 +1236,18 @@ MonoBehaviour:
   hostSwitchToggle: {fileID: 0}
   networkAddress: {fileID: 0}
   mapWidth: {fileID: 0}
+  debugText: {fileID: 0}
+  debugPanel: {fileID: 0}
+  fieldsPanel: {fileID: 0}
+  readyButton: {fileID: 0}
+  disconnectButton: {fileID: 0}
+  lobbyPlayerInfoPrefab: {fileID: 0}
+  playersContent: {fileID: 0}
+  playerNameInputField: {fileID: 0}
+  loadingScreen: {fileID: 0}
+  readyText: {fileID: 0}
+  playerNameText: {fileID: 0}
+  removeButton: {fileID: 0}
   townCenterUI: {fileID: 0}
   terrainHexagonUI: {fileID: 0}
   unitCreationUI: {fileID: 0}

@@ -333,7 +333,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 674830557}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 729d03bcb2d59d845bbce6bb7b9e3588, type: 3}
+  m_Script: {fileID: 11500000, guid: edab30aa61c807f48a16e9bdbdc78d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   minCamSize: 2
@@ -461,6 +461,7 @@ GameObject:
   - component: {fileID: 968345619}
   - component: {fileID: 968345618}
   - component: {fileID: 968345617}
+  - component: {fileID: 968345621}
   m_Layer: 0
   m_Name: Units Camera
   m_TagString: MainCamera
@@ -480,11 +481,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729d03bcb2d59d845bbce6bb7b9e3588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   minCamSize: 2
   maxCamSize: 10
   dragSpeed: 50
   zoomSpeed: 3
   clearFlags: 3
+  pos: {x: 0, y: 0, z: 0}
+  pos2: {x: 0, y: 0, z: 0}
 --- !u!81 &968345618
 AudioListener:
   m_ObjectHideFlags: 0
@@ -550,6 +555,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 47.372, y: 90, z: -0.004}
+--- !u!114 &968345621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 968345616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 797184939
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &1350925661
 GameObject:
   m_ObjectHideFlags: 0

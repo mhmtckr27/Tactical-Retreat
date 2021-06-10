@@ -520,14 +520,14 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1006275316}
         m_TargetAssemblyTypeName: SPUIManager, Assembly-CSharp
-        m_MethodName: OnMainMenuButton
-        m_Mode: 1
+        m_MethodName: OnLoadScene
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Start
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &343142657
@@ -1127,6 +1127,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SPGameManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8232991092676305388, guid: b59eafb51c1f3d14d880259d87bc31f2,
+        type: 3}
+      propertyPath: enableMapVisibilityHack
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8232991092676305389, guid: b59eafb51c1f3d14d880259d87bc31f2,
         type: 3}

@@ -12,12 +12,39 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	[SerializeField] private List<Color> playerColors;
 	private bool[] colorsUsed;
 	public int mapWidth;
+	/*
+	public Dictionary<int, string> playerNames = new Dictionary<int, string>();
 
-	public string playerName;
+	public void AddPlayerName(int index, string playerName)
+	{
+		if (playerNames.ContainsKey(index)) { return; }
+		int i = 0;
+		string playerNameOld = playerName;
+		while (playerNames.ContainsValue(playerName))
+		{
+			i++;
+			playerName = playerNameOld + "_" + i;
+		}
+		playerNames.Add(index, playerName);
+	}
+
+	public void UpdatePlayerNameIndex(int oldIndex, int newIndex, string playerName)
+	{
+		if (playerNames.ContainsKey(oldIndex))
+		{
+			playerNames.Remove(oldIndex);
+			playerNames.Add(newIndex, playerName);
+		}
+	}
+	*/
+	public System.Action OnMapGenerationFinish;
+	public System.Action<string> OnMapGenerationStatusChange;
+
+	public LoadingScreenManager loadingScreenManager;
 
 	public override void Awake()
 	{
-		//base.Awake();
+		base.Awake();
 		colorsUsed = new bool[playerColors.Count];
 	}
 	
@@ -63,36 +90,15 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 	{
 		if (sceneName == GameplayScene)
 		{
+
 			GameObject map = Instantiate(MapPrefab);
 			NetworkServer.Spawn(map);
 			Map.Instance.SetMapWidth(mapWidth);
+
 			Map.Instance.GenerateMap();
 			Map.Instance.CreateUndiscoveredBlocks();
-			//Map.Instance.DilateMap();
 			Instantiate(onlineGameManagerPrefab);
 		}
-		if (sceneName == RoomScene)
-		{
-			FindObjectOfType<UIManager>().playerName = playerName;
-			Debug.LogError(playerName);
-		}
-	}
-
-	public override void OnRoomClientSceneChanged(NetworkConnection conn)
-	{
-		base.OnRoomClientSceneChanged(conn);
-		Debug.LogWarning(SceneManager.GetActiveScene().path);
-		if (SceneManager.GetActiveScene().path == RoomScene)
-		{
-			FindObjectOfType<UIManager>().playerName = playerName;
-			Debug.LogError(playerName);
-		}
-	}
-
-	public void SetPlayerName(string playerName)
-	{
-		this.playerName = playerName;
-		Debug.LogError(this.playerName);
 	}
 
 	public override void OnGUI()

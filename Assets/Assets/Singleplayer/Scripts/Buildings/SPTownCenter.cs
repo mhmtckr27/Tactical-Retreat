@@ -54,7 +54,7 @@ public class SPTownCenter : SPBuildingBase
 			Camera[] cams = Camera.allCameras;
 			foreach (Camera cam in cams)
 			{
-				cam.GetComponent<CameraManager>().SPUpdateCameraSizes();
+				cam.GetComponent<SPCameraManager>().SPUpdateCameraSizes();
 			}
 		}
 

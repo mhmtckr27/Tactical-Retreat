@@ -18,10 +18,13 @@ public class SPUIManager : MonoBehaviour
 	[SerializeField] private InputField mapWidth;
 	[SerializeField] private InputField aiPlayerCount;
 
+	
 	public SPTownCenterUI townCenterUI;
 	public SPTerrainHexagonUI terrainHexagonUI;
 	public SPUnitCreationPanel unitCreationUI;
 	public SPBuildingCreationPanel buildingCreationUI;
+
+
 	private void OnEnable()
 	{
 		if (terrainHexagonUI)
@@ -63,7 +66,7 @@ public class SPUIManager : MonoBehaviour
 
 	public void OnExitButton()
 	{
-		OnMainMenuButton();
+		OnLoadScene("Start");
 	}
 
 	public void OnQuitButton()
@@ -125,10 +128,5 @@ public class SPUIManager : MonoBehaviour
 	public void OnLoadScene(string sceneToLoad)
 	{
 		SceneManager.LoadScene(sceneToLoad);
-	}
-
-	public void OnMainMenuButton()
-	{
-		SceneManager.LoadScene(0);
 	}
 }
