@@ -119,6 +119,8 @@ MonoBehaviour:
   resourceGameObject: {fileID: 8062767962725621943}
   resource: {fileID: 11400000, guid: 39ab0f90d9c20d44aac31786345a0edc, type: 2}
   aiDebuggerForExploredTerrains: {fileID: 0}
+  exploredPuffEffect: {fileID: 7502280688893388502, guid: 34800fa54fb08ad4e81fea9b20eff394,
+    type: 3}
   unexploredBlock: {fileID: 2535368626507396376, guid: 336dbfac75ebb7b46aae6eae9d8a783a,
     type: 3}
   buildablesOnThisTerrain: 

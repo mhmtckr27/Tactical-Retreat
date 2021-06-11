@@ -10,6 +10,7 @@ public class SPTerrainHexagon : MonoBehaviour
 	[SerializeField] public Resource resource;
 	//TODO: remove
 	[SerializeField] public GameObject aiDebuggerForExploredTerrains;
+	[SerializeField] public GameObject exploredPuffEffect;
 
 	public GameObject unexploredBlock;
 
@@ -17,6 +18,10 @@ public class SPTerrainHexagon : MonoBehaviour
 
 	public void Explore(bool newVal, bool isAI)
 	{
+		if(newVal && !isAI)
+		{
+			Instantiate(exploredPuffEffect, transform.position, Quaternion.identity);
+		}
 		isExplored = newVal;
 		if (!isAI)
 		{
@@ -35,6 +40,7 @@ public class SPTerrainHexagon : MonoBehaviour
 			OnTerrainOccupiersChange.Invoke(Key, 1);
 		}
 		unexploredBlock.GetComponent<MeshRenderer>().enabled = !isExplored;
+
 		foreach (MeshRenderer meshRenderer in GetComponentsInChildren<MeshRenderer>())
 		{
 			meshRenderer.enabled = isExplored;

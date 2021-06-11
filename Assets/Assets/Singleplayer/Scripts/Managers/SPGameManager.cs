@@ -84,6 +84,7 @@ public class SPGameManager : MonoBehaviour
     {
         bool shouldDiscover = false;
         List<SPTerrainHexagon> distantNeighbours = SPMap.Instance.GetDistantHexagons(SPMap.Instance.mapDictionary[key], distance);
+        List<SPTerrainHexagon> shouldExploreNeighbours = new List<SPTerrainHexagon>();
         if (!PlayersToDiscoveredTerrains.ContainsKey(playerID))
         {
             PlayersToDiscoveredTerrains.Add(playerID, new List<SPTerrainHexagon>());
@@ -93,12 +94,13 @@ public class SPGameManager : MonoBehaviour
             if (!PlayersToDiscoveredTerrains[playerID].Contains(hex))
             {
                 PlayersToDiscoveredTerrains[playerID].Add(hex);
+                shouldExploreNeighbours.Add(hex);
                 shouldDiscover = true;
             }
         }
         if (shouldDiscover)
         {
-            players[playerID].ExploreTerrains(distantNeighbours, true);
+            players[playerID].ExploreTerrains(shouldExploreNeighbours, true);
         }
     }
 
