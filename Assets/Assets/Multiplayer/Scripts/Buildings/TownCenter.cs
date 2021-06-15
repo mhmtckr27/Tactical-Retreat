@@ -11,6 +11,7 @@ public class TownCenter : BuildingBase
 	[SyncVar] public bool hasTurn;
 	[SyncVar] public bool isConquered = false;
 	private InputManager inputManager;
+	public bool hasWonGame;
 
 	[SerializeField] private GameObject canvasPrefab;
 	[SerializeField][SyncVar] public int woodCount;
@@ -491,8 +492,46 @@ public class TownCenter : BuildingBase
 						//can start occupation process here because movement was successful
 					}
 				}
+				else if ((selectedHexagon.GetOccupierUnit() != null) && (selectedHexagon.GetOccupierBuilding() != null) && (selectedHexagon.GetOccupierUnit().playerID == playerID) && (selectedHexagon.GetOccupierBuilding().playerID != playerID))
+				{
+					if (SPMap.Instance.selectedHexagon != null)
+					{
+						DeselectTerrain();
+					}
+					if (menu_visible)
+					{
+						DeselectBuilding(this);
+					}
+					SelectUnit(selectedHexagon.GetOccupierUnit());
+				}
 			}
 		}
+	}
+
+	[Server]
+	public void PlayerLostTheGame()
+	{
+		PlayerLostTheGameRpc();
+	}
+	
+	[TargetRpc]
+	public void PlayerLostTheGameRpc()
+	{
+		uiManager.OnDisconnectButton();
+		uiManager.OnLoadScene("LoseScreen");
+	}
+
+	[Server]
+	public void PlayerWonTheGame()
+	{
+		PlayerWonTheGameRpc();
+	}
+
+	[TargetRpc]
+	public void PlayerWonTheGameRpc()
+	{
+		uiManager.OnDisconnectButton();
+		uiManager.OnLoadScene("WinScreen");
 	}
 
 	[Server]

@@ -72,7 +72,7 @@ public class SPGameManager : MonoBehaviour
         Instantiate(mapPrefab).GetComponent<SPMap>();
         SPMap.Instance.mapWidth = mapWidth;
         SPMap.Instance.SPGenerateMap();
-        //map.SPDilateMap();
+        SPMap.Instance.SPDilateMap();
 		if (!enableMapVisibilityHack)
 		{
             SPMap.Instance.SPCreateUndiscoveredBlocks();
@@ -124,16 +124,6 @@ public class SPGameManager : MonoBehaviour
                     startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
                 }
             } while (!isValidPosToSpawn);
-            if (i == 0)
-            {
-                hexKey = "5_-5_0";
-                startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
-            }
-			else
-			{
-                hexKey = "0_0_0";
-                startPos = SPMap.Instance.mapDictionary[hexKey].transform.position;
-            }
 
             GameObject player;
             SPTownCenter tempPlayer;
@@ -202,10 +192,16 @@ public class SPGameManager : MonoBehaviour
                 }
                 playerList.Remove(player);
 
-                foreach(SPTownCenterAI tc in playerList)
+				if (!player.IsAI)
 				{
-                    //TODO: may throw error, check .Contains first.
-                    tc.exploredEnemyTowns.Remove(player);
+                    foreach(SPTownCenter tc in playerList)
+				    {
+                        //TODO: may throw error, check .Contains first.
+                        if(tc as SPTownCenterAI)
+					    {
+                            (tc as SPTownCenterAI).exploredEnemyTowns.Remove(player);
+					    }
+				    }
 				}
                 Destroy(player.gameObject);
             }
@@ -315,13 +311,38 @@ public class SPGameManager : MonoBehaviour
     public void NextTurn()
     {
         if (!canGiveTurnToNextPlayer) { return; }
-        GiveTurnToPlayer(playerList[hasTurnIndex], true);
+        if(playerList.Count == 1)
+		{
+			if (!playerList[0].IsAI)
+			{
+                playerList[0].uiManager.OnLoadScene("WinScreen");
+			}
+		}
+		else
+		{
+            GiveTurnToPlayer(playerList[hasTurnIndex], true);
+		}
     }
 
     public void GiveTurnToPlayer(SPTownCenter player, bool giveTurn)
     {
-        canGiveTurnToNextPlayer = false;
-        player.SetHasTurn(true);
+        if(player.OccupiedHex.OccupierUnit && (player.OccupiedHex.OccupierUnit.playerID != player.PlayerID) && (GetUnits(player.PlayerID).Count == 0))
+		{
+            if (player.IsAI)
+			{
+                UnregisterPlayer(player);
+                NextTurn();
+			}
+			else
+			{
+                player.uiManager.OnLoadScene("LoseScreen");
+			}
+		}
+		else
+		{
+            canGiveTurnToNextPlayer = false;
+            player.SetHasTurn(true);
+		}
     }
 
     public void PlayerFinishedTurn(SPTownCenter player)

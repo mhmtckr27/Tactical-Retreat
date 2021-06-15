@@ -118,7 +118,7 @@ MonoBehaviour:
   remainingMovesThisTurn: 0
   isInMoveMode: 0
   arrowSpawnPoint: {fileID: 1450246703539880327}
-  arrowProjectile: {fileID: 6323004867853748578, guid: 42899c97e227b2a42b1616d844849b56,
+  arrowProjectile: {fileID: 6323004867853748578, guid: 8a71e87c64ddb7743b745a3f379e5152,
     type: 3}
 --- !u!114 &4312206172897805868
 MonoBehaviour:

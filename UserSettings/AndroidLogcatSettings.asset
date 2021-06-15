@@ -1,9 +1,9 @@
 {
     "m_SelectedDeviceId": "861b723b",
     "m_SelectedPackage": {
-        "deviceId": "",
-        "name": "",
-        "processId": 0,
+        "deviceId": "861b723b",
+        "name": "com.hayricakir.WarofTribes",
+        "processId": 6138,
         "exited": false
     },
     "m_SelectedPriority": 0,
@@ -11,37 +11,61 @@
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 16204,
+            "processId": 12515,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 22916,
+            "processId": 13069,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 11477,
+            "processId": 13862,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 23793,
+            "processId": 14223,
             "exited": true
         },
         {
             "deviceId": "861b723b",
             "name": "com.DefaultCompany.TacticalRetreat",
-            "processId": 24561,
+            "processId": 14562,
             "exited": true
         },
         {
             "deviceId": "861b723b",
-            "name": "com.instagram.android",
-            "processId": 20381,
+            "name": "com.miui.home",
+            "processId": 3220,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.hayricakir.WarofTribes",
+            "processId": 10167,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.hayricakir.WarofTribes",
+            "processId": 11336,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.hayricakir.WarofTribes",
+            "processId": 13919,
+            "exited": false
+        },
+        {
+            "deviceId": "861b723b",
+            "name": "com.hayricakir.WarofTribes",
+            "processId": 6138,
             "exited": false
         },
         {
@@ -60,6 +84,12 @@
             "deviceId": "36351c5a0007",
             "name": "com.DefaultCompany.TacticalRetreat",
             "processId": 29305,
+            "exited": false
+        },
+        {
+            "deviceId": "36351c5a0007",
+            "name": "com.DefaultCompany.TacticalRetreat",
+            "processId": 20252,
             "exited": false
         }
     ],

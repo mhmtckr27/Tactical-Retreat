@@ -522,9 +522,6 @@ MonoBehaviour:
   m_CharacterLimit: 3
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
-  m_OnValueChanged:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1006275317}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
@@ -538,6 +535,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
@@ -1655,6 +1655,7 @@ MonoBehaviour:
   lobbyPlayerInfoPrefab: {fileID: 0}
   playersContent: {fileID: 0}
   playerNameInputField: {fileID: 105341305}
+  loadingScreen: {fileID: 0}
   readyText: {fileID: 0}
   playerNameText: {fileID: 0}
   removeButton: {fileID: 0}
@@ -2311,39 +2312,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
         type: 3}
-      propertyPath: RoomScene
-      value: Assets/Assets/Common/Scenes/ROOOOOOOOOOOMMMMM.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
       propertyPath: onlineScene
-      value: Assets/Assets/Common/Scenes/ROOOOOOOOOOOMMMMM.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
-      propertyPath: showRoomGUI
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
-      propertyPath: offlineScene
-      value: Assets/Assets/Common/Scenes/MultiplayerLobby.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
-      propertyPath: GameplayScene
-      value: Assets/Assets/Common/Scenes/Online.unity
-      objectReference: {fileID: 0}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
-      propertyPath: roomPlayerPrefab
-      value: 
-      objectReference: {fileID: 3689994049414278581, guid: 30114c0b7b0ee6b4a880a930a1ff5098,
-        type: 3}
-    - target: {fileID: 5450011388078360035, guid: e74175310e1c23848b852cdc1b546a3b,
-        type: 3}
-      propertyPath: dontDestroyOnLoad
-      value: 1
+      value: Assets/Assets/Common/Scenes/Room.unity
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e74175310e1c23848b852cdc1b546a3b, type: 3}
@@ -2622,7 +2592,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: ROOOOOOOOOOOMMMMM
+          m_StringArgument: Room
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1706700438

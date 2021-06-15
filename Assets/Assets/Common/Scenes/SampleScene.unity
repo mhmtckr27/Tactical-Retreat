@@ -244,9 +244,22 @@ MonoBehaviour:
   currentToMaxPopulationText: {fileID: 0}
   settingsMenu: {fileID: 0}
   singleplayerScene: 
-  multiplayerScene: 
+  roomScene: 
+  hostSwitchToggle: {fileID: 0}
   networkAddress: {fileID: 0}
   mapWidth: {fileID: 0}
+  debugText: {fileID: 0}
+  debugPanel: {fileID: 0}
+  fieldsPanel: {fileID: 0}
+  readyButton: {fileID: 0}
+  disconnectButton: {fileID: 0}
+  lobbyPlayerInfoPrefab: {fileID: 0}
+  playersContent: {fileID: 0}
+  playerNameInputField: {fileID: 0}
+  loadingScreen: {fileID: 0}
+  readyText: {fileID: 0}
+  playerNameText: {fileID: 0}
+  removeButton: {fileID: 0}
   townCenterUI: {fileID: 0}
   terrainHexagonUI: {fileID: 0}
   unitCreationUI: {fileID: 0}
@@ -733,6 +746,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194230}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -817,11 +831,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 729d03bcb2d59d845bbce6bb7b9e3588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   minCamSize: 2
   maxCamSize: 10
   dragSpeed: 50
   zoomSpeed: 3
   clearFlags: 0
+  pos: {x: 0, y: 0, z: 0}
+  pos2: {x: 0, y: 0, z: 0}
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 1406801694
+  serverOnly: 0
+  visible: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!1 &1268335877
 GameObject:
   m_ObjectHideFlags: 0
@@ -914,6 +949,9 @@ MonoBehaviour:
       type: 3}
     creationProbability: 1
   undiscoveredBlock: {fileID: 0}
+  totalTerrainHexagonCount: 0
+  currentlyInstantiatedTerrainHexagonCount: 0
+  unexploredsBlockObjects: []
   selectedHexagon: {fileID: 0}
   currentState: 1
 --- !u!4 &1422771484

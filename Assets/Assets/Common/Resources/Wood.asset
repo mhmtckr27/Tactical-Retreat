@@ -18,10 +18,10 @@ MonoBehaviour:
   description: Cut these trees to obtain wood. Wood is a resource needed to build
     buildings.
   collectText: Cut
-  resourceIcon: {fileID: 21300000, guid: c9bba9e2a6888694bac4a54cf0af70f1, type: 3}
+  resourceIcon: {fileID: 21300000, guid: b362caf24ba98ed40bf7c1b58dd7c50a, type: 3}
   obtainedFromTerrainIcon: {fileID: 21300000, guid: dea83f86238750e49acdf2ee182b158a,
     type: 3}
-  costIcon: {fileID: 21300000, guid: f4168ff31126b294da15e7c938a4ce0d, type: 3}
+  costIcon: {fileID: 21300000, guid: ee465349a253d82488f4e9b82a1f6d25, type: 3}
   canBeCollected: 1
   resourceCount: 50
-  costToCollect: 7
+  costToCollect: 3

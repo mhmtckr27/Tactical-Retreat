@@ -37,7 +37,15 @@ public class MainMenuParticlesHelper : MonoBehaviour
 
 	private void OnSceneChanged(Scene newScene, LoadSceneMode mode)
 	{
-		if(newScene.name == "Singleplayer" || newScene.name == "Online")
+		if (newScene.name == "Room")
+		{
+			transform.position = new Vector3(0, 5, 0);
+		}
+		else
+		{
+			transform.position = Vector3.zero;
+		}
+		if (newScene.name == "Singleplayer" || newScene.name == "Online")
 		{
 			Destroy(gameObject);
 		}

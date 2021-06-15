@@ -56,12 +56,17 @@ public class UIManager : MonoBehaviour
 
 	private void SceneManager_sceneLoaded(Scene arg0, LoadSceneMode arg1)
 	{
-		if(arg0.name == "Start")
+		if((arg0.name == "Start"))
 		{
 			if (NetworkManagerHUDWOT.manager)
 			{
 				Destroy(NetworkManagerHUDWOT.manager.gameObject);
 			}
+		}
+		else if((arg0.name == "WinScreen") || (arg0.name == "LoseScreen"))
+		{
+			NetworkServer.Shutdown();
+			NetworkClient.Shutdown();
 		}
 	}
 
@@ -71,6 +76,7 @@ public class UIManager : MonoBehaviour
 		{
 			(NetworkRoomManagerWOT.singleton as NetworkRoomManagerWOT).OnMapGenerationFinish -= OnLoadingMapFinish;
 		}*/
+		SceneManager.sceneLoaded -= SceneManager_sceneLoaded;
 	}
 
 	private void Awake()
@@ -117,20 +123,15 @@ public class UIManager : MonoBehaviour
 		settingsMenu.SetActive(false);
 	}
 
-	public void OnExitButton()
+	public void OnExitButton(string sceneToLoad)
 	{
 		// stop host if host mode
 		if (NetworkServer.active && NetworkClient.isConnected)
 		{
 			//Debug.LogError("host");
-			List<TownCenter> playerListTemp = OnlineGameManager.Instance.playerList;
-			int playerCount = playerListTemp.Count;
-			for(int i = 0; i < playerCount; i++)
-			{
-				playerListTemp[0].UnregisterPlayer();
-			}
+
 			NetworkManagerHUDWOT.manager.StopHost();
-			OnLoadScene("Start");
+			OnLoadScene(sceneToLoad);
 			//OnlineGameManager.Instance.OnHostDisconnectedRpc();
 		}
 		// stop client if client-only
@@ -139,7 +140,7 @@ public class UIManager : MonoBehaviour
 			//Debug.LogError("client");
 			townCenterUI.townCenter.UnregisterPlayerCmd();
 			NetworkManagerHUDWOT.manager.StopClient();
-			OnLoadScene("Start");
+			OnLoadScene(sceneToLoad);
 		}
 		// stop server if server-only
 		else if (NetworkServer.active)
@@ -157,7 +158,7 @@ public class UIManager : MonoBehaviour
 
 	public void OnLoadScene(string sceneToLoad)
 	{
-		if(sceneToLoad == "ROOOOOOOOOOOMMMMM")
+		if(sceneToLoad == "Room")
 		{
 			if (hostSwitchToggle.isOn)
 			{

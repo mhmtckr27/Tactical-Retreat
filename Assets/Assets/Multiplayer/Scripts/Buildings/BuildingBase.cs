@@ -13,7 +13,7 @@ public class BuildingBase : NetworkBehaviour
 	[HideInInspector][SyncVar] public uint playerID;
 	
 	protected BuildingUI buildingMenuUI;
-	protected UIManager uiManager;
+	public UIManager uiManager;
 	protected bool menu_visible = false;
 
 	[HideInInspector][SyncVar(hook = nameof(OnPlayerColorSet))] public Color playerColor;

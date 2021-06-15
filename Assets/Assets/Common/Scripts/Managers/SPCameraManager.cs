@@ -51,10 +51,7 @@ public class SPCameraManager : MonoBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
-        shouldMove = Input.GetMouseButton(0);
-        zoomAmount = Input.GetAxis("Mouse ScrollWheel");
-#elif UNITY_ANDROID
+#if UNITY_ANDROID
         shouldMove = (Input.touchCount == 1);
         if(Input.touchCount == 2)
 		{
@@ -74,6 +71,9 @@ public class SPCameraManager : MonoBehaviour
             zoomAmount = 0;
         }
 
+#else
+        shouldMove = Input.GetMouseButton(0);
+        zoomAmount = Input.GetAxis("Mouse ScrollWheel");
 #endif
     }
 
@@ -81,23 +81,23 @@ public class SPCameraManager : MonoBehaviour
 	{
 		if (shouldMove)
 		{
-#if UNITY_EDITOR
-			speed = (cam.orthographicSize / initialCamSize) * dragSpeed * Time.deltaTime;
-            Vector3 newCamPos = cam.transform.position - new Vector3(Input.GetAxis("Mouse Y") * speed, 0, -Input.GetAxis("Mouse X") * speed);
-
-            newCamPos = SPCalculateNewCameraPosition(newCamPos);
-
-			cam.transform.position = newCamPos;
-#elif UNITY_ANDROID
+#if UNITY_ANDROID
 			speed = (cam.orthographicSize / initialCamSize) * .25f * Time.deltaTime;
 			Vector3 newCamPos = cam.transform.position - new Vector3(Input.touches[0].deltaPosition.y * speed, 0, -Input.touches[0].deltaPosition.x * speed);
 
 			newCamPos = SPCalculateNewCameraPosition(newCamPos);
 
 			cam.transform.position = newCamPos;
+#else
+			speed = (cam.orthographicSize / initialCamSize) * dragSpeed * Time.deltaTime;
+            Vector3 newCamPos = cam.transform.position - new Vector3(Input.GetAxis("Mouse Y") * speed, 0, -Input.GetAxis("Mouse X") * speed);
+
+            newCamPos = SPCalculateNewCameraPosition(newCamPos);
+
+			cam.transform.position = newCamPos;
 #endif
-		}
-		Zoom();
+        }
+        Zoom();
     }
 
 	private Vector3 SPCalculateNewCameraPosition(Vector3 newCamPos)

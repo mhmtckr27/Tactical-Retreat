@@ -11,7 +11,7 @@ public class SPBuildingBase : MonoBehaviour
 	public uint PlayerID { get; set; }
 
 	protected SPBuildingUI buildingMenuUI;
-	protected SPUIManager uiManager;
+	public SPUIManager uiManager;
 	protected bool menu_visible = false;
 
 	private Color playerColor;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SPTownCenter : SPBuildingBase
+public class SPTownCenter : SPBuildingBase 
 {
 	public bool HasTurn { get; set; }
 	public bool IsConquered { get; set; }
@@ -28,6 +28,8 @@ public class SPTownCenter : SPBuildingBase
 	public bool IsAI { get; set; }
 	private GameObject canvas;
 
+	private Vector2 mouseClickStartPos;
+	private Vector2 mouseClickEndPos;
 	protected virtual void Awake()
 	{
 		canvas = Instantiate(canvasPrefab);
@@ -122,24 +124,12 @@ public class SPTownCenter : SPBuildingBase
 
 	protected virtual void Update()
 	{
-#if UNITY_EDITOR
-		if(SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
+		if (Input.GetMouseButtonDown(0))
 		{
-			if (Input.GetMouseButtonUp(0) )
-			{
-				//if(EventSystem.current.currentSelectedGameObject != null)
-				//Debug.LogError(EventSystem.current.currentSelectedGameObject.name);
-				if (!EventSystem.current.IsPointerOverGameObject())
-				{
-					if (ValidatePlayRequest())
-					{
-						Play(Camera.main.ScreenPointToRay(Input.mousePosition));
-					}
-				}
-			}
+			mouseClickStartPos = Input.mousePosition;
 		}
-#elif UNITY_ANDROID
-		if(SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
+#if UNITY_ANDROID
+		if (SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
 		{
 			if (inputManager.HasValidTap() && !IsPointerOverUIObject() && EventSystem.current.currentSelectedGameObject == null)
 			{
@@ -148,6 +138,21 @@ public class SPTownCenter : SPBuildingBase
 				if (ValidatePlayRequest())
 				{
 					Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+				}
+			}
+		}
+#else
+		if (SPMap.Instance.UnitToMove == null || !SPMap.Instance.UnitToMove.IsMoving)
+		{
+			if (Input.GetMouseButtonUp(0))
+			{
+				mouseClickEndPos = Input.mousePosition;
+				if (Vector2.Distance(mouseClickStartPos, mouseClickEndPos) < 2 && !EventSystem.current.IsPointerOverGameObject())
+				{
+					if (ValidatePlayRequest())
+					{
+						Play(Camera.main.ScreenPointToRay(Input.mousePosition));
+					}
 				}
 			}
 		}
@@ -339,6 +344,18 @@ public class SPTownCenter : SPBuildingBase
 				}
 				//if selected terrain has both friendly unit and friendly building, select unit
 				else if ((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID == PlayerID))
+				{
+					if (SPMap.Instance.selectedHexagon != null)
+					{
+						DeselectTerrain();
+					}
+					if (menu_visible)
+					{
+						DeselectBuilding(this);
+					}
+					SelectUnit(selectedHexagon.OccupierUnit);
+				}
+				else if((selectedHexagon.OccupierUnit != null) && (selectedHexagon.OccupierBuilding != null) && (selectedHexagon.OccupierUnit.playerID == PlayerID) && (selectedHexagon.OccupierBuilding.PlayerID != PlayerID))
 				{
 					if (SPMap.Instance.selectedHexagon != null)
 					{

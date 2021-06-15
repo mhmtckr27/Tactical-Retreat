@@ -51,10 +51,7 @@ public class CameraManager : NetworkBehaviour
 
     private void Update()
     {
-#if UNITY_EDITOR
-        shouldMove = Input.GetMouseButton(0);
-        zoomAmount = Input.GetAxis("Mouse ScrollWheel");
-#elif UNITY_ANDROID
+#if UNITY_ANDROID
         shouldMove = (Input.touchCount == 1);
         if(Input.touchCount == 2)
 		{
@@ -73,24 +70,26 @@ public class CameraManager : NetworkBehaviour
         {
             zoomAmount = 0;
         }
-
+#else
+		shouldMove = Input.GetMouseButton(0);
+		zoomAmount = Input.GetAxis("Mouse ScrollWheel");
 #endif
-    }
+	}
 
     private void LateUpdate()
 	{
 		if (shouldMove)
 		{
-#if UNITY_EDITOR
-			speed = (cam.orthographicSize / initialCamSize) * dragSpeed * Time.deltaTime;
-            Vector3 newCamPos = cam.transform.position - new Vector3(Input.GetAxis("Mouse Y") * speed, 0, -Input.GetAxis("Mouse X") * speed);
+#if UNITY_ANDROID
+			speed = (cam.orthographicSize / initialCamSize) * .25f * Time.deltaTime;
+			Vector3 newCamPos = cam.transform.position - new Vector3(Input.touches[0].deltaPosition.y * speed, 0, -Input.touches[0].deltaPosition.x * speed);
 
 			newCamPos = CalculateNewCameraPosition(newCamPos);
 
 			cam.transform.position = newCamPos;
-#elif UNITY_ANDROID
-			speed = (cam.orthographicSize / initialCamSize) * .25f * Time.deltaTime;
-			Vector3 newCamPos = cam.transform.position - new Vector3(Input.touches[0].deltaPosition.y * speed, 0, -Input.touches[0].deltaPosition.x * speed);
+#else
+			speed = (cam.orthographicSize / initialCamSize) * dragSpeed * Time.deltaTime;
+			Vector3 newCamPos = cam.transform.position - new Vector3(Input.GetAxis("Mouse Y") * speed, 0, -Input.GetAxis("Mouse X") * speed);
 
 			newCamPos = CalculateNewCameraPosition(newCamPos);
 

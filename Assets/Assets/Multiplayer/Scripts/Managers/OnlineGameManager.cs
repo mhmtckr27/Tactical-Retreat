@@ -71,7 +71,7 @@ public class OnlineGameManager : NetworkBehaviour
 			players[playerID].ExploreTerrains(distantNeighbours, true);
 		}
 	}
-
+	TownCenter hostPlayer;
 	[Server]
 	public void RegisterPlayer(TownCenter player, bool isHost)
 	{
@@ -85,6 +85,10 @@ public class OnlineGameManager : NetworkBehaviour
 			buildings[player.playerID].Add(player);
 			//UpdateBuildingsOccupiedTerrain(player, player.OccupiedHex);
 			Debug.Log("Player-" + player.netId + " has joined the game");
+			if (isHost)
+			{
+				hostPlayer = player;
+			}
 		}
 	}
 
@@ -118,8 +122,15 @@ public class OnlineGameManager : NetworkBehaviour
 			int buildingCount = buildingsToDestroy.Count;
 			for (int i = 0; i < buildingCount; i++)
 			{
-				NetworkServer.Destroy(buildingsToDestroy[i].gameObject);
-				Destroy(buildingsToDestroy[i].gameObject);
+				if((buildingsToDestroy[i] as TownCenter) && (buildingsToDestroy[i] as TownCenter).isHost == false)
+				{
+					NetworkServer.Destroy(buildingsToDestroy[i].gameObject);
+					Destroy(buildingsToDestroy[i].gameObject);
+				}
+				else
+				{
+					player.GetComponent<MeshRenderer>().enabled = false;
+				}
 			}
 
 
@@ -140,9 +151,16 @@ public class OnlineGameManager : NetworkBehaviour
 					hasTurnIndex = (hasTurnIndex == (playerList.Count - 1)) ? 0 : (hasTurnIndex + 1);
 					canGiveTurnToNextPlayer = true;
 				}
-				playerList.Remove(player);
-				NetworkServer.Destroy(player.gameObject);
-				Destroy(player.gameObject);
+				//	playerList.Remove(player);
+				if (!player.isHost)
+				{
+					NetworkServer.Destroy(player.gameObject);
+					Destroy(player.gameObject);
+				}
+				else
+				{
+					player.GetComponent<MeshRenderer>().enabled = false;
+				}
 				if (canGiveTurnToNextPlayer)
 				{
 					NextTurn();
@@ -354,6 +372,31 @@ public class OnlineGameManager : NetworkBehaviour
 		hasTurnIndex = (hasTurnIndex == (playerList.Count - 1)) ? 0 : (hasTurnIndex + 1);
 		canGiveTurnToNextPlayer = true;
 		player.SetHasTurn(false);
-		NextTurn();
+
+		TownCenter[] players = new TownCenter[playerList.Count];
+		playerList.CopyTo(players);
+
+		for(int i = 0; i < players.Length; ++i)
+		{
+			if(buildingsToOccupiedTerrains[players[i]].occupierUnit && (buildingsToOccupiedTerrains[players[i]].occupierUnit.playerID != players[i].playerID) && (GetUnits(players[i].playerID).Count == 0))
+			{
+				if (!players[i].isHost)
+				{
+					players[i].PlayerLostTheGame();
+				}
+				UnregisterPlayer(players[i]);
+				playerList.Remove(players[i]);
+			}
+		}
+
+		if(playerList.Count == 1)
+		{
+			playerList[0].PlayerWonTheGame();
+			hostPlayer.PlayerLostTheGame();
+		}
+		else
+		{
+			NextTurn();
+		}
 	}
 }

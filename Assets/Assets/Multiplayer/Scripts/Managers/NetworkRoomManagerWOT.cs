@@ -44,10 +44,10 @@ public class NetworkRoomManagerWOT : NetworkRoomManager
 
 	public override void Awake()
 	{
-		base.Awake();
+		networkSceneName = offlineScene;
 		colorsUsed = new bool[playerColors.Count];
 	}
-	
+
 	public override GameObject OnRoomServerCreateGamePlayer(NetworkConnection conn, GameObject roomPlayer)
 	{
 		Vector3 startPos = Vector3.zero;

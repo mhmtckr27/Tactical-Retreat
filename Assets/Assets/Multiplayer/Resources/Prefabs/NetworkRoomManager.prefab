@@ -52,8 +52,8 @@ MonoBehaviour:
   serverTickRate: 30
   serverBatching: 0
   serverBatchInterval: 0
-  offlineScene: 
-  onlineScene: 
+  offlineScene: Assets/Assets/Common/Scenes/MultiplayerLobby.unity
+  onlineScene: Assets/Assets/Common/Scenes/Online.unity
   transport: {fileID: 5450011388078360028}
   networkAddress: localhost
   maxConnections: 100
@@ -79,10 +79,10 @@ MonoBehaviour:
   - {fileID: 7252252053688309643, guid: 8317345042cc1bc45b5edc59f3bebeeb, type: 3}
   showRoomGUI: 0
   minPlayers: 1
-  roomPlayerPrefab: {fileID: 132530222994975048, guid: 30114c0b7b0ee6b4a880a930a1ff5098,
+  roomPlayerPrefab: {fileID: 3689994049414278581, guid: 30114c0b7b0ee6b4a880a930a1ff5098,
     type: 3}
-  RoomScene: 
-  GameplayScene: 
+  RoomScene: Assets/Assets/Common/Scenes/Room.unity
+  GameplayScene: Assets/Assets/Common/Scenes/Online.unity
   _allPlayersReady: 0
   roomSlots: []
   clientIndex: 0
@@ -101,6 +101,7 @@ MonoBehaviour:
   - {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   - {r: 1, g: 0.5019608, b: 0, a: 1}
   mapWidth: 0
+  loadingScreenManager: {fileID: 0}
 --- !u!114 &5450011388078360028
 MonoBehaviour:
   m_ObjectHideFlags: 0
