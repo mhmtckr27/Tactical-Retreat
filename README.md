@@ -1,2 +1,2 @@
 # Tactical-Retreat
- Turn-based mobile strategy game that I am currently developing for school project.
+ Turn-based mobile strategy game that I developed for a school project.
