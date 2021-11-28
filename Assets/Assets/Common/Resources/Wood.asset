@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae1df7b7b3f8b4944bdf716a196b1764, type: 3}
+  m_Name: Wood
+  m_EditorClassIdentifier: 
+  resourceType: 1
+  obtainedFromTerrainType: 2
+  obtainedFromTerrainName: Forest
+  description: Cut these trees to obtain wood. Wood is a resource needed to build
+    buildings.
+  collectText: Cut
+  resourceIcon: {fileID: 21300000, guid: b362caf24ba98ed40bf7c1b58dd7c50a, type: 3}
+  obtainedFromTerrainIcon: {fileID: 21300000, guid: dea83f86238750e49acdf2ee182b158a,
+    type: 3}
+  costIcon: {fileID: 21300000, guid: ee465349a253d82488f4e9b82a1f6d25, type: 3}
+  canBeCollected: 1
+  resourceCount: 50
+  costToCollect: 3

@@ -6,6 +6,30 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 9fc0d4010bbf28b4594072e72b8655ab
+    path: Assets/Assets/Common/Scenes/Start.unity
+    guid: e1c7457d25669084297c65de246065a6
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/Credits.unity
+    guid: b0ff15170d7a91040bd80583a73fdb9c
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/SingleplayerLobby.unity
+    guid: 4386bd61951a83143b73541700b8ca8e
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/Singleplayer.unity
+    guid: 2df526cfdf6924842a1681f6c4ddd733
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/MultiplayerLobby.unity
+    guid: 8803b85e9d2f10141a179af00b8a9886
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/Room.unity
+    guid: 9719a6d383af51a418b8099f168d9172
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/Online.unity
+    guid: 2397251680a8ad14fa62c8410ca1bc78
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/WinScreen.unity
+    guid: 60e0750948f067d44bce0d2774f3df62
+  - enabled: 1
+    path: Assets/Assets/Common/Scenes/LoseScreen.unity
+    guid: 117278910a4aecc4ead8b16157a841b7
   m_configObjects: {}

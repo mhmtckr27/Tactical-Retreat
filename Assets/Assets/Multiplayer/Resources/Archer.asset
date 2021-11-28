@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1d5d8b5a4f38d428f9dcccd1578865, type: 3}
+  m_Name: Archer
+  m_EditorClassIdentifier: 
+  unitPrefab: {fileID: 3761040840066398345, guid: 27418b7ba7b535b49bf9cf3893e5b0b1,
+    type: 3}
+  unitName: Archer
+  unitIcon: {fileID: 21300000, guid: 92ff494a743b97042ae28bcd0bd7b10e, type: 3}
+  initialRotation: {x: 0, y: -60, z: 0}
+  unitType: 2
+  unitCombatType: 1
+  woodCostToCreate: 0
+  meatCostToCreate: 50
+  populationCostToCreate: 1
+  actionPointCostToCreate: 2
+  moveCostToAttack: 1
+  health: 10
+  armor: 2
+  damage: 2
+  attackRange: 2
+  blockedToAttackTerrains: 
+  hitBloodParticle: {fileID: 1850033487435682, guid: 2c4b2397ab17cce4bae0e99c1004869d,
+    type: 3}
+  deathParticle: {fileID: 1949398963624892, guid: d786e2d05a34bf741b1bd7fd569828cd,
+    type: 3}
+  attackSound: {fileID: 8300000, guid: ddabc0d42ff1be9438aacf5c94a64b69, type: 3}
+  hitSound: {fileID: 8300000, guid: c7e86fd36c6d2bc4eaee6c029dc3bc32, type: 3}
+  deathSound: {fileID: 8300000, guid: 042c7f04529919e4ebaff45b51d1cc75, type: 3}
+  moveRange: 2
+  exploreRange: 2
+  lerpSpeed: 0.25
+  turnSpeed: 75
+  snapToPositionThreshold: 0.1
+  waitBetweenMovement: 0.02
+  blockedToMoveTerrains: 01000000
